@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Medas\Placeholder;
+namespace Medas\PdoStorage;
 
 use Medas\ServiceManager\{AsSingleton, BasePackage};
 
-class PlaceholderPackage extends BasePackage
+class PdoStoragePackage extends BasePackage
 {
     use AsSingleton;
 

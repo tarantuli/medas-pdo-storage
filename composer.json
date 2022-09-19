@@ -1,6 +1,6 @@
 {
-    "name": "morphp/medas-placeholder",
-    "description": "Medas placeholder",
+    "name": "morphp/medas-pdo-storage",
+    "description": "Medas pdo storage",
     "authors": [
         {
             "name": "Patrick Morpey",
@@ -18,8 +18,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Medas\\Placeholder\\": "src/",
-            "Medas\\PlaceholderTest\\": "tests/"
+            "Medas\\PdoStorage\\": "src/",
+            "Medas\\PdoStorageTest\\": "tests/"
         }
     }
 }
