@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage;
 
+use Medas\PdoStorage\ConfigOptions\{PdoDns, PdoPassword, PdoUsername};
 use Medas\PdoStorage\Exceptions\DriverNotImplementedException;
 use Medas\PdoStorage\Queries\{MysqlQueryBuilder, Query, QueryBuilder, SqliteQueryBuilder};
 use Medas\PdoStorage\Structure\IdentifierQuoters\{BaseSqlQuoter, IdentifierQuoter, MysqlQuoter};
 use Medas\ServiceManager\ConfigOptions\ConfigValue;
-use Medas\StorageManager\ConfigOptions\{PdoDns, PdoPassword, PdoUsername};
 use Medas\StorageManager\Interfaces\{Storage, StorageController};
 
 class Database implements Storage
