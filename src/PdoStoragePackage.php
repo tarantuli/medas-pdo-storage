@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Medas\PdoStorage;
 
 use Medas\ServiceManager\{AsSingleton, BasePackage};
+use Medas\StorageManager\StorageManagerPackage;
 
 class PdoStoragePackage extends BasePackage
 {
@@ -13,6 +14,7 @@ class PdoStoragePackage extends BasePackage
     public function dependencies(): array
     {
         return $this->dependenciesByClass([
+            StorageManagerPackage::class,
         ]);
     }
 
