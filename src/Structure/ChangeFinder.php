@@ -13,9 +13,9 @@ class ChangeFinder
     public function find(Blueprint $expected, Blueprint $existing): Changes|null
     {
         $foundChanges = false;
-        $changes = new Changes($expected->name);
+        $changes = new Changes($expected->name());
 
-        foreach ($expected->fields as $field) {
+        foreach ($expected->fields() as $field) {
             if ($current = $existing->fieldByName($field->name)) {
                 /**
                  * We want to compare by class and all property values, so "==" is by design

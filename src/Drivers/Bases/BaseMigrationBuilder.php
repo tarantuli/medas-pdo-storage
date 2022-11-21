@@ -45,7 +45,7 @@ abstract class BaseMigrationBuilder implements MigrationBuilder
         }
 
         $queryClass = Query::class;
-        $query = addslashes(trim($query->query));
+        $query = addcslashes(trim($query->query), '"');
         $databaseName = $this->storageManager->getName($this->database);
 
         $argumentsAndDatabase = $databaseName === 'default'
@@ -62,7 +62,7 @@ abstract class BaseMigrationBuilder implements MigrationBuilder
     {
         $expectedStructure = $this->entityStructureFinder->find($className);
         $existingStructure = $this->database->controller()->driver()->tableStructureFinder()->find(
-            $this->database->store($expectedStructure->name)
+            $this->database->store($expectedStructure->name())
         );
 
         if ($existingStructure === null) {

@@ -362,12 +362,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:tarantuli/medas-storage-manager.git",
-                "reference": "24686a7bee13b11599473ea3b02fe9b1ea87f788"
+                "reference": "0473d77a384b24323db865d27d84d7fbfb4a9740"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tarantuli/medas-storage-manager/zipball/24686a7bee13b11599473ea3b02fe9b1ea87f788",
-                "reference": "24686a7bee13b11599473ea3b02fe9b1ea87f788",
+                "url": "https://api.github.com/repos/tarantuli/medas-storage-manager/zipball/0473d77a384b24323db865d27d84d7fbfb4a9740",
+                "reference": "0473d77a384b24323db865d27d84d7fbfb4a9740",
                 "shasum": ""
             },
             "require": {
@@ -379,10 +379,16 @@
             "require-dev": {
                 "morphp/medas-config-manager": "dev-dev",
                 "morphp/medas-console-printer": "dev-dev",
+                "morphp/medas-pdo-storage": "dev-dev",
                 "phpunit/phpunit": "^9.5"
             },
             "default-branch": true,
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-dev": "0.x-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Medas\\StorageManager\\": "src/",
@@ -400,7 +406,7 @@
                 "source": "https://github.com/tarantuli/medas-storage-manager/tree/dev",
                 "issues": "https://github.com/tarantuli/medas-storage-manager/issues"
             },
-            "time": "2022-11-21T09:32:32+00:00"
+            "time": "2022-11-21T11:02:30+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",

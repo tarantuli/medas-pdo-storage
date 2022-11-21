@@ -16,7 +16,7 @@ class CreateTableBuilder extends BaseCreateTableBuilder
 
     protected function addKeys(): void
     {
-        foreach ($this->blueprint->indexes as $index) {
+        foreach ($this->blueprint->indexes() as $index) {
             if ($index->isPrimary) {
                 $this->query .= ' PRIMARY KEY (';
             }
@@ -45,7 +45,7 @@ class CreateTableBuilder extends BaseCreateTableBuilder
 
     protected function addForeignKeys(): void
     {
-        foreach ($this->blueprint->foreignKeys as $foreignKey) {
+        foreach ($this->blueprint->foreignKeys() as $foreignKey) {
             $this->query .= ' CONSTRAINT ' . $this->driver->quote($this->createForeignKeyName($foreignKey)) . "\n"
                 . '   FOREIGN KEY (' . $this->driver->quote($foreignKey->field) . ")\n"
                 . '   REFERENCES ' . $this->driver->quote($foreignKey->foreignEntity)

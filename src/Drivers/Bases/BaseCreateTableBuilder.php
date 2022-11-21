@@ -28,7 +28,7 @@ abstract class BaseCreateTableBuilder implements CreateTableBuilder
     {
         $this->blueprint = $blueprint;
 
-        $this->query = sprintf(/** @lang text */ "CREATE TABLE %s (\n", $this->driver->quote($this->blueprint->name));
+        $this->query = sprintf(/** @lang text */ "CREATE TABLE %s (\n", $this->driver->quote($this->blueprint->name()));
 
         $this->addFields();
         $this->addKeys();
@@ -42,7 +42,7 @@ abstract class BaseCreateTableBuilder implements CreateTableBuilder
 
     protected function addFields(): void
     {
-        foreach ($this->blueprint->fields as $field) {
+        foreach ($this->blueprint->fields() as $field) {
             $this->query .= sprintf(
                 " %s %s,\n",
                 $this->driver->quote($field->name),

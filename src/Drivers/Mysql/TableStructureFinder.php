@@ -7,6 +7,7 @@ namespace Medas\PdoStorage\Drivers\Mysql;
 use Medas\PdoStorage\Drivers\Bases\BaseTableStructureFinder;
 use Medas\StorageManager\Structure\Blueprint\Field;
 use Medas\StorageManager\Structure\Blueprint\Index;
+use Medas\StorageManager\Structure\Blueprint\Type;
 
 class TableStructureFinder extends BaseTableStructureFinder
 {
@@ -16,7 +17,7 @@ class TableStructureFinder extends BaseTableStructureFinder
             return;
         }
 
-        $this->blueprint->name = $match[1];
+        $this->blueprint->setName($match[1]);
     }
 
     protected function findFields(): void
@@ -38,12 +39,32 @@ class TableStructureFinder extends BaseTableStructureFinder
                 $definition = substr($definition, 0, -strlen(' AUTO_INCREMENT'));
             }
 
+            if (preg_match('/^(.+) DEFAULT (.+)$/', $definition, $defaultMatch)) {
+                $hasDefault = true;
+                $default = $defaultMatch[2];
+                $definition = $defaultMatch[1];
+            }
+            else {
+                $hasDefault = false;
+                $default = null;
+            }
+
             if (str_ends_with($definition, ' NOT NULL')) {
                 $isNullable = false;
                 $definition = substr($definition, 0, -strlen(' NOT NULL'));
             }
 
-            $this->blueprint->fields[] = new Field($match[1], $definition, $isNullable, $isGenerated);
+            $type = match (true) {
+                in_array($definition, ['int unsigned', 'bigint unsigned'], true) => Type::Integer,
+                str_starts_with($definition, 'varchar(') => Type::Text,
+                str_starts_with($definition, 'varbinary(') => Type::Binary,
+                $definition === 'datetime' => Type::DateTime,
+                default => throw new \Exception('unhandled definition "' . $definition . '"'),
+            };
+
+            $this->blueprint->addField(
+                new Field($match[1], $type, $isNullable, $isGenerated, $hasDefault, $default)
+            );
         }
     }
 
@@ -54,10 +75,11 @@ class TableStructureFinder extends BaseTableStructureFinder
         }
 
         $index = new Index(isPrimary: true);
-        $index->fields = $this->blueprint->fields[] = $this->getNames($match[1]);
+        $fields = $this->getNames($match[1]);
+        $index->fields = $fields;
         $index->isUnique = true;
 
-        $this->blueprint->indexes[] = $index;
+        $this->blueprint->addIndex($index);
     }
 
     protected function getNames(string $nameString): array
@@ -79,11 +101,11 @@ class TableStructureFinder extends BaseTableStructureFinder
         }
 
         foreach ($matches as $match) {
-            $index = new Index($match['name']);
+            $index = new Index();
             $index->fields = $this->blueprint->fieldsByName($this->getNames($match['fields']));
             $index->isUnique = isset($match['isUnique']);
 
-            $this->blueprint->indexes[] = $index;
+            $this->blueprint->addIndex($index);
         }
     }
 }
