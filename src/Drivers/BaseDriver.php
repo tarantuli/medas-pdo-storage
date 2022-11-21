@@ -10,6 +10,7 @@ use Medas\PdoStorage\Drivers\Interfaces\{AlterTableBuilder,
     FieldHandler,
     QueryBuilder,
     SelectQueryBuilder,
+    TableStructureFinder,
     TypeHandler
 };
 use Medas\StorageManager\Entities\TypeSerializer;
@@ -23,6 +24,7 @@ abstract class BaseDriver implements Driver
     protected MigrationBuilder $migrationBuilder;
     protected QueryBuilder $queryBuilder;
     protected SelectQueryBuilder $selectQueryBuilder;
+    protected TableStructureFinder $tableStructureFinder;
     protected TypeHandler $typeHandler;
     protected TypeSerializer $serializer;
 
@@ -48,6 +50,11 @@ abstract class BaseDriver implements Driver
     public function migrationBuilder(): MigrationBuilder
     {
         return $this->migrationBuilder;
+    }
+
+    public function tableStructureFinder(): TableStructureFinder
+    {
+        return $this->tableStructureFinder;
     }
 
     public function alterTableBuilder(): AlterTableBuilder

@@ -24,6 +24,7 @@ class Sqlite extends BaseDriver
             'database' => $this->controller->database(),
         ];
 
+        $this->tableStructureFinder = sm()->instantiate(Sqlite\TableStructureFinder::class, $givenArguments);
         $this->alterTableBuilder = sm()->instantiate(Sqlite\AlterTableBuilder::class, $givenArguments);
         $this->createTableBuilder = sm()->instantiate(Sqlite\CreateTableBuilder::class, $givenArguments);
         $this->fieldHandler = sm()->instantiate(Sqlite\FieldHandler::class, $givenArguments);

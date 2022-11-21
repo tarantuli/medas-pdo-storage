@@ -9,6 +9,7 @@ use Medas\PdoStorage\Drivers\Interfaces\{AlterTableBuilder,
     FieldHandler,
     QueryBuilder,
     SelectQueryBuilder,
+    TableStructureFinder,
     TypeHandler
 };
 use Medas\StorageManager\Entities\TypeSerializer;
@@ -19,6 +20,8 @@ interface Driver
     public function quote(string $identifier): string;
 
     public function escape(mixed $value): string;
+
+    public function tableStructureFinder(): TableStructureFinder;
 
     public function alterTableBuilder(): AlterTableBuilder;
 

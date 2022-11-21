@@ -9,7 +9,6 @@ use Medas\PdoStorage\Database;
 use Medas\PdoStorage\Exceptions\StorageIsNotDatabaseException;
 use Medas\PdoStorage\Queries\Query;
 use Medas\PdoStorage\Structure\ChangeFinder;
-use Medas\PdoStorage\Structure\TableStructureFinder;
 use Medas\StorageManager\Interfaces\Storage;
 use Medas\StorageManager\Migrations\MigrationBuilder;
 use Medas\StorageManager\StorageManager;
@@ -23,7 +22,6 @@ abstract class BaseMigrationBuilder implements MigrationBuilder
         private readonly ChangeFinder          $changeFinder,
         private readonly EntityStructureFinder $entityStructureFinder,
         private readonly StorageManager        $storageManager,
-        private readonly TableStructureFinder  $tableStructureFinder,
     )
     {
     }
@@ -63,7 +61,9 @@ abstract class BaseMigrationBuilder implements MigrationBuilder
     private function buildQuery(string $className): Query|null
     {
         $expectedStructure = $this->entityStructureFinder->find($className);
-        $existingStructure = $this->tableStructureFinder->find($this->database->store($expectedStructure->name));
+        $existingStructure = $this->database->controller()->driver()->tableStructureFinder()->find(
+            $this->database->store($expectedStructure->name)
+        );
 
         if ($existingStructure === null) {
             return $this->database->controller()->actionBuilder()->createStore($expectedStructure);

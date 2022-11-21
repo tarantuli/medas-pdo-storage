@@ -24,6 +24,7 @@ class Mysql extends BaseDriver
             'database' => $this->controller->database(),
         ];
 
+        $this->tableStructureFinder = sm()->instantiate(Mysql\TableStructureFinder::class, $givenArguments);
         $this->alterTableBuilder = sm()->instantiate(Mysql\AlterTableBuilder::class, $givenArguments);
         $this->createTableBuilder = sm()->instantiate(Mysql\CreateTableBuilder::class, $givenArguments);
         $this->fieldHandler = sm()->instantiate(Mysql\FieldHandler::class, $givenArguments);

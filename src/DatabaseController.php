@@ -99,7 +99,11 @@ class DatabaseController implements StorageController
 
     public function escapeValue(mixed $value): string
     {
-        return $this->pdo->quote($value);
+        if (null === $value) {
+            return 'null';
+        }
+
+        return is_string($value) ? $this->pdo->quote($value) : (string) $value;
     }
 
     public function database(): Database

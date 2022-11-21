@@ -2,47 +2,26 @@
 
 declare(strict_types=1);
 
-namespace Medas\PdoStorage\Structure;
+namespace Medas\PdoStorage\Drivers\Sqlite;
 
-use Medas\PdoStorage\Table;
-use Medas\ServiceManager\Attributes\Service;
-use Medas\StorageManager\Structure\{Blueprint, Blueprint\Field, Blueprint\Index};
+use Medas\PdoStorage\Drivers\Bases\BaseTableStructureFinder;
+use Medas\StorageManager\Structure\Blueprint\Field;
+use Medas\StorageManager\Structure\Blueprint\Index;
 
-#[Service]
-class TableStructureFinder
+class TableStructureFinder extends BaseTableStructureFinder
 {
-    private Blueprint $blueprint;
-    private string|null $createTable;
-
-    public function find(Table $table): Blueprint|null
+    protected function findName(): void
     {
-        $this->blueprint = new Blueprint();
-        $this->createTable = $table->getCreateTable();
-
-        if ($this->createTable === null) {
-            return null;
-        }
-
-        $this->findName();
-        $this->findFields();
-        $this->findPrimaryKey();
-        $this->findKeys();
-
-        return $this->blueprint;
-    }
-
-    private function findName(): void
-    {
-        if (!preg_match('/CREATE TABLE `([^`]+)/', $this->createTable, $match)) {
+        if (!preg_match('/CREATE TABLE "([^"]+)/', $this->createTable, $match)) {
             return;
         }
 
         $this->blueprint->name = $match[1];
     }
 
-    private function findFields(): void
+    protected function findFields(): void
     {
-        if (!preg_match_all('/^ +`([^`]+)` (.+?),?$/m', $this->createTable, $matches, PREG_SET_ORDER)) {
+        if (!preg_match_all('/^ +"([^"]+)" (.+?),?$/m', $this->createTable, $matches, PREG_SET_ORDER)) {
             return;
         }
         foreach ($matches as $match) {
@@ -70,7 +49,7 @@ class TableStructureFinder
         }
     }
 
-    private function findPrimaryKey(): void
+    protected function findPrimaryKey(): void
     {
         if (!preg_match('/PRIMARY KEY \(([^)]+)\)/', $this->createTable, $match)) {
             return;
@@ -83,17 +62,17 @@ class TableStructureFinder
         $this->blueprint->indexes[] = $index;
     }
 
-    private function getNames(string $nameString): array
+    protected function getNames(string $nameString): array
     {
         $names = explode(',', $nameString);
 
-        return array_map(fn($name) => trim($name, '`'), $names);
+        return array_map(fn($name) => trim($name, '"'), $names);
     }
 
-    private function findKeys(): void
+    protected function findKeys(): void
     {
         if (!preg_match_all(
-            '/(?<isUnique>UNIQUE )?KEY `(?<name>[^`]+)` \((?<fields>[^)]+)\)/',
+            '/(?<isUnique>UNIQUE )?KEY "(?<name>[^"]+)" \((?<fields>[^)]+)\)/',
             $this->createTable,
             $matches,
             PREG_SET_ORDER
