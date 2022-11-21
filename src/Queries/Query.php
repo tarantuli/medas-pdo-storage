@@ -26,7 +26,7 @@ class Query extends BaseAction
 
     public function execute(): void
     {
-        $this->storage->execute($this);
+        $this->storage->controller()->execute($this);
     }
 
     public function setStatement(Statement $statement): self

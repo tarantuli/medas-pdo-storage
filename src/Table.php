@@ -9,11 +9,14 @@ use Medas\StorageManager\UnitOfWork\Action;
 
 class Table implements Store
 {
+    private DatabaseController $controller;
+
     public function __construct(
         public Database $database,
         public string   $name,
     )
     {
+        $this->controller = $this->database->controller();
     }
 
     public function name(): string
@@ -26,19 +29,6 @@ class Table implements Store
         return $this->database;
     }
 
-    public function fetchRecord(array $filters): StoreRecord|null
-    {
-        $query = $this->prepareGet($filters);
-        $query->execute();
-
-        return $query->recordSet()->fetchRecord();
-    }
-
-    public function prepareGet(array $filters): Action
-    {
-        return $this->database->queryBuilder()->select([$this], $filters);
-    }
-
     public function fetchAll(array $filters): array|null
     {
         $query = $this->prepareGet($filters);
@@ -47,25 +37,30 @@ class Table implements Store
         return $query->recordSet()->fetchRecords();
     }
 
+    public function prepareGet(array $filters): Action
+    {
+        return $this->controller->actionBuilder()->select([$this], $filters);
+    }
+
     public function prepareCreate(array $values): Action
     {
-        return $this->database->queryBuilder()->create($this, $values);
+        return $this->controller->actionBuilder()->create($this, $values);
     }
 
     public function prepareUpdate(array $updates, array $conditions): Action
     {
-        return $this->database->queryBuilder()->update($this, $updates, $conditions);
+        return $this->controller->actionBuilder()->update($this, $updates, $conditions);
     }
 
     public function prepareDelete(array $conditions): Action
     {
-        return $this->database->queryBuilder()->delete($this, $conditions);
+        return $this->controller->actionBuilder()->delete($this, $conditions);
     }
 
     public function getCreateTable(): string|null
     {
         try {
-            $query = $this->database->queryBuilder()->showCreate($this);
+            $query = $this->controller->actionBuilder()->showCreate($this);
             $query->execute();
             return $query->recordSet()->fetchRecord()['Create Table'];
         }
@@ -74,9 +69,17 @@ class Table implements Store
         }
     }
 
+    public function fetchRecord(array $filters): StoreRecord|null
+    {
+        $query = $this->prepareGet($filters);
+        $query->execute();
+
+        return $query->recordSet()->fetchRecord();
+    }
+
     public function exists(): bool
     {
-        $query = $this->database->queryBuilder()->showTables($this->name);
+        $query = $this->controller->actionBuilder()->showTables($this->name);
         $query->execute();
 
         return $query->recordSet()->fetchRecord() !== null;

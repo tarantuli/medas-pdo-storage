@@ -4,71 +4,106 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage;
 
-use Medas\PdoStorage\Exceptions\PdoDatabaseException;
-use Medas\PdoStorage\Queries\{Query, SelectQueryBuilder};
-use Medas\PdoStorage\Structure\{TableMigrationBuilder, TypeHandlerFinder};
-use Medas\ServiceManager\Attributes\Service;
-use Medas\StorageManager\Entities\{SelectorActionBuilder, TypeSerializerFinder};
-use Medas\StorageManager\Interfaces\StorageController;
+use Medas\PdoStorage\Drivers\Driver;
+use Medas\PdoStorage\Exceptions\DriverNotImplementedException;
+use Medas\PdoStorage\Queries\Query;
+use Medas\StorageManager\Entities\TypeSerializer;
+use Medas\StorageManager\Interfaces\{ActionBuilder, StorageController};
 use Medas\StorageManager\Migrations\MigrationBuilder;
 
-#[Service]
 class DatabaseController implements StorageController
 {
+    private \PDO $pdo;
+    private Executor $executor;
+    private Transaction $transaction;
+    private Driver $driver;
+
     public function __construct(
-        private readonly TableMigrationBuilder $migrationBuilder,
-        private readonly TypeHandlerFinder     $typeHandlerFinder,
-        private readonly SelectQueryBuilder    $selectQueryBuilder,
+        private readonly Database $database,
+        private readonly string   $dns,
+        private readonly string   $username,
+        private readonly string   $password,
     )
     {
+        $this->initializePdo();
+        $this->initializeBuilder();
+        $this->executor = new Executor();
     }
 
-    public function execute(Database $database, \PDO $pdo, Query $query): void
+    private function initializePdo(): void
     {
-        $this->serializeArguments($query);
+        $options = [
+            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+            \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+            \PDO::ATTR_EMULATE_PREPARES => false,
+            \PDO::ATTR_PERSISTENT => true,
+        ];
 
-        try {
-            $statement = $pdo->prepare($query->query);
-            $statement->execute($query->serializedArguments);
+        $this->pdo = new \PDO($this->dns, $this->username, $this->password, $options);
 
-            $query->setStatement(new Statement($statement));
-        }
-        catch (\Exception|\Error $e) {
-            throw new PdoDatabaseException($e->getMessage(), $query);
-        }
-
-        if ($onComplete = $query->onComplete()) {
-            $onComplete($database);
-        }
+        $this->transaction = new Transaction($this->pdo);
     }
 
-    private function serializeArguments(Query $query): void
+    private function initializeBuilder(): void
     {
-        foreach ($query->arguments as $argument) {
-            if ($argument instanceof \DateTime) {
-                $argument = $argument->format('Y-m-d H:i:s');
-            }
+        $driver = $this->pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
 
-            if (is_bool($argument)) {
-                $argument = (int) $argument;
-            }
+        $this->driver = match ($driver) {
+            'mysql' => new Drivers\Mysql($this),
+            'sqlite' => new Drivers\Sqlite($this),
+            default => throw new DriverNotImplementedException($driver),
+        };
+    }
 
-            $query->serializedArguments[] = $argument;
-        }
+    public function transaction(): Transaction
+    {
+        return $this->transaction;
+    }
+
+    public function deleteStore(string $name): void
+    {
+        $this->execute($this->actionBuilder()->dropTable($name));
+    }
+
+    public function execute(Query $query): void
+    {
+        $this->executor->execute($this->pdo, $query);
+    }
+
+    public function actionBuilder(): ActionBuilder
+    {
+        return $this->driver->queryBuilder();
+    }
+
+    public function serializer(): TypeSerializer
+    {
+        return $this->driver->serializer();
     }
 
     public function migrationBuilder(): MigrationBuilder
     {
-        return $this->migrationBuilder;
+        return $this->driver->migrationBuilder();
     }
 
-    public function typeSerializerFinder(): TypeSerializerFinder
+    public function driver(): Driver
     {
-        return $this->typeHandlerFinder;
+        return $this->driver;
     }
 
-    public function selectorActionBuilder(): SelectorActionBuilder
+    public function lastGeneratedValue(): int|null
     {
-        return $this->selectQueryBuilder;
+        $id = $this->pdo->lastInsertId();
+
+        return $id === false ? null : (int) $id;
+    }
+
+    public function escapeValue(mixed $value): string
+    {
+        return $this->pdo->quote($value);
+    }
+
+    public function database(): Database
+    {
+        return $this->database;
     }
 }

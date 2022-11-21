@@ -4,15 +4,18 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\Structure;
 
+use Medas\StorageManager\Structure\Blueprint\Field;
+use Medas\StorageManager\Structure\Blueprint\Index;
+
 class Changes
 {
-    /** @var Blueprint\Field[] */
+    /** @var Field[] */
     public array $addFields = [];
 
-    /** @var Blueprint\Field[] */
+    /** @var Field[] */
     public array $changeFields = [];
 
-    /** @var Blueprint\Index[] */
+    /** @var Index[] */
     public array $indexes = [];
 
     public function __construct(public string $name)

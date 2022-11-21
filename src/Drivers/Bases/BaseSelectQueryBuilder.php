@@ -1,0 +1,221 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Medas\PdoStorage\Drivers\Bases;
+
+use Medas\EntityManager\MetaDataManager;
+use Medas\EntityManager\Selector\{Conditions\Condition,
+    Conditions\WhereIs,
+    Conditions\WhereIsAtLeast,
+    Conditions\WhereIsAtMost,
+    Conditions\WhereIsLessThan,
+    Conditions\WhereIsMoreThan,
+    Conditions\WhereIsNotNull,
+    Conditions\WhereIsNull,
+    Exceptions\UndeclaredParametersException,
+    Exceptions\UnhandledConditionTypeException,
+    Exceptions\UnhandledOperantTypeException,
+    Exceptions\UnhandledRelationTypeException,
+    Exceptions\UnhandledSortTypeException,
+    Operants\Argument,
+    Operants\Operant,
+    Operants\Property,
+    Operants\Value,
+    Parameter,
+    Relations\Relation,
+    Selector,
+    Sorting\SortBy
+};
+use Medas\PdoStorage\Database;
+use Medas\PdoStorage\Drivers\{Driver, Interfaces\SelectQueryBuilder};
+use Medas\PdoStorage\Exceptions\StorageIsNotDatabaseException;
+use Medas\PdoStorage\Queries\{ParameterizedQuery, Query};
+use Medas\ServiceManager\Cache\{CacheManager, Interfaces\NotCacheable};
+
+class BaseSelectQueryBuilder implements SelectQueryBuilder
+{
+    private string $query;
+    private array $stores;
+    private array $foundArguments;
+    private array $foundConstants;
+    private string $mainEntity;
+
+    public function __construct(
+        private readonly CacheManager    $cacheManager,
+        private readonly Driver          $driver,
+        private readonly MetaDataManager $metaDataManager,
+    )
+    {
+    }
+
+    public function build(Selector $selector, array $arguments): Query
+    {
+        if ($selector instanceof NotCacheable) {
+            $paraQuery = $this->process($selector);
+        }
+        else {
+            /** @var ParameterizedQuery $paraQuery */
+            $paraQuery = $this->cacheManager->get()->get(
+                [static::class, $selector::class],
+                fn() => $this->process($selector)
+            );
+        }
+
+        return $this->compileQuery($paraQuery, $arguments);
+    }
+
+    private function process(Selector $selector): ParameterizedQuery
+    {
+        $definition = $selector->get();
+        $metaData = $this->metaDataManager->get($definition->entity);
+
+        $database = storage($metaData->entity->storage);
+
+        /** @noinspection PhpConditionAlreadyCheckedInspection */
+        if (!$database instanceof Database) {
+            throw new StorageIsNotDatabaseException($metaData->entity->storage);
+        }
+
+        $this->mainEntity = $metaData->className;
+
+        $quotedMainStore = $this->driver->quote($metaData->entity->store);
+        $this->stores = [$this->mainEntity => $quotedMainStore];
+        $this->foundArguments = [];
+        $this->foundConstants = [];
+
+        $this->query = 'SELECT * FROM ' . $quotedMainStore;
+
+        $this->processRelations($definition->relations);
+        $this->processConditions($definition->conditions);
+        $this->processSorting($definition->sorts);
+        $this->processParameters($definition->parameters);
+
+        return new ParameterizedQuery($this->query, $definition->parameters, $this->foundConstants, $database);
+    }
+
+    /** @param Relation[] $relations */
+    private function processRelations(array $relations): void
+    {
+        foreach ($relations as $relation) {
+            throw new UnhandledRelationTypeException($relation);
+        }
+    }
+
+    /** @param Condition[] $conditions */
+    private function processConditions(array $conditions): void
+    {
+        if ($conditions) {
+            $this->query .= ' WHERE ';
+        }
+
+        $isFirstCondition = true;
+
+        foreach ($conditions as $condition) {
+
+            if (!$isFirstCondition) {
+                $this->query .= ' AND ';
+            }
+
+            match ($condition::class) {
+                WhereIs::class => $this->processComparison($condition, '='),
+                WhereIsMoreThan::class => $this->processComparison($condition, '>'),
+                WhereIsLessThan::class => $this->processComparison($condition, '<'),
+                WhereIsAtLeast::class => $this->processComparison($condition, '>='),
+                WhereIsAtMost::class => $this->processComparison($condition, '<='),
+                WhereIsNull::class => $this->processNullComparison($condition, true),
+                WhereIsNotNull::class => $this->processNullComparison($condition, false),
+                default => throw new UnhandledConditionTypeException($condition),
+            };
+
+            $isFirstCondition = false;
+        }
+    }
+
+    private function processComparison(WhereIs $condition, string $operator): void
+    {
+        $this->query .= $this->operantToQuery($condition->property)
+            . $operator
+            . $this->operantToQuery($condition->value);
+    }
+
+    private function operantToQuery(Operant $operant): string
+    {
+        if ($operant instanceof Property) {
+            return $this->stores[$operant->entity ?? $this->mainEntity]
+                . '.'
+                . $this->driver->quote($operant->name);
+        }
+
+        if ($operant instanceof Argument) {
+            $this->foundArguments[$operant->name] = true;
+            return ':' . $operant->name;
+        }
+
+        if ($operant instanceof Value) {
+            $name = sha1(serialize($operant->value));
+            $this->foundConstants[$name] = $operant->value;
+            return ':' . $name;
+        }
+
+        throw new UnhandledOperantTypeException($operant);
+    }
+
+    private function processNullComparison(WhereIsNull $condition, bool $isNull): void
+    {
+        $this->query .= $this->operantToQuery($condition->property)
+            . ($isNull ? ' IS NULL' : ' IS NOT NULL');
+    }
+
+    /** @param SortBy[] $sorts */
+    private function processSorting(array $sorts): void
+    {
+        $parts = [];
+        foreach ($sorts as $sort) {
+            if ($sort instanceof SortBy && $sort->operant instanceof Property) {
+                $parts[] = $sort->operant->name . ' ' . $sort->direction->name;
+                continue;
+            }
+
+            throw new UnhandledSortTypeException($sort);
+        }
+
+        if ($parts) {
+            $this->query .= ' ORDER BY ' . implode(', ', $parts);
+        }
+    }
+
+    private function processParameters(array $parameters): void
+    {
+        /** @var Parameter $parameter */
+        foreach ($parameters as $parameter) {
+            unset($this->foundArguments[$parameter->name]);
+        }
+
+        if ($this->foundArguments) {
+            throw new UndeclaredParametersException(array_keys($this->foundArguments));
+        }
+    }
+
+    private function compileQuery(ParameterizedQuery $paraQuery, array $arguments): Query
+    {
+        $query = new Query($paraQuery->query, $paraQuery->constants, $paraQuery->database);
+
+        /** @var Parameter $parameter */
+        foreach ($paraQuery->parameters as $parameter) {
+            if (array_key_exists($parameter->name, $arguments)) {
+                $value = $arguments[$parameter->name];
+            }
+            elseif ($parameter->hasDefault) {
+                $value = $parameter->default;
+            }
+            else {
+                throw new \Exception('no value given for parameter ' . $parameter->name);
+            }
+
+            $query->arguments[$parameter->name] = $value;
+        }
+
+        return $query;
+    }
+}

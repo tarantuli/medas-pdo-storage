@@ -6,6 +6,7 @@ namespace Medas\PdoStorage\Structure;
 
 use Medas\PdoStorage\Table;
 use Medas\ServiceManager\Attributes\Service;
+use Medas\StorageManager\Structure\{Blueprint, Blueprint\Field, Blueprint\Index};
 
 #[Service]
 class TableStructureFinder
@@ -65,7 +66,7 @@ class TableStructureFinder
 
             # Todo: parse defaults
 
-            $this->blueprint->addField(new Blueprint\Field($match[1], $definition, $isNullable, $isGenerated));
+            $this->blueprint->fields[] = new Field($match[1], $definition, $isNullable, $isGenerated);
         }
     }
 
@@ -75,11 +76,11 @@ class TableStructureFinder
             return;
         }
 
-        $index = new Blueprint\Index('PRIMARY');
-        $index->fields = $this->blueprint->fields($this->getNames($match[1]));
+        $index = new Index(isPrimary: true);
+        $index->fields = $this->blueprint->fields[] = $this->getNames($match[1]);
         $index->isUnique = true;
 
-        $this->blueprint->addIndex($index);
+        $this->blueprint->indexes[] = $index;
     }
 
     private function getNames(string $nameString): array
@@ -101,11 +102,11 @@ class TableStructureFinder
         }
 
         foreach ($matches as $match) {
-            $index = new Blueprint\Index($match['name']);
-            $index->fields = $this->blueprint->fields($this->getNames($match['fields']));
+            $index = new Index($match['name']);
+            $index->fields = $this->blueprint->fieldsByName($this->getNames($match['fields']));
             $index->isUnique = isset($match['isUnique']);
 
-            $this->blueprint->addIndex($index);
+            $this->blueprint->indexes[] = $index;
         }
     }
 }
