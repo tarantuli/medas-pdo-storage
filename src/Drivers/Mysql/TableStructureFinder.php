@@ -53,8 +53,8 @@ class TableStructureFinder extends BaseTableStructureFinder
             }
             $type = match (true) {
                 (bool) preg_match('/(tiny|medium|big)?int(\(\d+\))?( unsigned)?/', $definition) => Type::Integer,
-                str_starts_with($definition, 'varchar(') => Type::Text,
-                str_starts_with($definition, 'varbinary(') => Type::Binary,
+                str_starts_with($definition, 'varchar(') || str_starts_with($definition, 'char(') => Type::Text,
+                str_starts_with($definition, 'varbinary(') || str_starts_with($definition, 'binary(') => Type::Binary,
                 $definition === 'datetime' => Type::DateTime,
                 default => throw new \Exception('unhandled definition "' . $definition . '"'),
             };
