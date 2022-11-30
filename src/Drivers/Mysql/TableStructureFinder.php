@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\Drivers\Mysql;
 
 use Medas\PdoStorage\Drivers\Bases\BaseTableStructureFinder;
-use Medas\StorageManager\Structure\Blueprint\Field;
-use Medas\StorageManager\Structure\Blueprint\Index;
-use Medas\StorageManager\Structure\Blueprint\Type;
+use Medas\StorageManager\Structure\Blueprint\{Field, Index, Type};
 
 class TableStructureFinder extends BaseTableStructureFinder
 {
@@ -53,9 +51,8 @@ class TableStructureFinder extends BaseTableStructureFinder
                 $isNullable = false;
                 $definition = substr($definition, 0, -strlen(' NOT NULL'));
             }
-
             $type = match (true) {
-                in_array($definition, ['int unsigned', 'bigint unsigned'], true) => Type::Integer,
+                (bool) preg_match('/(tiny|medium|big)?int(\(\d+\))?( unsigned)?/', $definition) => Type::Integer,
                 str_starts_with($definition, 'varchar(') => Type::Text,
                 str_starts_with($definition, 'varbinary(') => Type::Binary,
                 $definition === 'datetime' => Type::DateTime,
