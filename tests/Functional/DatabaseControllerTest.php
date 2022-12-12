@@ -14,4 +14,10 @@ class DatabaseControllerTest extends TestCase
         self::assertEquals('\'1\'', storage()->controller()->escapeValue(IntBackedEnum::Value1));
         self::assertEquals('\'one\'', storage()->controller()->escapeValue(StringBackedEnum::Value1));
     }
+
+    public function testBooleans(): void
+    {
+        self::assertEquals('\'1\'', storage()->controller()->escapeValue(true));
+        self::assertEquals('\'0\'', storage()->controller()->escapeValue(false));
+    }
 }

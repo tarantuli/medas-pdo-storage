@@ -107,6 +107,10 @@ class DatabaseController implements StorageController
             $value = $value->value;
         }
 
+        if (is_bool($value)) {
+            $value = (int) $value;
+        }
+
         return $this->pdo->quote((string) $value);
     }
 
