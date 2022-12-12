@@ -103,7 +103,11 @@ class DatabaseController implements StorageController
             return 'null';
         }
 
-        return is_string($value) ? $this->pdo->quote($value) : (string) $value;
+        if (is_object($value) && enum_exists($value::class)) {
+            $value = $value->value;
+        }
+
+        return $this->pdo->quote((string) $value);
     }
 
     public function database(): Database
