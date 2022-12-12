@@ -38,6 +38,7 @@ abstract class BaseTableStructureFinder implements TableStructureFinder
         if (!preg_match_all('/^ +`([^`]+)` (.+?),?$/m', $this->createTable, $matches, PREG_SET_ORDER)) {
             return;
         }
+
         foreach ($matches as $match) {
             $definition = $match[2];
             $isNullable = true;

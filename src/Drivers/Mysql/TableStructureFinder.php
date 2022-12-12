@@ -18,10 +18,6 @@ class TableStructureFinder extends BaseTableStructureFinder
         $this->blueprint->setName($match[1]);
     }
 
-    protected function findFields(): void
-    {
-    }
-
     protected function findPrimaryKey(): void
     {
         if (!preg_match('/PRIMARY KEY \(([^)]+)\)/', $this->createTable, $match)) {
