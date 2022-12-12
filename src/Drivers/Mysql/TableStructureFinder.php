@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\Drivers\Mysql;
 
 use Medas\PdoStorage\Drivers\Bases\BaseTableStructureFinder;
-use Medas\StorageManager\Structure\Blueprint\{Index};
+use Medas\StorageManager\Structure\Blueprint\Index;
 
 class TableStructureFinder extends BaseTableStructureFinder
 {
