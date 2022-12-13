@@ -31,7 +31,7 @@ abstract class BaseMigrationBuilder implements MigrationBuilder
         string           $className,
         MethodDefinition $migrateMethod,
         MethodDefinition $undoMethod,
-    ): void
+    ): bool
     {
         /** @noinspection PhpConditionAlreadyCheckedInspection */
         if (!$storage instanceof Database) {
@@ -41,7 +41,7 @@ abstract class BaseMigrationBuilder implements MigrationBuilder
         $this->database = $storage;
 
         if (null === $query = $this->buildQuery($className)) {
-            return;
+            return false;
         }
 
         $queryClass = Query::class;
@@ -56,6 +56,7 @@ abstract class BaseMigrationBuilder implements MigrationBuilder
             \$unitOfWork->addAction(new \\$queryClass("$query"$argumentsAndDatabase));
         PHP;
 
+        return true;
     }
 
     private function buildQuery(string $className): Query|null

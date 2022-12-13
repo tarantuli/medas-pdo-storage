@@ -112,7 +112,6 @@ class BaseSelectQueryBuilder implements SelectQueryBuilder
         $isFirstCondition = true;
 
         foreach ($conditions as $condition) {
-
             if (!$isFirstCondition) {
                 $this->query .= ' AND ';
             }
@@ -201,7 +200,6 @@ class BaseSelectQueryBuilder implements SelectQueryBuilder
     {
         $query = new Query($paraQuery->query, $paraQuery->constants, $paraQuery->database);
 
-        /** @var Parameter $parameter */
         foreach ($paraQuery->parameters as $parameter) {
             if (array_key_exists($parameter->name, $arguments)) {
                 $value = $arguments[$parameter->name];
