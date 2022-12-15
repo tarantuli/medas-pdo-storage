@@ -8,10 +8,10 @@ use Medas\EntityManager\Filters\{Between, LessThan, MoreThan};
 use Medas\EntityManager\Selector\Selector;
 use Medas\PdoStorage\Database;
 use Medas\PdoStorage\Drivers\{Driver, Interfaces\QueryBuilder};
-use Medas\PdoStorage\Queries\Query;
+use Medas\PdoStorage\Queries\{Query, QueryCollection};
 use Medas\PdoStorage\Table;
 use Medas\StorageManager\Structure\Blueprint;
-use Medas\StorageManager\UnitOfWork\Action;
+use Medas\StorageManager\UnitOfWork\{Action, Priority};
 
 abstract class BaseQueryBuilder implements QueryBuilder
 {
@@ -87,7 +87,7 @@ abstract class BaseQueryBuilder implements QueryBuilder
         $this->query .= ' WHERE ';
         $this->appendConditions($conditions);
 
-        return new Query($this->query, $this->arguments, $this->database);
+        return new Query($this->query, $this->arguments, $this->database, Priority::UpdateRecord);
     }
 
     private function appendFields(array $fields): void
@@ -107,7 +107,7 @@ abstract class BaseQueryBuilder implements QueryBuilder
         $this->query = 'DELETE FROM ' . $table->name . ' WHERE ';
         $this->appendConditions($conditions);
 
-        return new Query($this->query, $this->arguments, $this->database);
+        return new Query($this->query, $this->arguments, $this->database, Priority::DeleteRecord);
     }
 
     public function showCreate(Table $table): Query
@@ -117,10 +117,14 @@ abstract class BaseQueryBuilder implements QueryBuilder
 
     public function dropTable(string $name): Query
     {
-        return new Query('DROP TABLE IF EXISTS ' . $this->driver->quote($name), [], $this->database);
+        return new Query(
+            query: 'DROP TABLE IF EXISTS ' . $this->driver->quote($name),
+            database: $this->database,
+            priority: Priority::DeleteStore
+        );
     }
 
-    public function createStore(Blueprint $blueprint): Query
+    public function createStore(Blueprint $blueprint): QueryCollection
     {
         return $this->driver->createTableBuilder()->create($blueprint);
     }
@@ -134,14 +138,13 @@ abstract class BaseQueryBuilder implements QueryBuilder
         foreach ($values as $field => $value) {
             $names[] = $this->driver->quote($field);
             $this->arguments[] = $value;
-
         }
 
         $this->query = 'INSERT INTO ' . $this->driver->quote($table->name)
             . ' (' . implode(',', $names) . ')'
             . ' VALUES (' . implode(',', array_fill(0, count($names), '?')) . ')';
 
-        return new Query($this->query, $this->arguments, $this->database);
+        return new Query($this->query, $this->arguments, $this->database, Priority::CreateRecord);
     }
 
     public function fromSelector(Selector $selector, array $arguments): Action

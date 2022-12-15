@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\Drivers\Bases;
 
-use Medas\PdoStorage\Drivers\Driver;
-use Medas\PdoStorage\Drivers\Interfaces\FieldHandler;
+use Medas\PdoStorage\Drivers\{Driver, Interfaces\FieldHandler};
 
 abstract class BaseFieldHandler implements FieldHandler
 {

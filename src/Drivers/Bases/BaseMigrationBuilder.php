@@ -7,12 +7,13 @@ namespace Medas\PdoStorage\Drivers\Bases;
 use Medas\FileBuilder\PhpClass\MethodDefinition;
 use Medas\PdoStorage\Database;
 use Medas\PdoStorage\Exceptions\StorageIsNotDatabaseException;
-use Medas\PdoStorage\Queries\Query;
+use Medas\PdoStorage\Queries\{Query, QueryCollection};
 use Medas\PdoStorage\Structure\ChangeFinder;
 use Medas\StorageManager\Interfaces\Storage;
 use Medas\StorageManager\Migrations\MigrationBuilder;
 use Medas\StorageManager\StorageManager;
 use Medas\StorageManager\Structure\EntityStructureFinder;
+use Medas\StorageManager\UnitOfWork\Priority;
 
 abstract class BaseMigrationBuilder implements MigrationBuilder
 {
@@ -40,26 +41,28 @@ abstract class BaseMigrationBuilder implements MigrationBuilder
 
         $this->database = $storage;
 
-        if (null === $query = $this->buildQuery($className)) {
+        if (null === $queries = $this->buildQuery($className)) {
             return false;
         }
 
         $queryClass = Query::class;
-        $query = addcslashes(trim($query->query), '"');
-        $databaseName = $this->storageManager->getName($this->database);
+        $priorityClass = Priority::class;
 
-        $argumentsAndDatabase = $databaseName === 'default'
-            ? ''
-            : sprintf(', [], storage("%s")', addslashes($databaseName));
+        foreach ($queries as $query) {
+            $queryString = addcslashes(trim($query->query), '"');
 
-        $migrateMethod->body .= <<<PHP
-            \$unitOfWork->addAction(new \\$queryClass("$query"$argumentsAndDatabase));
+            $migrateMethod->body .= <<<PHP
+            \$unitOfWork->addAction(new \\$queryClass(
+                query: "$queryString",
+                priority: \\$priorityClass::{$query->priority()->name}
+            ));
         PHP;
+        }
 
         return true;
     }
 
-    private function buildQuery(string $className): Query|null
+    private function buildQuery(string $className): QueryCollection|null
     {
         $expectedStructure = $this->entityStructureFinder->find($className);
         $existingStructure = $this->database->controller()->driver()->tableStructureFinder()->find(

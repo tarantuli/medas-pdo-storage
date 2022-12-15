@@ -43,19 +43,20 @@ class CreateTableBuilder extends BaseCreateTableBuilder
         return sha1((implode("\n", $names)));
     }
 
-    protected function addForeignKeys(): void
+    protected function processForeignKeys(): void
     {
         foreach ($this->blueprint->foreignKeys() as $foreignKey) {
-            $this->query .= ' CONSTRAINT ' . $this->driver->quote($this->createForeignKeyName($foreignKey)) . "\n"
+            $this->foreignKeys[] = ' ADD CONSTRAINT ' . $this->driver->quote($this->createForeignKeyName($foreignKey)) . "\n"
                 . '   FOREIGN KEY (' . $this->driver->quote($foreignKey->field) . ")\n"
                 . '   REFERENCES ' . $this->driver->quote($foreignKey->foreignEntity)
-                . ' (' . $this->driver->quote($foreignKey->foreignField) . "),\n";
+                . ' (' . $this->driver->quote($foreignKey->foreignField) . ")";
         }
     }
 
     private function createForeignKeyName(ForeignKey $foreignKey): string
     {
-        return sha1($foreignKey->field
+        return sha1($this->blueprint->name()
+            . "\n" . $foreignKey->field
             . "\n" . $foreignKey->foreignEntity
             . "\n" . $foreignKey->foreignField);
     }

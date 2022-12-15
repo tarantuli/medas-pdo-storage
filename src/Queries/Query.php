@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\Queries;
 
-use Medas\PdoStorage\Database;
-use Medas\PdoStorage\Statement;
-use Medas\StorageManager\Interfaces\RecordSet;
-use Medas\StorageManager\UnitOfWork\{ActionTypes\Generic, BaseAction};
+use Medas\PdoStorage\{Database, Statement};
+use Medas\StorageManager\{Interfaces\RecordSet, UnitOfWork\BaseAction, UnitOfWork\Priority};
 
 class Query extends BaseAction
 {
@@ -17,11 +15,12 @@ class Query extends BaseAction
     public function __construct(
         public readonly string $query,
         public array           $arguments = [],
-        Database               $database = null
+        Database               $database = null,
+        Priority               $priority = Priority::Default
     )
     {
         $this->storage = $database ?: storage();
-        $this->type = Generic::instance();
+        $this->priority = $priority;
     }
 
     public function execute(): void

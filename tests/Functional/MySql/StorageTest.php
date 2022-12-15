@@ -16,4 +16,9 @@ class StorageTest extends AbstractStorageTest
             sm()->instantiate(Database::class)
         );
     }
+
+    protected function migrationAssertions(string $migration): void
+    {
+        self::assertStringContainsString('ALTER TABLE', $migration);
+    }
 }

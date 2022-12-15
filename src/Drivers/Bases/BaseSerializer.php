@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\Drivers\Bases;
 
 use Medas\EntityManager\Attributes\HasId;
-use Medas\EntityManager\Types\Boolean;
-use Medas\EntityManager\Types\Type;
+use Medas\EntityManager\Types\{Boolean, Type};
 use Medas\ServiceManager\Values\Interfaces\Guid;
 use Medas\StorageManager\Entities\TypeSerializer;
 

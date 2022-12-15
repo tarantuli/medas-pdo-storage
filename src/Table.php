@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage;
 
+use Medas\PdoStorage\Queries\Query;
 use Medas\StorageManager\Interfaces\{Store, StoreRecord};
 use Medas\StorageManager\UnitOfWork\Action;
 
@@ -79,6 +80,7 @@ class Table implements Store
 
     public function exists(): bool
     {
+        /** @var Query $query */
         $query = $this->controller->actionBuilder()->showTables($this->name);
         $query->execute();
 

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\Drivers\Sqlite;
 
 use Medas\PdoStorage\Drivers\Bases\BaseCreateTableBuilder;
-use Medas\StorageManager\Structure\Blueprint\{ForeignKey};
+use Medas\StorageManager\Structure\Blueprint\ForeignKey;
 
 class CreateTableBuilder extends BaseCreateTableBuilder
 {
@@ -31,7 +31,7 @@ class CreateTableBuilder extends BaseCreateTableBuilder
         }
     }
 
-    protected function addForeignKeys(): void
+    protected function processForeignKeys(): void
     {
         foreach ($this->blueprint->foreignKeys() as $foreignKey) {
             $this->query .= ' CONSTRAINT ' . $this->driver->quote($this->createForeignKeyName($foreignKey)) . "\n"

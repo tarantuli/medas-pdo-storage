@@ -6,8 +6,9 @@ namespace Medas\PdoStorage\Drivers\Bases;
 
 use Medas\PdoStorage\Database;
 use Medas\PdoStorage\Drivers\{Driver, Interfaces\AlterTableBuilder};
-use Medas\PdoStorage\Queries\Query;
+use Medas\PdoStorage\Queries\{Query, QueryCollection};
 use Medas\PdoStorage\Structure\Changes;
+use Medas\StorageManager\UnitOfWork\Priority;
 
 abstract class BaseAlterTableBuilder implements AlterTableBuilder
 {
@@ -18,7 +19,7 @@ abstract class BaseAlterTableBuilder implements AlterTableBuilder
     {
     }
 
-    public function create(Changes $changes): Query
+    public function create(Changes $changes): QueryCollection
     {
         $query = 'ALTER TABLE ' . $this->driver->quote($changes->name) . "\n";
 
@@ -40,6 +41,10 @@ abstract class BaseAlterTableBuilder implements AlterTableBuilder
 
         $query = substr($query, 0, -2);
 
-        return new Query($query, [], $this->database);
+        return new QueryCollection([new Query(
+            query: $query,
+            database: $this->database,
+            priority: Priority::AlterStore
+        )]);
     }
 }
