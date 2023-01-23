@@ -18,7 +18,14 @@ class FieldHandler extends BaseFieldHandler
 {
     public function buildDefinition(Field $field): string
     {
-        if ($field->hasDefault) {
+        if ($field->isCreationTimestamp || $field->isModificationTimestamp) {
+            $default = ' DEFAULT current_timestamp()';
+
+            if ($field->isModificationTimestamp) {
+                $default .= ' ON UPDATE current_timestamp()';
+            }
+        }
+        elseif ($field->hasDefault) {
             $serializedDefault = $this->driver->serializer()->serialize($this->blueprintToEntityType($field->type), $field->default);
             $default = ' DEFAULT ' . $this->driver->escape($serializedDefault);
         }
