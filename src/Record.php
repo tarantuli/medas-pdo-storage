@@ -41,4 +41,31 @@ class Record implements StoreRecord
     {
         unset($this->data[$offset]);
     }
+
+    private int $index;
+
+    public function current(): mixed
+    {
+        return $this->data[$this->index];
+    }
+
+    public function next(): void
+    {
+        ++$this->index;
+    }
+
+    public function key(): int
+    {
+        return $this->index;
+    }
+
+    public function valid(): bool
+    {
+        return array_key_exists($this->index, $this->data);
+    }
+
+    public function rewind(): void
+    {
+        $this->index = 0;
+    }
 }
