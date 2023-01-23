@@ -18,6 +18,7 @@ abstract class BaseTypeHandler implements TypeHandler
             Type::DateTime => $this->handleDateTime(),
             Type::Integer => $this->handleInteger($field),
             Type::Boolean => $this->handleBoolean(),
+            Type::Float => $this->handleFloat(),
         };
     }
 
@@ -52,6 +53,11 @@ abstract class BaseTypeHandler implements TypeHandler
     private function handleDateTime(): string
     {
         return 'datetime';
+    }
+
+    private function handleFloat(): string
+    {
+        return 'float';
     }
 
     private function handleInteger(Field $field): string
