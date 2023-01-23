@@ -47,7 +47,7 @@ abstract class BaseTableStructureFinder implements TableStructureFinder
         }
 
         foreach ($matches as $match) {
-            $this->blueprint->addField($this->definitionHandler->convertToField($match[0], $match[1]));
+            $this->blueprint->addField($this->definitionHandler->convertToField($match[1], $match[2]));
         }
     }
 
