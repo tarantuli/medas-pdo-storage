@@ -15,7 +15,7 @@ abstract class BaseSerializer implements TypeSerializer
     public function deserialize(Type $type, mixed $value): mixed
     {
         if ($type instanceof Guid) {
-            $value = (string) service(GuidProvider::class)->fromBytes($value);
+            $value = service(GuidProvider::class)->fromBytes($value);
         }
 
         return $value;
