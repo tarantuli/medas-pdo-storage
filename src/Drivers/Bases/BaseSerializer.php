@@ -23,8 +23,9 @@ abstract class BaseSerializer implements TypeSerializer
 
     public function serialize(Type $type, mixed $value): mixed
     {
+        // Get the ID first, so other serializer can process its value
         if ($value instanceof HasId) {
-            return $value->id();
+            $value = $value->id();
         }
 
         if ($value instanceof GuidValue) {
