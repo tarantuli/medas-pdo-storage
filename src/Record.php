@@ -8,6 +8,9 @@ use Medas\StorageManager\Interfaces\StoreRecord;
 
 class Record implements StoreRecord
 {
+    private int $keyIndex;
+    private array $keys;
+
     public function __construct(private array $data)
     {
     }
@@ -42,30 +45,29 @@ class Record implements StoreRecord
         unset($this->data[$offset]);
     }
 
-    private int $index;
-
     public function current(): mixed
     {
-        return $this->data[$this->index];
+        return $this->data[$this->keys[$this->keyIndex]];
     }
 
     public function next(): void
     {
-        ++$this->index;
+        ++$this->keyIndex;
     }
 
-    public function key(): int
+    public function key(): string
     {
-        return $this->index;
+        return $this->keys[$this->keyIndex];
     }
 
     public function valid(): bool
     {
-        return array_key_exists($this->index, $this->data);
+        return array_key_exists($this->keyIndex, $this->keys);
     }
 
     public function rewind(): void
     {
-        $this->index = 0;
+        $this->keys = array_keys($this->data);
+        $this->keyIndex = 0;
     }
 }

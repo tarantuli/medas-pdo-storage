@@ -5,14 +5,19 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\Drivers\Bases;
 
 use Medas\EntityManager\Attributes\HasId;
-use Medas\EntityManager\Types\{Boolean, Type};
-use Medas\ServiceManager\Values\Interfaces\Guid;
+use Medas\EntityManager\Types\{Boolean, Guid, Type};
+use Medas\ServiceManager\Values\Interfaces\Guid as GuidValue;
+use Medas\ServiceManager\Values\Interfaces\GuidProvider;
 use Medas\StorageManager\Entities\TypeSerializer;
 
 abstract class BaseSerializer implements TypeSerializer
 {
     public function deserialize(Type $type, mixed $value): mixed
     {
+        if ($type instanceof Guid) {
+            $value = (string) service(GuidProvider::class)->fromBytes($value);
+        }
+
         return $value;
     }
 
@@ -22,7 +27,7 @@ abstract class BaseSerializer implements TypeSerializer
             return $value->id();
         }
 
-        if ($value instanceof Guid) {
+        if ($value instanceof GuidValue) {
             return $value->toBytes();
         }
 
