@@ -67,7 +67,7 @@ class BaseSelectQueryBuilder implements SelectQueryBuilder
 
     private function process(Selector $selector): ParameterizedQuery
     {
-        $definition = $selector->get();
+        $definition = $selector->definition();
         $metaData = $this->metaDataManager->get($definition->entity);
 
         $database = storage($metaData->entity->storage);

@@ -7,6 +7,7 @@ namespace Medas\PdoStorage\Drivers\Mysql;
 use Medas\EntityManager\Types\Binary;
 use Medas\EntityManager\Types\Boolean;
 use Medas\EntityManager\Types\DateTime;
+use Medas\EntityManager\Types\FloatingPoint;
 use Medas\EntityManager\Types\Integer;
 use Medas\EntityManager\Types\Text;
 use Medas\EntityManager\Types\Type as EntityType;
@@ -47,6 +48,7 @@ class FieldHandler extends BaseFieldHandler
             BlueprintType::DateTime => new DateTime(),
             BlueprintType::Integer => new Integer(),
             BlueprintType::Text => new Text(),
+            BlueprintType::Float => new FloatingPoint(),
         };
     }
 }
