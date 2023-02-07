@@ -31,6 +31,7 @@ use Medas\PdoStorage\Database;
 use Medas\PdoStorage\Drivers\{Driver, Interfaces\SelectQueryBuilder};
 use Medas\PdoStorage\Exceptions\StorageIsNotDatabaseException;
 use Medas\PdoStorage\Queries\{ParameterizedQuery, Query};
+use Medas\PdoStorage\ValueSerializer;
 use Medas\ServiceManager\Cache\{CacheManager, Interfaces\NotCacheable};
 
 class BaseSelectQueryBuilder implements SelectQueryBuilder
@@ -152,6 +153,7 @@ class BaseSelectQueryBuilder implements SelectQueryBuilder
         }
 
         if ($operant instanceof Value) {
+            $operant->value = service(ValueSerializer::class)->serialize($operant->value);
             $name = sha1(serialize($operant->value));
             $this->foundConstants[$name] = $operant->value;
             return ':' . $name;
