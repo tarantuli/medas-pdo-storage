@@ -101,7 +101,7 @@ abstract class BaseAlterTableBuilder implements AlterTableBuilder
         if ($this->changes->changeForeignKey) {
             $this->dropForeignKeysQuery = $this->startAlterQuery();
 
-            foreach ($this->dropForeignKeysQuery as $foreignKey) {
+            foreach ($this->changes->changeForeignKey as $foreignKey) {
                 $this->dropForeignKeysQuery .= $this->foreignKeyConstraintBuilder()
                     ->buildDrop($this->changes->name, $this->driver, $foreignKey);
             }
