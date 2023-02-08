@@ -65,4 +65,9 @@ class TableStructureFinder extends BaseTableStructureFinder
             $this->blueprint->addIndex($index);
         }
     }
+
+    protected function findForeignKeys()
+    {
+        // TODO implement this
+    }
 }

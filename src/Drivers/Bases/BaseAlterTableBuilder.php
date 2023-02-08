@@ -5,20 +5,18 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\Drivers\Bases;
 
 use Medas\PdoStorage\Database;
-use Medas\PdoStorage\Drivers\{Driver, Interfaces\AlterTableBuilder, Mysql\ForeignKeyConstraintBuilder};
+use Medas\PdoStorage\Drivers\{Driver, Interfaces\AlterTableBuilder, Interfaces\ForeignKeyConstraintBuilder};
 use Medas\PdoStorage\Queries\{Query, QueryCollection};
 use Medas\StorageManager\Structure\Changes\Changes;
 use Medas\StorageManager\UnitOfWork\Priority;
 
 abstract class BaseAlterTableBuilder implements AlterTableBuilder
 {
-    private string $baseQuery;
-    private string|null $dropForeignKeysQuery = null;
-    private string|null $addForeignKeysQuery = null;
     private Changes $changes;
 
-    // TODO this is wrong, it should return an interface, instead of a MySQL specific implementation
-    abstract public function foreignKeyConstraintBuilder(): ForeignKeyConstraintBuilder;
+    private string|null $baseQuery;
+    private string|null $dropForeignKeysQuery;
+    private string|null $addForeignKeysQuery;
 
     public function __construct(
         private readonly Driver   $driver,
@@ -33,7 +31,7 @@ abstract class BaseAlterTableBuilder implements AlterTableBuilder
     public function create(Changes $changes): QueryCollection
     {
         $this->changes = $changes;
-        $this->baseQuery = $this->startAlterQuery();
+        $this->baseQuery = null;
         $this->dropForeignKeysQuery = null;
         $this->addForeignKeysQuery = null;
 
@@ -41,17 +39,19 @@ abstract class BaseAlterTableBuilder implements AlterTableBuilder
         $this->processIndexes();
         $this->processForeignKeys();
 
-        $this->baseQuery = substr($this->baseQuery, 0, -2);
+        $queryCollection = new QueryCollection([]);
 
-        $queryCollection = new QueryCollection([new Query(
-            query: $this->baseQuery,
-            database: $this->database,
-            priority: Priority::AlterStore
-        )]);
+        if ($this->baseQuery !== null) {
+            new Query(
+                query: substr($this->baseQuery, 0, -2),
+                database: $this->database,
+                priority: Priority::AlterStore
+            );
+        }
 
         if ($this->dropForeignKeysQuery !== null) {
             $queryCollection[] = new Query(
-                query: $this->dropForeignKeysQuery,
+                query: substr($this->dropForeignKeysQuery, 0, -2),
                 database: $this->database,
                 priority: Priority::DeleteStoreRelations
             );
@@ -59,7 +59,7 @@ abstract class BaseAlterTableBuilder implements AlterTableBuilder
 
         if ($this->addForeignKeysQuery !== null) {
             $queryCollection[] = new Query(
-                query: $this->addForeignKeysQuery,
+                query: substr($this->addForeignKeysQuery, 0, -2),
                 database: $this->database,
                 priority: Priority::AddStoreRelations
             );
@@ -70,6 +70,10 @@ abstract class BaseAlterTableBuilder implements AlterTableBuilder
 
     private function processFields(): void
     {
+        if ($this->changes->addFields || $this->changes->changeFields) {
+            $this->baseQuery = $this->startAlterQuery();
+        }
+
         foreach ($this->changes->addFields as $field) {
             $this->baseQuery .= sprintf(
                 "ADD COLUMN %s %s,\n",
@@ -87,6 +91,11 @@ abstract class BaseAlterTableBuilder implements AlterTableBuilder
         }
     }
 
+    private function startAlterQuery(): string
+    {
+        return 'ALTER TABLE ' . $this->driver->quote($this->changes->name) . "\n";
+    }
+
     private function processIndexes(): void
     {
         // TODO need to be implemented
@@ -94,7 +103,7 @@ abstract class BaseAlterTableBuilder implements AlterTableBuilder
 
     private function processForeignKeys(): void
     {
-        if (!$this->changes->changeForeignKey || $this->changes->addForeignKey) {
+        if (!$this->changes->changeForeignKey && !$this->changes->addForeignKey) {
             return;
         }
 
@@ -103,21 +112,18 @@ abstract class BaseAlterTableBuilder implements AlterTableBuilder
 
             foreach ($this->changes->changeForeignKey as $foreignKey) {
                 $this->dropForeignKeysQuery .= $this->foreignKeyConstraintBuilder()
-                    ->buildDrop($this->changes->name, $this->driver, $foreignKey);
+                        ->buildDrop($this->changes->name, $this->driver, $foreignKey) . ",\n";
             }
+        }
 
-            $this->addForeignKeysQuery = $this->startAlterQuery();
-            $foreignKeys = array_merge($this->changes->changeForeignKey, $this->changes->addForeignKey);
+        $this->addForeignKeysQuery = $this->startAlterQuery();
+        $foreignKeys = array_merge($this->changes->changeForeignKey, $this->changes->addForeignKey);
 
-            foreach ($foreignKeys as $foreignKey) {
-                $this->addForeignKeysQuery .= $this->foreignKeyConstraintBuilder()
-                    ->buildAdd($this->changes->name, $this->driver, $foreignKey);
-            }
+        foreach ($foreignKeys as $foreignKey) {
+            $this->addForeignKeysQuery .= $this->foreignKeyConstraintBuilder()
+                    ->buildAdd($this->changes->name, $this->driver, $foreignKey) . ",\n";
         }
     }
 
-    private function startAlterQuery(): string
-    {
-        return 'ALTER TABLE ' . $this->driver->quote($this->changes->name) . "\n";
-    }
+    abstract public function foreignKeyConstraintBuilder(): ForeignKeyConstraintBuilder;
 }

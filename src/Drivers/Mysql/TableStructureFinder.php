@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\Drivers\Mysql;
 
 use Medas\PdoStorage\Drivers\Bases\BaseTableStructureFinder;
+use Medas\StorageManager\Structure\Blueprint\ForeignKey;
 use Medas\StorageManager\Structure\Blueprint\Index;
 
 class TableStructureFinder extends BaseTableStructureFinder
@@ -63,6 +64,23 @@ class TableStructureFinder extends BaseTableStructureFinder
             $index->isUnique = isset($match['isUnique']);
 
             $this->blueprint->addIndex($index);
+        }
+    }
+
+    protected function findForeignKeys(): void
+    {
+        if (!preg_match_all(
+            '/CONSTRAINT `(?<name>[^`]+)` FOREIGN KEY \(`(?<field>[^`]+)`\) REFERENCES `(?<table>[^`]+)` \(`(?<reference>[^`]+)`\)(?<onDeleteCascade> ON DELETE CASCADE)?/',
+            $this->createTable,
+            $matches,
+            PREG_SET_ORDER
+        )) {
+            return;
+        }
+
+        foreach ($matches as $match) {
+            $foreignKey = new ForeignKey($match['field'], $match['table'], $match['reference'], isset($match['onDeleteCascade']));
+            $this->blueprint->addForeignKey($foreignKey);
         }
     }
 }

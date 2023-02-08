@@ -34,6 +34,7 @@ abstract class BaseTableStructureFinder implements TableStructureFinder
         $this->findFields();
         $this->findPrimaryKey();
         $this->findKeys();
+        $this->findForeignKeys();
 
         return $this->blueprint;
     }
@@ -54,4 +55,6 @@ abstract class BaseTableStructureFinder implements TableStructureFinder
     abstract protected function findPrimaryKey();
 
     abstract protected function findKeys();
+
+    abstract protected function findForeignKeys();
 }
