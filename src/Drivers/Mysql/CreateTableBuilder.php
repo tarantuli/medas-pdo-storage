@@ -49,6 +49,7 @@ class CreateTableBuilder extends BaseCreateTableBuilder
             $this->foreignKeys[] = ' ADD CONSTRAINT ' . $this->driver->quote($this->createForeignKeyName($foreignKey)) . "\n"
                 . '   FOREIGN KEY (' . $this->driver->quote($foreignKey->field) . ")\n"
                 . '   REFERENCES ' . $this->driver->quote($foreignKey->foreignEntity)
+                . ($foreignKey->onDeleteCascade ? ' ON DELETE CASCADE' : '')
                 . ' (' . $this->driver->quote($foreignKey->foreignField) . ")";
         }
     }
