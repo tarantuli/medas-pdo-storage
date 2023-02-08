@@ -40,6 +40,10 @@ class DefinitionHandler
             $hasDefault = true;
             $default = $this->parseString($defaultMatch[2]);
             $definition = $defaultMatch[1];
+
+            if ($default === null) {
+                $hasDefault = false;
+            }
         }
         else {
             $hasDefault = false;
