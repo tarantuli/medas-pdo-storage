@@ -38,7 +38,7 @@ class DefinitionHandler
 
         if (preg_match('/^(.+) DEFAULT (.+)$/', $definition, $defaultMatch)) {
             $hasDefault = true;
-            $default = $defaultMatch[2];
+            $default = $this->parseString($defaultMatch[2]);
             $definition = $defaultMatch[1];
         }
         else {
@@ -107,5 +107,18 @@ class DefinitionHandler
             minLength: $minLength,
             maxLength: $maxLength,
         );
+    }
+
+    private function parseString(string $string): mixed
+    {
+        if ($string === 'NULL') {
+            return null;
+        }
+
+        if (intval($string)) {
+            return (int) $string;
+        }
+
+        throw new \Exception('unhandled string structure: ' . $string);
     }
 }
