@@ -29,7 +29,7 @@ class CreateTableBuilder extends BaseCreateTableBuilder
                 $this->query .= ' KEY ' . $this->driver->quote($this->createIndexName($index)) . ' (';
             }
 
-            foreach ($index->fields as $field) {
+            foreach ($index->fields() as $field) {
                 $this->query .= $this->driver->quote($field->name) . ',';
             }
 
@@ -39,7 +39,7 @@ class CreateTableBuilder extends BaseCreateTableBuilder
 
     private function createIndexName(Index $index): string
     {
-        $names = array_map(fn(Field $field) => $field->name, $index->fields);
+        $names = array_map(fn(Field $field) => $field->name, $index->fields());
 
         return sha1((implode("\n", $names)));
     }

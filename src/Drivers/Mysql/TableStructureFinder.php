@@ -25,8 +25,11 @@ class TableStructureFinder extends BaseTableStructureFinder
         }
 
         $index = new Index(isPrimary: true);
-        $fields = $this->getNames($match[1]);
-        $index->fields = $fields;
+
+        foreach ($this->getNames($match[1]) as $name) {
+            $index->addField($this->blueprint->fieldByName($name));
+        }
+
         $index->isUnique = true;
 
         $this->blueprint->addIndex($index);
@@ -52,7 +55,11 @@ class TableStructureFinder extends BaseTableStructureFinder
 
         foreach ($matches as $match) {
             $index = new Index();
-            $index->fields = $this->blueprint->fieldsByName($this->getNames($match['fields']));
+
+            foreach ($this->blueprint->fieldsByName($this->getNames($match['fields'])) as $field) {
+                $index->addField($field);
+            }
+
             $index->isUnique = isset($match['isUnique']);
 
             $this->blueprint->addIndex($index);

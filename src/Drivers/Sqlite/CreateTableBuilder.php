@@ -23,7 +23,7 @@ class CreateTableBuilder extends BaseCreateTableBuilder
 
             $this->query .= ' UNIQUE (';
 
-            foreach ($index->fields as $field) {
+            foreach ($index->fields() as $field) {
                 $this->query .= $this->driver->quote($field->name) . ',';
             }
 
