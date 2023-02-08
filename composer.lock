@@ -364,12 +364,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:tarantuli/medas-storage-manager.git",
-                "reference": "57924766634041be69ac1c572d841f2d73717ff3"
+                "reference": "d7114b6f308973288f8c58a6fcb324e613a3d026"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tarantuli/medas-storage-manager/zipball/57924766634041be69ac1c572d841f2d73717ff3",
-                "reference": "57924766634041be69ac1c572d841f2d73717ff3",
+                "url": "https://api.github.com/repos/tarantuli/medas-storage-manager/zipball/d7114b6f308973288f8c58a6fcb324e613a3d026",
+                "reference": "d7114b6f308973288f8c58a6fcb324e613a3d026",
                 "shasum": ""
             },
             "require": {
@@ -409,7 +409,7 @@
                 "source": "https://github.com/tarantuli/medas-storage-manager/tree/dev",
                 "issues": "https://github.com/tarantuli/medas-storage-manager/issues"
             },
-            "time": "2023-02-08T10:08:58+00:00"
+            "time": "2023-02-08T12:36:38+00:00"
         }
     ],
     "packages-dev": [

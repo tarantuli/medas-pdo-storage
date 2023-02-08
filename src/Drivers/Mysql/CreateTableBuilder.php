@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\Drivers\Mysql;
 
 use Medas\PdoStorage\Drivers\Bases\BaseCreateTableBuilder;
-use Medas\StorageManager\Structure\Blueprint\{Field, ForeignKey, Index};
+use Medas\StorageManager\Structure\Blueprint\{Field, Index};
 
 class CreateTableBuilder extends BaseCreateTableBuilder
 {
+    private ForeignKeyConstraintBuilder $foreignKeyConstraintBuilder;
     protected function initialize(): void
     {
-        // Nothing to do
+        $this->foreignKeyConstraintBuilder = new ForeignKeyConstraintBuilder();
     }
 
     protected function addKeys(): void
@@ -46,19 +47,9 @@ class CreateTableBuilder extends BaseCreateTableBuilder
     protected function processForeignKeys(): void
     {
         foreach ($this->blueprint->foreignKeys() as $foreignKey) {
-            $this->foreignKeys[] = ' ADD CONSTRAINT ' . $this->driver->quote($this->createForeignKeyName($foreignKey)) . "\n"
-                . '   FOREIGN KEY (' . $this->driver->quote($foreignKey->field) . ")\n"
-                . '   REFERENCES ' . $this->driver->quote($foreignKey->foreignEntity)
-                . ($foreignKey->onDeleteCascade ? ' ON DELETE CASCADE' : '')
-                . ' (' . $this->driver->quote($foreignKey->foreignField) . ")";
+            $this->foreignKeys[] = $this->foreignKeyConstraintBuilder
+                ->buildAdd($this->blueprint->name(), $this->driver, $foreignKey);
         }
     }
 
-    private function createForeignKeyName(ForeignKey $foreignKey): string
-    {
-        return sha1($this->blueprint->name()
-            . "\n" . $foreignKey->field
-            . "\n" . $foreignKey->foreignEntity
-            . "\n" . $foreignKey->foreignField);
-    }
 }
