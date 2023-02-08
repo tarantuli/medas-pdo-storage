@@ -8,10 +8,10 @@ use Medas\FileBuilder\PhpClass\MethodDefinition;
 use Medas\PdoStorage\Database;
 use Medas\PdoStorage\Exceptions\StorageIsNotDatabaseException;
 use Medas\PdoStorage\Queries\{Query, QueryCollection};
-use Medas\PdoStorage\Structure\ChangeFinder;
 use Medas\StorageManager\Interfaces\Storage;
 use Medas\StorageManager\Migrations\MigrationBuilder;
 use Medas\StorageManager\StorageManager;
+use Medas\StorageManager\Structure\Changes\ChangeFinder;
 use Medas\StorageManager\Structure\EntityStructureFinder;
 use Medas\StorageManager\UnitOfWork\Priority;
 

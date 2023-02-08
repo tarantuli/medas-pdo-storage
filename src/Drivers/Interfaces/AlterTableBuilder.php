@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\Drivers\Interfaces;
 
-use Medas\PdoStorage\{Queries\QueryCollection, Structure\Changes};
+use Medas\PdoStorage\Queries\QueryCollection;
+use Medas\StorageManager\Structure\Changes\Changes;
 
 interface AlterTableBuilder
 {

@@ -7,7 +7,7 @@ namespace Medas\PdoStorage\Drivers\Bases;
 use Medas\PdoStorage\Database;
 use Medas\PdoStorage\Drivers\{Driver, Interfaces\AlterTableBuilder};
 use Medas\PdoStorage\Queries\{Query, QueryCollection};
-use Medas\PdoStorage\Structure\Changes;
+use Medas\StorageManager\Structure\Changes\Changes;
 use Medas\StorageManager\UnitOfWork\Priority;
 
 abstract class BaseAlterTableBuilder implements AlterTableBuilder
