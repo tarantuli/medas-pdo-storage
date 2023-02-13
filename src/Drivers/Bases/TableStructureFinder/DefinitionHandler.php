@@ -113,14 +113,18 @@ class DefinitionHandler
         );
     }
 
-    private function parseString(string $string): mixed
+    private function parseString(string $string): string|int|null
     {
         if ($string === 'NULL') {
             return null;
         }
 
-        if (intval($string)) {
+        if (preg_match('/^-?\d+$/', $string)) {
             return (int) $string;
+        }
+
+        if (str_starts_with($string, "'") && str_ends_with($string, "'")) {
+            return substr($string, 1, -1);
         }
 
         throw new \Exception('unhandled string structure: ' . $string);
