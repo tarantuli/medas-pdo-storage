@@ -42,7 +42,7 @@ abstract class BaseAlterTableBuilder implements AlterTableBuilder
         $queryCollection = new QueryCollection([]);
 
         if ($this->baseQuery !== null) {
-            new Query(
+            $queryCollection[] = new Query(
                 query: substr($this->baseQuery, 0, -2),
                 database: $this->database,
                 priority: Priority::AlterStore
