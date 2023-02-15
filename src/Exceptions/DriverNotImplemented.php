@@ -6,7 +6,7 @@ namespace Medas\PdoStorage\Exceptions;
 
 use Medas\Core\Exceptions\BaseException;
 
-class DriverNotImplementedException extends BaseException
+class DriverNotImplemented extends BaseException
 {
     public function __construct(string $driverName)
     {

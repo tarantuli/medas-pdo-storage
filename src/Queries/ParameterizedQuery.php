@@ -6,7 +6,7 @@ namespace Medas\PdoStorage\Queries;
 
 use Medas\EntityManager\Selector\Parameter;
 use Medas\PdoStorage\Database;
-use Medas\PdoStorage\Exceptions\StorageIsNotDatabaseException;
+use Medas\PdoStorage\Exceptions\StorageIsNotDatabase;
 use Medas\StorageManager\StorageManager;
 
 class ParameterizedQuery
@@ -39,7 +39,7 @@ class ParameterizedQuery
 
         /** @noinspection PhpConditionAlreadyCheckedInspection */
         if (!$database instanceof Database) {
-            throw new StorageIsNotDatabaseException($name);
+            throw new StorageIsNotDatabase($name);
         }
 
         $this->database = $database;

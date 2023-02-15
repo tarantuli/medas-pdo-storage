@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage;
 
-use Medas\PdoStorage\Exceptions\PdoDatabaseException;
+use Medas\PdoStorage\Exceptions\PdoDatabase;
 use Medas\PdoStorage\Queries\Query;
 
 class Executor
@@ -20,7 +20,7 @@ class Executor
             $query->setStatement(new Statement($statement));
         }
         catch (\Exception|\Error $e) {
-            throw new PdoDatabaseException($e->getMessage(), $query);
+            throw new PdoDatabase($e->getMessage(), $query);
         }
 
         if ($onComplete = $query->onComplete()) {

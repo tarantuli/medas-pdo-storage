@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Medas\PdoStorage;
 
 use Medas\PdoStorage\Drivers\Driver;
-use Medas\PdoStorage\Exceptions\DriverNotImplementedException;
+use Medas\PdoStorage\Exceptions\DriverNotImplemented;
 use Medas\PdoStorage\Queries\Query;
 use Medas\StorageManager\Entities\TypeSerializer;
 use Medas\StorageManager\Interfaces\{ActionBuilder, StorageController};
@@ -51,7 +51,7 @@ class DatabaseController implements StorageController
         $this->driver = match ($driver) {
             'mysql' => new Drivers\Mysql($this),
             'sqlite' => new Drivers\Sqlite($this),
-            default => throw new DriverNotImplementedException($driver),
+            default => throw new DriverNotImplemented($driver),
         };
     }
 

@@ -7,7 +7,7 @@ namespace Medas\PdoStorage\Exceptions;
 use Medas\Core\Exceptions\BaseException;
 use Medas\PdoStorage\Queries\Query;
 
-class PdoDatabaseException extends BaseException
+class PdoDatabase extends BaseException
 {
     public function __construct(string $message, Query $query)
     {

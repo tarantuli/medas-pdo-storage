@@ -7,7 +7,7 @@ namespace Medas\PdoStorage\Exceptions;
 use Medas\Core\Exceptions\BaseException;
 use Medas\StorageManager\Structure\Blueprint\Type;
 
-class UnhandledTypeException extends BaseException
+class UnhandledType extends BaseException
 {
     public function __construct(Type $type)
     {

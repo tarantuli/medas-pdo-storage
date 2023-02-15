@@ -6,7 +6,7 @@ namespace Medas\PdoStorage\Exceptions;
 
 use Medas\Core\Exceptions\BaseException;
 
-class StorageIsNotDatabaseException extends BaseException
+class StorageIsNotDatabase extends BaseException
 {
     public function __construct(string $name)
     {
