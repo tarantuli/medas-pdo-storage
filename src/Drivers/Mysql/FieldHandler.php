@@ -20,23 +20,23 @@ class FieldHandler extends BaseFieldHandler
     public function buildDefinition(Field $field): string
     {
         if ($field->isCreationTimestamp || $field->isModificationTimestamp) {
-            $default = ' DEFAULT current_timestamp()';
+            $default = ' default current_timestamp()';
 
             if ($field->isModificationTimestamp) {
-                $default .= ' ON UPDATE current_timestamp()';
+                $default .= ' on update current_timestamp()';
             }
         }
         elseif ($field->hasDefault) {
             $serializedDefault = $this->driver->serializer()->serialize($this->blueprintToEntityType($field->type), $field->default);
-            $default = ' DEFAULT ' . $this->driver->escape($serializedDefault);
+            $default = ' default ' . $this->driver->escape($serializedDefault);
         }
         else {
             $default = '';
         }
 
         return $this->driver->typeHandler()->getBaseDefinition($field)
-            . ($field->isNullable ? '' : ' NOT NULL')
-            . ($field->isGenerated ? ' AUTO_INCREMENT' : '')
+            . ($field->isNullable ? '' : ' not null')
+            . ($field->isGenerated ? ' auto_increment' : '')
             . $default;
     }
 

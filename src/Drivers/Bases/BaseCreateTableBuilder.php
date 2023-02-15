@@ -33,7 +33,7 @@ abstract class BaseCreateTableBuilder implements CreateTableBuilder
 
         $tableName = $this->driver->quote($this->blueprint->name());
 
-        $this->query = sprintf(/** @lang text */ "CREATE TABLE %s (\n", $tableName);
+        $this->query = sprintf(/** @lang text */ "create table %s (\n", $tableName);
 
         $this->addFields();
         $this->addKeys();
@@ -50,7 +50,7 @@ abstract class BaseCreateTableBuilder implements CreateTableBuilder
 
         if ($this->foreignKeys) {
             $query = sprintf(
-                "ALTER TABLE %s\n%s",
+                "alter table %s\n%s",
                 $tableName,
                 implode(",\n", $this->foreignKeys)
             );

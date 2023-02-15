@@ -6,7 +6,7 @@ namespace Medas\PdoStorage\Drivers\Bases;
 
 use Medas\FileBuilder\PhpClass\MethodDefinition;
 use Medas\PdoStorage\Database;
-use Medas\PdoStorage\Exceptions\StorageIsNotDatabaseException;
+use Medas\PdoStorage\Exceptions\StorageIsNotDatabase;
 use Medas\PdoStorage\Queries\{Query, QueryCollection};
 use Medas\StorageManager\Interfaces\Storage;
 use Medas\StorageManager\Migrations\MigrationBuilder;
@@ -36,12 +36,14 @@ abstract class BaseMigrationBuilder implements MigrationBuilder
     {
         /** @noinspection PhpConditionAlreadyCheckedInspection */
         if (!$storage instanceof Database) {
-            throw new StorageIsNotDatabaseException($this->storageManager->getName($storage));
+            throw new StorageIsNotDatabase($this->storageManager->getName($storage));
         }
 
         $this->database = $storage;
 
-        if (null === $queries = $this->buildQuery($className)) {
+        $queries = $this->buildQueries($className);
+
+        if (count($queries) === 0) {
             return false;
         }
 
@@ -62,19 +64,19 @@ abstract class BaseMigrationBuilder implements MigrationBuilder
         return true;
     }
 
-    private function buildQuery(string $className): QueryCollection|null
+    private function buildQueries(string $className): QueryCollection|null
     {
+        $driver = $this->database->controller()->driver();
+
         $expectedStructure = $this->entityStructureFinder->find($className);
-        $existingStructure = $this->database->controller()->driver()->tableStructureFinder()->find(
-            $this->database->store($expectedStructure->name())
-        );
+        $existingStructure = $driver->tableStructureFinder()->find($this->database->store($expectedStructure->name()));
 
         if ($existingStructure === null) {
             return $this->database->controller()->actionBuilder()->createStore($expectedStructure);
         }
         else {
             $changes = $this->changeFinder->find($expectedStructure, $existingStructure);
-            return $changes ? $this->database->controller()->driver()->alterTableBuilder()->create($changes) : null;
+            return $changes ? $driver->alterTableBuilder()->create($changes) : null;
         }
     }
 }

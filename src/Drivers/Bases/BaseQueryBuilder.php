@@ -30,7 +30,7 @@ abstract class BaseQueryBuilder implements QueryBuilder
     {
         $this->arguments = [];
         $this->query = /** @lang text */
-            'SELECT * FROM ';
+            'select * from ';
 
         foreach ($tables as $table) {
             $this->query .= $this->driver->quote($table->name) . ',';
@@ -39,7 +39,7 @@ abstract class BaseQueryBuilder implements QueryBuilder
         $this->query = substr($this->query, 0, -1);
 
         if ($filters) {
-            $this->query .= ' WHERE ';
+            $this->query .= ' where ';
             $this->appendConditions($filters);
         }
 
@@ -47,7 +47,7 @@ abstract class BaseQueryBuilder implements QueryBuilder
     }
 
     /** @noinspection PhpSameParameterValueInspection */
-    private function appendConditions(array $filters, string $separator = 'AND'): void
+    private function appendConditions(array $filters, string $separator = 'and'): void
     {
         foreach ($filters as $field => $value) {
             if ($value instanceof LessThan) {
@@ -59,13 +59,13 @@ abstract class BaseQueryBuilder implements QueryBuilder
                 $this->arguments[] = $value->value;
             }
             elseif ($value instanceof Between) {
-                $this->query .= $this->driver->quote($value->field) . 'BETWEEN ? AND ? ' . $separator . ' ';
+                $this->query .= $this->driver->quote($value->field) . 'between ? and ? ' . $separator . ' ';
                 $this->arguments[] = $value->lowerValue;
                 $this->arguments[] = $value->upperValue;
             }
             else {
-                if ($value === null && $separator === 'AND') {
-                    $this->query .= $this->driver->quote($field) . ' IS NULL ' . $separator . ' ';
+                if ($value === null && $separator === 'and') {
+                    $this->query .= $this->driver->quote($field) . ' is null ' . $separator . ' ';
                 }
                 else {
                     $this->query .= $this->driver->quote($field) . ' = ? ' . $separator . ' ';
@@ -81,10 +81,10 @@ abstract class BaseQueryBuilder implements QueryBuilder
     {
         $this->arguments = [];
 
-        $this->query = 'UPDATE ' . $table->name . ' SET ';
+        $this->query = 'update ' . $table->name . ' set ';
         $this->appendFields($updates);
 
-        $this->query .= ' WHERE ';
+        $this->query .= ' where ';
         $this->appendConditions($conditions);
 
         return new Query($this->query, $this->arguments, $this->database, Priority::UpdateRecord);
@@ -104,7 +104,7 @@ abstract class BaseQueryBuilder implements QueryBuilder
     {
         $this->arguments = [];
 
-        $this->query = 'DELETE FROM ' . $table->name . ' WHERE ';
+        $this->query = 'delete from ' . $table->name . ' where ';
         $this->appendConditions($conditions);
 
         return new Query($this->query, $this->arguments, $this->database, Priority::DeleteRecord);
@@ -112,13 +112,13 @@ abstract class BaseQueryBuilder implements QueryBuilder
 
     public function showCreate(Table $table): Query
     {
-        return new Query('SHOW CREATE TABLE ' . $this->driver->quote($table->name), [], $this->database);
+        return new Query('show create table ' . $this->driver->quote($table->name), [], $this->database);
     }
 
     public function dropTable(string $name): Query
     {
         return new Query(
-            query: 'DROP TABLE IF EXISTS ' . $this->driver->quote($name),
+            query: 'drop table if exists ' . $this->driver->quote($name),
             database: $this->database,
             priority: Priority::DeleteStore
         );
@@ -140,9 +140,9 @@ abstract class BaseQueryBuilder implements QueryBuilder
             $this->arguments[] = $value;
         }
 
-        $this->query = 'INSERT INTO ' . $this->driver->quote($table->name)
+        $this->query = 'insert into ' . $this->driver->quote($table->name)
             . ' (' . implode(',', $names) . ')'
-            . ' VALUES (' . implode(',', array_fill(0, count($names), '?')) . ')';
+            . ' values (' . implode(',', array_fill(0, count($names), '?')) . ')';
 
         return new Query($this->query, $this->arguments, $this->database, Priority::CreateRecord);
     }

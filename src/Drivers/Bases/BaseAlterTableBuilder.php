@@ -76,7 +76,7 @@ abstract class BaseAlterTableBuilder implements AlterTableBuilder
 
         foreach ($this->changes->addFields as $field) {
             $this->baseQuery .= sprintf(
-                "ADD COLUMN %s %s,\n",
+                "add column %s %s,\n",
                 $this->driver->quote($field->name),
                 $this->driver->fieldHandler()->buildDefinition($field),
             );
@@ -84,7 +84,7 @@ abstract class BaseAlterTableBuilder implements AlterTableBuilder
 
         foreach ($this->changes->changeFields as $field) {
             $this->baseQuery .= sprintf(
-                "MODIFY COLUMN %1\$s %2\$s,\n",
+                "modify column %1\$s %2\$s,\n",
                 $this->driver->quote($field->name),
                 $this->driver->fieldHandler()->buildDefinition($field),
             );
@@ -93,7 +93,7 @@ abstract class BaseAlterTableBuilder implements AlterTableBuilder
 
     private function startAlterQuery(): string
     {
-        return 'ALTER TABLE ' . $this->driver->quote($this->changes->name) . "\n";
+        return 'alter table ' . $this->driver->quote($this->changes->name) . "\n";
     }
 
     private function processIndexes(): void

@@ -6,9 +6,9 @@ namespace Medas\PdoStorageTest\Functional\Sqlite;
 
 use Medas\PdoStorage\Database;
 use Medas\StorageManager\StorageManager;
-use Medas\StorageManagerTest\Functional\StorageTests\AbstractStorageTest;
+use Medas\StorageManagerTest\Functional\StorageTests\AbstractStorageTestClass;
 
-class StorageTest extends AbstractStorageTest
+class StorageTest extends AbstractStorageTestClass
 {
     protected function initialize(): void
     {

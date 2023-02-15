@@ -13,11 +13,11 @@ use Medas\EntityManager\Selector\{Conditions\Condition,
     Conditions\WhereIsMoreThan,
     Conditions\WhereIsNotNull,
     Conditions\WhereIsNull,
-    Exceptions\UndeclaredParametersException,
-    Exceptions\UnhandledConditionTypeException,
-    Exceptions\UnhandledOperantTypeException,
-    Exceptions\UnhandledRelationTypeException,
-    Exceptions\UnhandledSortTypeException,
+    Exceptions\UndeclaredParameters,
+    Exceptions\UnhandledConditionType,
+    Exceptions\UnhandledOperantType,
+    Exceptions\UnhandledRelationType,
+    Exceptions\UnhandledSortType,
     Operants\Argument,
     Operants\Operant,
     Operants\Property,
@@ -29,7 +29,7 @@ use Medas\EntityManager\Selector\{Conditions\Condition,
 };
 use Medas\PdoStorage\Database;
 use Medas\PdoStorage\Drivers\{Driver, Interfaces\SelectQueryBuilder};
-use Medas\PdoStorage\Exceptions\StorageIsNotDatabaseException;
+use Medas\PdoStorage\Exceptions\StorageIsNotDatabase;
 use Medas\PdoStorage\Queries\{ParameterizedQuery, Query};
 use Medas\PdoStorage\ValueSerializer;
 use Medas\ServiceManager\Cache\{CacheManager, Interfaces\NotCacheable};
@@ -75,7 +75,7 @@ class BaseSelectQueryBuilder implements SelectQueryBuilder
 
         /** @noinspection PhpConditionAlreadyCheckedInspection */
         if (!$database instanceof Database) {
-            throw new StorageIsNotDatabaseException($metaData->entity->storage);
+            throw new StorageIsNotDatabase($metaData->entity->storage);
         }
 
         $this->mainEntity = $metaData->className;
@@ -85,7 +85,7 @@ class BaseSelectQueryBuilder implements SelectQueryBuilder
         $this->foundArguments = [];
         $this->foundConstants = [];
 
-        $this->query = 'SELECT * FROM ' . $quotedMainStore;
+        $this->query = 'select * from ' . $quotedMainStore;
 
         $this->processRelations($definition->relations);
         $this->processConditions($definition->conditions);
@@ -99,7 +99,7 @@ class BaseSelectQueryBuilder implements SelectQueryBuilder
     private function processRelations(array $relations): void
     {
         foreach ($relations as $relation) {
-            throw new UnhandledRelationTypeException($relation);
+            throw new UnhandledRelationType($relation);
         }
     }
 
@@ -107,14 +107,14 @@ class BaseSelectQueryBuilder implements SelectQueryBuilder
     private function processConditions(array $conditions): void
     {
         if ($conditions) {
-            $this->query .= ' WHERE ';
+            $this->query .= ' where ';
         }
 
         $isFirstCondition = true;
 
         foreach ($conditions as $condition) {
             if (!$isFirstCondition) {
-                $this->query .= ' AND ';
+                $this->query .= ' and ';
             }
 
             match ($condition::class) {
@@ -125,7 +125,7 @@ class BaseSelectQueryBuilder implements SelectQueryBuilder
                 WhereIsAtMost::class => $this->processComparison($condition, '<='),
                 WhereIsNull::class => $this->processNullComparison($condition, true),
                 WhereIsNotNull::class => $this->processNullComparison($condition, false),
-                default => throw new UnhandledConditionTypeException($condition),
+                default => throw new UnhandledConditionType($condition),
             };
 
             $isFirstCondition = false;
@@ -159,13 +159,13 @@ class BaseSelectQueryBuilder implements SelectQueryBuilder
             return ':' . $name;
         }
 
-        throw new UnhandledOperantTypeException($operant);
+        throw new UnhandledOperantType($operant);
     }
 
     private function processNullComparison(WhereIsNull $condition, bool $isNull): void
     {
         $this->query .= $this->operantToQuery($condition->property)
-            . ($isNull ? ' IS NULL' : ' IS NOT NULL');
+            . ($isNull ? ' is null' : ' is not null');
     }
 
     /** @param SortBy[] $sorts */
@@ -178,11 +178,11 @@ class BaseSelectQueryBuilder implements SelectQueryBuilder
                 continue;
             }
 
-            throw new UnhandledSortTypeException($sort);
+            throw new UnhandledSortType($sort);
         }
 
         if ($parts) {
-            $this->query .= ' ORDER BY ' . implode(', ', $parts);
+            $this->query .= ' order by ' . implode(', ', $parts);
         }
     }
 
@@ -194,7 +194,7 @@ class BaseSelectQueryBuilder implements SelectQueryBuilder
         }
 
         if ($this->foundArguments) {
-            throw new UndeclaredParametersException(array_keys($this->foundArguments));
+            throw new UndeclaredParameters(array_keys($this->foundArguments));
         }
     }
 

@@ -12,11 +12,11 @@ class FieldHandler extends BaseFieldHandler
     public function buildDefinition(Field $field): string
     {
         if ($field->isGenerated) {
-            return 'INTEGER PRIMARY KEY';
+            return 'integer primary key';
         }
 
         return $this->driver->typeHandler()->getBaseDefinition($field)
-            . ($field->isNullable ? '' : ' NOT NULL')
-            . ($field->hasDefault ? ' DEFAULT ' . $this->driver->escape($field->default) : '');
+            . ($field->isNullable ? '' : ' not null')
+            . ($field->hasDefault ? ' default ' . $this->driver->escape($field->default) : '');
     }
 }

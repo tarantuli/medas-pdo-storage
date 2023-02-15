@@ -6,9 +6,9 @@ namespace Medas\PdoStorageTest\Functional\MySql;
 
 use Medas\PdoStorage\Database;
 use Medas\StorageManager\StorageManager;
-use Medas\StorageManagerTest\Functional\StorageTests\AbstractStorageTest;
+use Medas\StorageManagerTest\Functional\StorageTests\AbstractStorageTestClass;
 
-class StorageTest extends AbstractStorageTest
+class StorageTest extends AbstractStorageTestClass
 {
     protected function initialize(): void
     {
@@ -19,6 +19,6 @@ class StorageTest extends AbstractStorageTest
 
     protected function migrationAssertions(string $migration): void
     {
-        self::assertStringContainsString('ALTER TABLE', $migration);
+        self::assertStringContainsString('alter table', $migration);
     }
 }

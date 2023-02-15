@@ -12,11 +12,11 @@ class ForeignKeyConstraintBuilder implements BuilderInterface
 {
     public function buildAdd(string $entityName, Driver $driver, ForeignKey $foreignKey): string
     {
-        return ' ADD CONSTRAINT ' . $driver->quote($this->createForeignKeyName($entityName, $foreignKey)) . "\n"
-            . '   FOREIGN KEY (' . $driver->quote($foreignKey->field) . ")\n"
-            . '   REFERENCES ' . $driver->quote($foreignKey->foreignEntity)
+        return ' add constraint ' . $driver->quote($this->createForeignKeyName($entityName, $foreignKey)) . "\n"
+            . '   foreign key (' . $driver->quote($foreignKey->field) . ")\n"
+            . '   references ' . $driver->quote($foreignKey->foreignEntity)
             . ' (' . $driver->quote($foreignKey->foreignField) . ")"
-            . ($foreignKey->onDeleteCascade ? ' ON DELETE CASCADE' : '');
+            . ($foreignKey->onDeleteCascade ? ' on delete cascade' : '');
     }
 
     private function createForeignKeyName(string $entityName, ForeignKey $foreignKey): string
@@ -29,6 +29,6 @@ class ForeignKeyConstraintBuilder implements BuilderInterface
 
     public function buildDrop(string $entityName, Driver $driver, ForeignKey $foreignKey): string
     {
-        return ' DROP CONSTRAINT ' . $driver->quote($this->createForeignKeyName($entityName, $foreignKey));
+        return ' drop constraint ' . $driver->quote($this->createForeignKeyName($entityName, $foreignKey));
     }
 }

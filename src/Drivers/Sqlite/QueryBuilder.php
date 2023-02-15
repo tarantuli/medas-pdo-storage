@@ -12,8 +12,8 @@ class QueryBuilder extends BaseQueryBuilder
     public function showTables(?string $name): Query
     {
         return new Query(sprintf(
-            'SELECT name FROM sqlite_schema WHERE type="table" and name NOT LIKE "sqlite_%%"%s',
-            $name === null ? '' : 'and name LIKE "' . $name . '"'
+            'select name from sqlite_schema where type="table" and name not like "sqlite_%%"%s',
+            $name === null ? '' : 'and name like "' . $name . '"'
         ));
     }
 }

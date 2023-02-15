@@ -27,12 +27,12 @@ abstract class BaseTypeHandler implements TypeHandler
         /** @noinspection PhpDuplicateMatchArmBodyInspection */
         return match (true) {
             $field->maxLength <= Integer::UNSIGNED_1_BYTE_MAX => $field->minLength === $field->maxLength
-                ? sprintf('CHAR(%u)', $field->maxLength)
-                : sprintf('VARCHAR(%u)', $field->maxLength),
-            $field->maxLength <= Integer::UNSIGNED_2_BYTE_MAX => 'TEXT',
-            $field->maxLength <= Integer::UNSIGNED_3_BYTE_MAX => 'MEDIUMTEXT',
-            $field->maxLength <= Integer::UNSIGNED_4_BYTE_MAX => 'LONGTEXT',
-            default => 'TEXT'
+                ? sprintf('char(%u)', $field->maxLength)
+                : sprintf('varchar(%u)', $field->maxLength),
+            $field->maxLength <= Integer::UNSIGNED_2_BYTE_MAX => 'text',
+            $field->maxLength <= Integer::UNSIGNED_3_BYTE_MAX => 'mediumtext',
+            $field->maxLength <= Integer::UNSIGNED_4_BYTE_MAX => 'longtext',
+            default => 'text'
         };
     }
 
@@ -41,45 +41,45 @@ abstract class BaseTypeHandler implements TypeHandler
         /** @noinspection PhpDuplicateMatchArmBodyInspection */
         return match (true) {
             $field->maxLength <= Integer::UNSIGNED_1_BYTE_MAX => $field->minLength === $field->maxLength
-                ? sprintf('BINARY(%u)', $field->maxLength)
-                : sprintf('VARBINARY(%u)', $field->maxLength),
-            $field->maxLength <= Integer::UNSIGNED_2_BYTE_MAX => 'BLOB',
-            $field->maxLength <= Integer::UNSIGNED_3_BYTE_MAX => 'MEDIUMBLOB',
-            $field->maxLength <= Integer::UNSIGNED_4_BYTE_MAX => 'LONGBLOB',
-            default => 'BLOB'
+                ? sprintf('binary(%u)', $field->maxLength)
+                : sprintf('varbinary(%u)', $field->maxLength),
+            $field->maxLength <= Integer::UNSIGNED_2_BYTE_MAX => 'blob',
+            $field->maxLength <= Integer::UNSIGNED_3_BYTE_MAX => 'mediumblob',
+            $field->maxLength <= Integer::UNSIGNED_4_BYTE_MAX => 'longblob',
+            default => 'blob'
         };
     }
 
     private function handleDateTime(): string
     {
-        return 'DATETIME';
+        return 'datetime';
     }
 
     private function handleFloat(): string
     {
-        return 'FLOAT';
+        return 'float';
     }
 
     private function handleInteger(Field $field): string
     {
-        /** @noinspection PhpDuplicateMatchArmBodyInspection */
         return match (true) {
-            $field->minValue >= 0 && $field->maxValue <= Integer::UNSIGNED_1_BYTE_MAX => 'TINYINT UNSIGNED',
-            $field->minValue >= 0 && $field->maxValue <= Integer::UNSIGNED_2_BYTE_MAX => 'MEDIUMINT UNSIGNED',
-            $field->minValue >= 0 && $field->maxValue <= Integer::UNSIGNED_3_BYTE_MAX => 'INT UNSIGNED',
-            $field->minValue >= 0 && $field->maxValue <= Integer::UNSIGNED_4_BYTE_MAX => 'BIGINT UNSIGNED',
+            $field->minValue >= 0 && $field->maxValue <= Integer::UNSIGNED_1_BYTE_MAX => 'tinyint unsigned',
+            $field->minValue >= 0 && $field->maxValue <= Integer::UNSIGNED_2_BYTE_MAX => 'smallint unsigned',
+            $field->minValue >= 0 && $field->maxValue <= Integer::UNSIGNED_3_BYTE_MAX => 'mediumint unsigned',
+            $field->minValue >= 0 && $field->maxValue <= Integer::UNSIGNED_4_BYTE_MAX => 'int unsigned',
+            $field->minValue >= 0 && $field->maxValue <= Integer::UNSIGNED_8_BYTE_MAX => 'bigint unsigned',
 
-            $field->minValue >= Integer::SIGNED_1_BYTE_MAX && $field->maxValue <= Integer::SIGNED_1_BYTE_MAX => 'TINYINT',
-            $field->minValue >= Integer::SIGNED_2_BYTE_MAX && $field->maxValue <= Integer::SIGNED_2_BYTE_MAX => 'MEDIUMINT',
-            $field->minValue >= Integer::SIGNED_3_BYTE_MAX && $field->maxValue <= Integer::SIGNED_3_BYTE_MAX => 'INT',
-            $field->minValue >= Integer::SIGNED_4_BYTE_MAX && $field->maxValue <= Integer::SIGNED_4_BYTE_MAX => 'BIGINT',
+            $field->minValue >= Integer::SIGNED_1_BYTE_MAX && $field->maxValue <= Integer::SIGNED_1_BYTE_MAX => 'tinyint',
+            $field->minValue >= Integer::SIGNED_2_BYTE_MAX && $field->maxValue <= Integer::SIGNED_2_BYTE_MAX => 'mediumint',
+            $field->minValue >= Integer::SIGNED_3_BYTE_MAX && $field->maxValue <= Integer::SIGNED_3_BYTE_MAX => 'int',
+            $field->minValue >= Integer::SIGNED_4_BYTE_MAX && $field->maxValue <= Integer::SIGNED_4_BYTE_MAX => 'bigint',
 
-            default => 'INT UNSIGNED'
+            default => throw new \Exception('out of bounds value range'),
         };
     }
 
     private function handleBoolean(): string
     {
-        return 'TINYINT UNSIGNED';
+        return 'tinyint unsigned';
     }
 }

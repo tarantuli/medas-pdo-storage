@@ -19,14 +19,14 @@ class CreateTableBuilder extends BaseCreateTableBuilder
     {
         foreach ($this->blueprint->indexes() as $index) {
             if ($index->isPrimary) {
-                $this->query .= ' PRIMARY KEY (';
+                $this->query .= ' primary key (';
             }
             else {
                 if ($index->isUnique) {
-                    $this->query .= ' UNIQUE';
+                    $this->query .= ' unique';
                 }
 
-                $this->query .= ' KEY ' . $this->driver->quote($this->createIndexName($index)) . ' (';
+                $this->query .= ' key ' . $this->driver->quote($this->createIndexName($index)) . ' (';
             }
 
             foreach ($index->fields() as $field) {

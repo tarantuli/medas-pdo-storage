@@ -11,6 +11,6 @@ class QueryBuilder extends BaseQueryBuilder
 {
     public function showTables(?string $name): Query
     {
-        return new Query('SHOW TABLES LIKE "' . $name . '"');
+        return new Query('show tables like "' . $name . '"');
     }
 }

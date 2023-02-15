@@ -11,7 +11,7 @@ class TableStructureFinder extends BaseTableStructureFinder
 {
     protected function findName(): void
     {
-        if (!preg_match('/CREATE TABLE "([^"]+)/', $this->createTable, $match)) {
+        if (!preg_match('/create table "([^"]+)/', $this->createTable, $match)) {
             return;
         }
 
@@ -20,7 +20,7 @@ class TableStructureFinder extends BaseTableStructureFinder
 
     protected function findPrimaryKey(): void
     {
-        if (!preg_match('/PRIMARY KEY \(([^)]+)\)/', $this->createTable, $match)) {
+        if (!preg_match('/primary key \(([^)]+)\)/', $this->createTable, $match)) {
             return;
         }
 
@@ -45,7 +45,7 @@ class TableStructureFinder extends BaseTableStructureFinder
     protected function findKeys(): void
     {
         if (!preg_match_all(
-            '/(?<isUnique>UNIQUE )?KEY "(?<name>[^"]+)" \((?<fields>[^)]+)\)/',
+            '/(?<isUnique>unique )?key "(?<name>[^"]+)" \((?<fields>[^)]+)\)/',
             $this->createTable,
             $matches,
             PREG_SET_ORDER

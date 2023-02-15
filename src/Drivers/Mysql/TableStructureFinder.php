@@ -12,7 +12,7 @@ class TableStructureFinder extends BaseTableStructureFinder
 {
     protected function findName(): void
     {
-        if (!preg_match('/CREATE TABLE `([^`]+)/', $this->createTable, $match)) {
+        if (!preg_match('/create table `([^`]+)/i', $this->createTable, $match)) {
             return;
         }
 
@@ -21,7 +21,7 @@ class TableStructureFinder extends BaseTableStructureFinder
 
     protected function findPrimaryKey(): void
     {
-        if (!preg_match('/PRIMARY KEY \(([^)]+)\)/', $this->createTable, $match)) {
+        if (!preg_match('/primary key \(([^)]+)\)/i', $this->createTable, $match)) {
             return;
         }
 
@@ -46,7 +46,7 @@ class TableStructureFinder extends BaseTableStructureFinder
     protected function findKeys(): void
     {
         if (!preg_match_all(
-            '/(?<isUnique>UNIQUE )?KEY `(?<name>[^`]+)` \((?<fields>[^)]+)\)/',
+            '/(?<isUnique>unique )?key `(?<name>[^`]+)` \((?<fields>[^)]+)\)/i',
             $this->createTable,
             $matches,
             PREG_SET_ORDER
@@ -70,7 +70,7 @@ class TableStructureFinder extends BaseTableStructureFinder
     protected function findForeignKeys(): void
     {
         if (!preg_match_all(
-            '/CONSTRAINT `(?<name>[^`]+)` FOREIGN KEY \(`(?<field>[^`]+)`\) REFERENCES `(?<table>[^`]+)` \(`(?<reference>[^`]+)`\)(?<onDeleteCascade> ON DELETE CASCADE)?/',
+            '/constraint `(?<name>[^`]+)` foreign key \(`(?<field>[^`]+)`\) references `(?<table>[^`]+)` \(`(?<reference>[^`]+)`\)(?<onDeleteCascade> on delete cascade)?/i',
             $this->createTable,
             $matches,
             PREG_SET_ORDER

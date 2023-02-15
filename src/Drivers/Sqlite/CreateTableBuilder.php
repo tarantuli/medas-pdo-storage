@@ -21,7 +21,7 @@ class CreateTableBuilder extends BaseCreateTableBuilder
                 continue;
             }
 
-            $this->query .= ' UNIQUE (';
+            $this->query .= ' unique (';
 
             foreach ($index->fields() as $field) {
                 $this->query .= $this->driver->quote($field->name) . ',';
@@ -34,9 +34,9 @@ class CreateTableBuilder extends BaseCreateTableBuilder
     protected function processForeignKeys(): void
     {
         foreach ($this->blueprint->foreignKeys() as $foreignKey) {
-            $this->query .= ' CONSTRAINT ' . $this->driver->quote($this->createForeignKeyName($foreignKey)) . "\n"
-                . '   FOREIGN KEY (' . $this->driver->quote($foreignKey->field) . ")\n"
-                . '   REFERENCES ' . $this->driver->quote($foreignKey->foreignEntity)
+            $this->query .= ' constraint ' . $this->driver->quote($this->createForeignKeyName($foreignKey)) . "\n"
+                . '   foreign key (' . $this->driver->quote($foreignKey->field) . ")\n"
+                . '   references ' . $this->driver->quote($foreignKey->foreignEntity)
                 . ' (' . $this->driver->quote($foreignKey->foreignField) . "),\n";
         }
     }
