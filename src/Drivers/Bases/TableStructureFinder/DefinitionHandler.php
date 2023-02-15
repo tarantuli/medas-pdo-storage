@@ -122,7 +122,7 @@ class DefinitionHandler
 
     private function parseString(string $string): string|int|null
     {
-        if ($string === 'null') {
+        if (strcasecmp($string, 'null') === 0) {
             return null;
         }
 
