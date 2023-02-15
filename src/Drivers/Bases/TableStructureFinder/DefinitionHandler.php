@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\Drivers\Bases\TableStructureFinder;
 
-use Medas\Core\Str;
+use Medas\Core\CaseInsensitiveString;
 use Medas\EntityManager\Types\Integer;
+use Medas\PdoStorage\Exceptions\{CantDetermineTypeFromDefinition, CantTurnDefinitionIntoVariable};
 use Medas\StorageManager\Structure\Blueprint\{Field, Type};
 
 class DefinitionHandler
@@ -15,59 +16,56 @@ class DefinitionHandler
 
     public function convertToField(string $name, string $definition): Field
     {
+        $remainder = new CaseInsensitiveString($definition);
+
         $isNullable = true;
         $isGenerated = false;
+
+        $hasDefault = false;
+        $default = null;
 
         $isCreationTimestamp = false;
         $isModificationTimestamp = false;
 
         // Strip collation
-        $definition = preg_replace('/ collate \w+/i', '', $definition);
+        $remainder->regexReplace('/ collate \w+/i', '');
 
-        if (Str::endsWithCi($definition, ' auto_increment')) {
+        if ($remainder->chopFromEnd(' auto_increment')) {
             $isNullable = false;
             $isGenerated = true;
-            $definition = substr($definition, 0, -strlen(' auto_increment'));
         }
 
-        if (Str::endsWithCi($definition, self::CREATION_TIMESTAMP_DEFINITION)) {
+        if ($remainder->chopFromEnd(self::CREATION_TIMESTAMP_DEFINITION)) {
             $isCreationTimestamp = true;
-            $definition = substr($definition, 0, -strlen(self::CREATION_TIMESTAMP_DEFINITION));
         }
 
-        if (Str::endsWithCi($definition, self::MODIFICATION_TIMESTAMP_DEFINITION)) {
+        if ($remainder->chopFromEnd(self::MODIFICATION_TIMESTAMP_DEFINITION)) {
             $isModificationTimestamp = true;
-            $definition = substr($definition, 0, -strlen(self::MODIFICATION_TIMESTAMP_DEFINITION));
         }
 
-        if (preg_match('/^(.+) default (.+)$/i', $definition, $defaultMatch)) {
+        if ($match = $remainder->regexMatch('/ default (.+)$/i')) {
             $hasDefault = true;
-            $default = $this->parseString($defaultMatch[2]);
-            $definition = $defaultMatch[1];
+            $remainder->chopFromEnd($match[0]);
+            $default = $this->parseString($match[1]);
 
             if ($default === null) {
                 $hasDefault = false;
             }
         }
-        else {
-            $hasDefault = false;
-            $default = null;
-        }
 
-        if (Str::endsWithCi($definition, ' not null')) {
+        if ($remainder->chopFromEnd(' not null')) {
             $isNullable = false;
-            $definition = substr($definition, 0, -strlen(' not null'));
         }
 
-        $isInt = preg_match('/((?:tiny|small|medium|big)?int)(?:\(\d+\))?( unsigned)?/i', $definition, $intMatch);
+        $intMatch = $remainder->regexMatch('/((?:tiny|small|medium|big)?int)(?:\(\d+\))?( unsigned)?/i');
 
         $type = match (true) {
-            (bool) $isInt => Type::Integer,
-            Str::startsWithCi($definition, 'varchar(') || Str::startsWithCi($definition, 'char(') => Type::Text,
-            Str::startsWithCi($definition, 'varbinary(') || Str::startsWithCi($definition, 'binary(') => Type::Binary,
-            $definition === 'datetime' => Type::DateTime,
-            $definition === 'float' => Type::Float,
-            default => throw new \Exception('unhandled definition "' . $definition . '"'),
+            $intMatch !== null => Type::Integer,
+            $remainder->startsWith('varchar(') || $remainder->startsWith('char(') => Type::Text,
+            $remainder->startsWith('varbinary(') || $remainder->startsWith('binary(') => Type::Binary,
+            $remainder->equals('datetime') => Type::DateTime,
+            $remainder->equals('float') => Type::Float,
+            default => throw new CantDetermineTypeFromDefinition((string) $remainder, $definition),
         };
 
         $minValue = 0;
@@ -76,7 +74,7 @@ class DefinitionHandler
         $minLength = 0;
         $maxLength = Integer::UNSIGNED_1_BYTE_MAX;
 
-        if ($isInt) {
+        if ($intMatch !== null) {
             if (isset($intMatch[2])) {
                 $maxValue = match ($intMatch[1]) {
                     'tinyint' => Integer::UNSIGNED_1_BYTE_MAX,
@@ -122,18 +120,20 @@ class DefinitionHandler
 
     private function parseString(string $string): string|int|null
     {
-        if (strcasecmp($string, 'null') === 0) {
+        $definition = new CaseInsensitiveString($string);
+
+        if ($definition->equals('null')) {
             return null;
         }
 
-        if (preg_match('/^-?\d+$/', $string)) {
+        if ($definition->regexMatch('/^-?\d+$/')) {
             return (int) $string;
         }
 
-        if (str_starts_with($string, "'") && str_ends_with($string, "'")) {
+        if ($definition->surroundedBy("'")) {
             return substr($string, 1, -1);
         }
 
-        throw new \Exception('unhandled string structure: ' . $string);
+        throw new CantTurnDefinitionIntoVariable($string);
     }
 }
