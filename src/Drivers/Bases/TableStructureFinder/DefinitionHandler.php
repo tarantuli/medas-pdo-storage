@@ -40,7 +40,7 @@ class DefinitionHandler
             $definition = substr($definition, 0, -strlen(self::MODIFICATION_TIMESTAMP_DEFINITION));
         }
 
-        if (preg_match('/^(.+) default (.+)$/', $definition, $defaultMatch)) {
+        if (preg_match('/^(.+) default (.+)$/i', $definition, $defaultMatch)) {
             $hasDefault = true;
             $default = $this->parseString($defaultMatch[2]);
             $definition = $defaultMatch[1];
@@ -59,7 +59,7 @@ class DefinitionHandler
             $definition = substr($definition, 0, -strlen(' not null'));
         }
 
-        $isInt = preg_match('/((?:tiny|small|medium|big)?int)(?:\(\d+\))?( unsigned)?/', $definition, $intMatch);
+        $isInt = preg_match('/((?:tiny|small|medium|big)?int)(?:\(\d+\))?( unsigned)?/i', $definition, $intMatch);
 
         $type = match (true) {
             (bool) $isInt => Type::Integer,
