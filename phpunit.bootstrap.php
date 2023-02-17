@@ -6,20 +6,27 @@ use Medas\ConfigManager\{ConfigManager, ConfigManagerPackage};
 use Medas\ConfigOptions\ConfigOptionsPackage;
 use Medas\PdoStorage\Database;
 use Medas\PdoStorage\PdoStoragePackage;
+use Medas\ServiceManager\ServiceConfig;
 use Medas\ServiceManager\ServiceManager;
 use Medas\StorageManager\StorageManager;
 
 chdir(__DIR__);
 
-ServiceManager::get()
-    ->addPackage(PdoStoragePackage::instance())
-    ->addPackage(ConfigManagerPackage::instance())
-    ->addPackage(ConfigOptionsPackage::instance());
+new ServiceManager(function (): ServiceConfig {
+    $config = new ServiceConfig();
+
+    $config->addPackages([
+        PdoStoragePackage::instance(),
+        ConfigManagerPackage::instance(),
+        ConfigOptionsPackage::instance(),
+    ]);
+
+    return $config;
+});
 
 service(ConfigManager::class)
     ->readEnv(__DIR__)
     ->addDirectory('tests/MockUps');
 
-service(StorageManager::class)->add(
-    sm()->instantiate(Database::class)
-);
+service(StorageManager::class)
+    ->add(sm()->instantiate(Database::class));
