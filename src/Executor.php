@@ -30,16 +30,9 @@ class Executor
 
     private function serializeArguments(Query $query): void
     {
+        $serializer = service(ValueSerializer::class);
         foreach ($query->arguments as $argument) {
-            if ($argument instanceof \DateTime) {
-                $argument = $argument->format('Y-m-d H:i:s');
-            }
-
-            if (is_bool($argument)) {
-                $argument = (int) $argument;
-            }
-
-            $query->serializedArguments[] = $argument;
+            $query->serializedArguments[] = $serializer->serialize($argument);
         }
     }
 }

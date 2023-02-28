@@ -22,6 +22,14 @@ class ValueSerializer
             return $value->toBytes();
         }
 
+        if ($value instanceof \DateTime) {
+            return $value->format('Y-m-d H:i:s');
+        }
+
+        if (is_bool($value)) {
+            return (string) (int) $value;
+        }
+
         return $value;
     }
 }
