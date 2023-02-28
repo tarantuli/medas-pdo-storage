@@ -15,6 +15,10 @@ class Serializer extends BaseSerializer
             $value = $value->format('Y-m-d H:i:s');
         }
 
+        if ($value instanceof \BackedEnum) {
+            $value = $value->value;
+        }
+
         return parent::serialize($type, $value);
     }
 }
