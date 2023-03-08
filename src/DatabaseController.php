@@ -7,7 +7,7 @@ namespace Medas\PdoStorage;
 use Medas\PdoStorage\Drivers\Driver;
 use Medas\PdoStorage\Exceptions\DriverNotImplemented;
 use Medas\PdoStorage\Queries\Query;
-use Medas\StorageManager\Entities\TypeSerializer;
+use Medas\ServiceManager\Interfaces\Serializer;
 use Medas\StorageManager\Interfaces\{ActionBuilder, StorageController};
 use Medas\StorageManager\Migrations\MigrationBuilder;
 
@@ -75,7 +75,7 @@ class DatabaseController implements StorageController
         return $this->driver->queryBuilder();
     }
 
-    public function serializer(): TypeSerializer
+    public function serializer(): Serializer
     {
         return $this->driver->serializer();
     }

@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\Drivers\Mysql;
 
-use Medas\EntityManager\Types\{Binary, Boolean, DateTime, FloatingPoint, Integer, Text};
 use Medas\PdoStorage\Drivers\Bases\BaseFieldHandler;
-use Medas\ServiceManager\Interfaces\Type;
-use Medas\StorageManager\Structure\Blueprint\{Field, Type as BlueprintType};
+use Medas\StorageManager\Structure\Blueprint\{Field};
 
 class FieldHandler extends BaseFieldHandler
 {
@@ -21,7 +19,7 @@ class FieldHandler extends BaseFieldHandler
             }
         }
         elseif ($field->hasDefault) {
-            $serializedDefault = $this->driver->serializer()->serialize($this->blueprintToEntityType($field->type), $field->default);
+            $serializedDefault = $this->driver->serializer()->serialize($field->default);
             $default = ' default ' . $this->driver->escape($serializedDefault);
         }
         else {
@@ -32,17 +30,5 @@ class FieldHandler extends BaseFieldHandler
             . ($field->isNullable ? '' : ' not null')
             . ($field->isGenerated ? ' auto_increment' : '')
             . $default;
-    }
-
-    private function blueprintToEntityType(BlueprintType $type): Type
-    {
-        return match ($type) {
-            BlueprintType::Boolean => new Boolean(),
-            BlueprintType::Binary => new Binary(),
-            BlueprintType::DateTime => new DateTime(),
-            BlueprintType::Integer => new Integer(),
-            BlueprintType::Text => new Text(),
-            BlueprintType::Float => new FloatingPoint(),
-        };
     }
 }

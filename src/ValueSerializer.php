@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Medas\PdoStorage;
 
 use Medas\EntityManager\Attributes\HasId;
+use Medas\EntityManager\Types\Boolean;
+use Medas\EntityManager\Types\Guid as GuidType;
 use Medas\ServiceManager\Attributes\Service;
-use Medas\ServiceManager\Interfaces\Guid;
+use Medas\ServiceManager\Interfaces\{Guid, GuidProvider, Serializer, Type};
 
 #[Service]
-class ValueSerializer
+class ValueSerializer implements Serializer
 {
     public function serialize(mixed $value): mixed
     {
@@ -26,8 +28,29 @@ class ValueSerializer
             return $value->format('Y-m-d H:i:s');
         }
 
+        if ($value instanceof \BackedEnum) {
+            return $value->value;
+        }
+
         if (is_bool($value)) {
             return (string) (int) $value;
+        }
+
+        return $value;
+    }
+
+    public function unserialize(Type $type, mixed $value): mixed
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        if ($type instanceof GuidType) {
+            return service(GuidProvider::class)->fromBytes($value);
+        }
+
+        if ($type instanceof Boolean) {
+            return (bool) $value;
         }
 
         return $value;

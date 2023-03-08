@@ -13,7 +13,7 @@ use Medas\PdoStorage\Drivers\Interfaces\{AlterTableBuilder,
     TableStructureFinder,
     TypeHandler
 };
-use Medas\StorageManager\Entities\TypeSerializer;
+use Medas\ServiceManager\Interfaces\Serializer;
 use Medas\StorageManager\Migrations\MigrationBuilder;
 
 abstract class BaseDriver implements Driver
@@ -26,7 +26,7 @@ abstract class BaseDriver implements Driver
     protected SelectQueryBuilder $selectQueryBuilder;
     protected TableStructureFinder $tableStructureFinder;
     protected TypeHandler $typeHandler;
-    protected TypeSerializer $serializer;
+    protected Serializer $serializer;
 
     public function __construct(
         protected readonly DatabaseController $controller,
@@ -42,7 +42,7 @@ abstract class BaseDriver implements Driver
         return $this->queryBuilder;
     }
 
-    public function serializer(): TypeSerializer
+    public function serializer(): Serializer
     {
         return $this->serializer;
     }
