@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\Drivers\Mysql;
 
-use Medas\EntityManager\Types\Type;
 use Medas\PdoStorage\Drivers\Bases\BaseSerializer;
+use Medas\ServiceManager\Interfaces\Type;
 
 class Serializer extends BaseSerializer
 {

@@ -10,6 +10,13 @@ use Medas\StorageManager\Structure\Blueprint\Index;
 
 class TableStructureFinder extends BaseTableStructureFinder
 {
+    private DefinitionHandler $definitionHandler;
+
+    public function __construct()
+    {
+        $this->definitionHandler = new DefinitionHandler();
+    }
+
     protected function findName(): void
     {
         if (!preg_match('/create table `([^`]+)/i', $this->createTable, $match)) {
@@ -17,6 +24,17 @@ class TableStructureFinder extends BaseTableStructureFinder
         }
 
         $this->blueprint->setName($match[1]);
+    }
+
+    protected function findFields(): void
+    {
+        if (!preg_match_all('/^ +`([^`]+)` (.+?),?$/m', $this->createTable, $matches, PREG_SET_ORDER)) {
+            return;
+        }
+
+        foreach ($matches as $match) {
+            $this->blueprint->addField($this->definitionHandler->convertToField($match[1], $match[2]));
+        }
     }
 
     protected function findPrimaryKey(): void

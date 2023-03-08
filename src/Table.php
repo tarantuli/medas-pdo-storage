@@ -63,7 +63,21 @@ class Table implements Store
         try {
             $query = $this->controller->actionBuilder()->showCreate($this);
             $query->execute();
-            return $query->recordSet()->fetchRecord()['Create Table'];
+            $record = $query->recordSet()->fetchRecord();
+
+            if ($record instanceof Record) {
+                $data = $record->data();
+
+                if (array_key_exists('Create Table', $data)) {
+                    return $data['Create Table'];
+                }
+
+                if (array_key_exists('sql', $data)) {
+                    return $data['sql'];
+                }
+            }
+
+            return null;
         }
         catch (\Exception) {
             return null;

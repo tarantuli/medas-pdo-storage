@@ -6,7 +6,7 @@ namespace Medas\PdoStorage;
 
 use Medas\EntityManager\Attributes\HasId;
 use Medas\ServiceManager\Attributes\Service;
-use Medas\ServiceManager\Values\Interfaces\Guid;
+use Medas\ServiceManager\Interfaces\Guid;
 
 #[Service]
 class ValueSerializer

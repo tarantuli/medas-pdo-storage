@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\Drivers\Bases;
 
-use Medas\EntityManager\Types\{Boolean, Guid, Type};
+use Medas\EntityManager\Types\{Boolean, Guid};
 use Medas\PdoStorage\ValueSerializer;
-use Medas\ServiceManager\Values\Interfaces\GuidProvider;
+use Medas\ServiceManager\Interfaces\{GuidProvider, Type};
 use Medas\StorageManager\Entities\TypeSerializer;
 
 abstract class BaseSerializer implements TypeSerializer

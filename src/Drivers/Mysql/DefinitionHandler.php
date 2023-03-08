@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Medas\PdoStorage\Drivers\Bases\TableStructureFinder;
+namespace Medas\PdoStorage\Drivers\Mysql;
 
 use Medas\Core\CaseInsensitiveString;
 use Medas\EntityManager\Types\Integer;
