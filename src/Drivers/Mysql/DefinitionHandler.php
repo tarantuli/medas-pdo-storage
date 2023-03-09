@@ -61,8 +61,8 @@ class DefinitionHandler
 
         $type = match (true) {
             $intMatch !== null => Type::Integer,
-            $remainder->startsWith('varchar(') || $remainder->startsWith('char(') => Type::Text,
-            $remainder->startsWith('varbinary(') || $remainder->startsWith('binary(') => Type::Binary,
+            $remainder->startsWith('varchar('), $remainder->startsWith('char('), $remainder->equals('text') => Type::Text,
+            $remainder->startsWith('varbinary('), $remainder->startsWith('binary('), $remainder->equals('blob') => Type::Binary,
             $remainder->equals('datetime') => Type::DateTime,
             $remainder->equals('float') => Type::Float,
             default => throw new CantDetermineTypeFromDefinition((string) $remainder, $definition),
