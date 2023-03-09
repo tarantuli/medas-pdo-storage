@@ -21,8 +21,8 @@ abstract class BaseSerializer implements Serializer
         return $this->valueSerializer->serialize($value);
     }
 
-    public function unserialize(Type $type, mixed $value): mixed
+    public function unserialize(mixed $value, Type $type = null): mixed
     {
-        return $this->valueSerializer->unserialize($type, $value);
+        return $this->valueSerializer->unserialize($value, $type);
     }
 }

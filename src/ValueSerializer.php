@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage;
 
-use Medas\EntityManager\Attributes\HasId;
-use Medas\EntityManager\Types\Boolean;
-use Medas\EntityManager\Types\Guid as GuidType;
+use Medas\EntityManager\Types\{Boolean, Guid as GuidType};
 use Medas\ServiceManager\Attributes\Service;
-use Medas\ServiceManager\Interfaces\{Guid, GuidProvider, Serializer, Type};
+use Medas\ServiceManager\Interfaces\{Guid, GuidProvider, HasId, Serializer, Type};
 
 #[Service]
 class ValueSerializer implements Serializer
@@ -39,7 +37,7 @@ class ValueSerializer implements Serializer
         return $value;
     }
 
-    public function unserialize(Type $type, mixed $value): mixed
+    public function unserialize(mixed $value, Type $type = null): mixed
     {
         if ($value === null) {
             return null;
