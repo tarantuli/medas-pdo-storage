@@ -23,6 +23,7 @@ class ValueSerializer implements Serializer
         }
 
         if ($value instanceof \DateTime) {
+            $value->setTimezone(new \DateTimeZone(date_default_timezone_get()));
             return $value->format('Y-m-d H:i:s');
         }
 
