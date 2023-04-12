@@ -12,7 +12,7 @@ use Medas\PdoStorage\Drivers\Interfaces\{AlterTableBuilder,
     TableStructureFinder,
     TypeHandler
 };
-use Medas\ServiceManager\Interfaces\Serializer;
+use Medas\Core\Interfaces\Serializer;
 use Medas\StorageManager\Migrations\MigrationBuilder;
 
 interface Driver

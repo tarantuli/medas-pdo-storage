@@ -7,7 +7,7 @@ namespace Medas\PdoStorage;
 use Medas\PdoStorage\Drivers\Driver;
 use Medas\PdoStorage\Exceptions\DriverNotImplemented;
 use Medas\PdoStorage\Queries\Query;
-use Medas\ServiceManager\Interfaces\Serializer;
+use Medas\Core\Interfaces\Serializer;
 use Medas\StorageManager\Interfaces\{ActionBuilder, StorageController};
 use Medas\StorageManager\Migrations\MigrationBuilder;
 

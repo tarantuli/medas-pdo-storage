@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\Drivers\Bases;
 
 use Medas\PdoStorage\ValueSerializer;
-use Medas\ServiceManager\Interfaces\{Serializer, Type};
+use Medas\Core\Interfaces\{Serializer, Type};
 
 abstract class BaseSerializer implements Serializer
 {

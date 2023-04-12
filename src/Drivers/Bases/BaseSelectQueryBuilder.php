@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\Drivers\Bases;
 
+use Medas\Core\Interfaces\NotCacheable;
 use Medas\EntityManager\MetaDataManager;
 use Medas\EntityManager\Selector\{Conditions\Condition,
     Conditions\WhereIs,
@@ -30,9 +31,9 @@ use Medas\EntityManager\Selector\{Conditions\Condition,
 use Medas\PdoStorage\Database;
 use Medas\PdoStorage\Drivers\{Driver, Interfaces\SelectQueryBuilder};
 use Medas\PdoStorage\Exceptions\StorageIsNotDatabase;
+use Medas\ServiceManager\Cache\CacheManager;
 use Medas\PdoStorage\Queries\{ParameterizedQuery, Query};
 use Medas\PdoStorage\ValueSerializer;
-use Medas\ServiceManager\Cache\{CacheManager, Interfaces\NotCacheable};
 
 class BaseSelectQueryBuilder implements SelectQueryBuilder
 {

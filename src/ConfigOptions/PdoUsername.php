@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\ConfigOptions;
 
 use Medas\ServiceManager\AsSingleton;
-use Medas\ServiceManager\ConfigOptions\{ConfigGroup, ConfigOption};
+use Medas\Core\Interfaces\{ConfigGroup, ConfigOption};
 
 class PdoUsername implements ConfigOption
 {
