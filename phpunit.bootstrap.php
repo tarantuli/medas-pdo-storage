@@ -6,6 +6,7 @@ use Medas\ConfigManager\{ConfigManager, ConfigManagerPackage};
 use Medas\ConfigOptions\ConfigOptionsPackage;
 use Medas\Core\GlobalRepository;
 use Medas\PdoStorage\{Database, PdoStoragePackage};
+use Medas\RamseyUuidBridge\RamseyUuidBridgePackage;
 use Medas\ServiceManager\{ServiceConfig, ServiceManager};
 use Medas\StorageManager\StorageManager;
 
@@ -18,6 +19,7 @@ new ServiceManager(function (): ServiceConfig {
         PdoStoragePackage::instance(),
         ConfigManagerPackage::instance(),
         ConfigOptionsPackage::instance(),
+        RamseyUuidBridgePackage::instance(),
     ]);
 
     return $config;
