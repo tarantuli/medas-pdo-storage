@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage;
 
-use Medas\PdoStorage\ConfigOptions\{PdoDns, PdoPassword, PdoUsername};
 use Medas\Core\Attributes\ConfigValue;
+use Medas\PdoStorage\ConfigOptions\{PdoDns, PdoPassword, PdoUsername};
 use Medas\StorageManager\Interfaces\{Storage, StorageController};
 
 class Database implements Storage

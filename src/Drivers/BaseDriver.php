@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\Drivers;
 
+use Medas\Core\Interfaces\Serializer;
 use Medas\PdoStorage\DatabaseController;
 use Medas\PdoStorage\Drivers\Interfaces\{AlterTableBuilder,
     CreateTableBuilder,
@@ -11,9 +12,7 @@ use Medas\PdoStorage\Drivers\Interfaces\{AlterTableBuilder,
     QueryBuilder,
     SelectQueryBuilder,
     TableStructureFinder,
-    TypeHandler
-};
-use Medas\Core\Interfaces\Serializer;
+    TypeHandler};
 use Medas\StorageManager\Migrations\MigrationBuilder;
 
 abstract class BaseDriver implements Driver

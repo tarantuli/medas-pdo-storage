@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Medas\ConfigManager\{ConfigManager, ConfigManagerPackage};
 use Medas\ConfigOptions\ConfigOptionsPackage;
+use Medas\Core\GlobalRepository;
 use Medas\PdoStorage\{Database, PdoStoragePackage};
 use Medas\ServiceManager\{ServiceConfig, ServiceManager};
 use Medas\StorageManager\StorageManager;
@@ -27,4 +28,4 @@ service(ConfigManager::class)
     ->addDirectory('tests/MockUps');
 
 service(StorageManager::class)
-    ->add(sm()->instantiate(Database::class));
+    ->add(GlobalRepository::objectInstantiator()->instantiate(Database::class));

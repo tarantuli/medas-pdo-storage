@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage;
 
-use Medas\EntityManager\Types\{Boolean, Guid as GuidType};
-use Medas\ServiceManager\Service;
+use Medas\Core\Attributes\Service;
 use Medas\Core\Interfaces\{Guid, GuidProvider, HasId, Serializer, Type};
+use Medas\EntityManager\Types\{Boolean, Guid as GuidType};
 
 #[Service]
 class ValueSerializer implements Serializer

@@ -26,14 +26,13 @@ use Medas\EntityManager\Selector\{Conditions\Condition,
     Parameter,
     Relations\Relation,
     Selector,
-    Sorting\SortBy
-};
+    Sorting\SortBy};
 use Medas\PdoStorage\Database;
 use Medas\PdoStorage\Drivers\{Driver, Interfaces\SelectQueryBuilder};
 use Medas\PdoStorage\Exceptions\StorageIsNotDatabase;
-use Medas\ServiceManager\Cache\CacheManager;
 use Medas\PdoStorage\Queries\{ParameterizedQuery, Query};
 use Medas\PdoStorage\ValueSerializer;
+use Medas\ServiceManager\Cache\CacheManager;
 
 class BaseSelectQueryBuilder implements SelectQueryBuilder
 {

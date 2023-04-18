@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\Drivers;
 
+use Medas\Core\Interfaces\Serializer;
 use Medas\PdoStorage\Drivers\Interfaces\{AlterTableBuilder,
     CreateTableBuilder,
     FieldHandler,
     QueryBuilder,
     SelectQueryBuilder,
     TableStructureFinder,
-    TypeHandler
-};
-use Medas\Core\Interfaces\Serializer;
+    TypeHandler};
 use Medas\StorageManager\Migrations\MigrationBuilder;
 
 interface Driver

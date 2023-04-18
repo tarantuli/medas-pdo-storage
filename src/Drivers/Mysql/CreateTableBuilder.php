@@ -10,6 +10,7 @@ use Medas\StorageManager\Structure\Blueprint\{Field, Index};
 class CreateTableBuilder extends BaseCreateTableBuilder
 {
     private ForeignKeyConstraintBuilder $foreignKeyConstraintBuilder;
+
     protected function initialize(): void
     {
         $this->foreignKeyConstraintBuilder = new ForeignKeyConstraintBuilder();

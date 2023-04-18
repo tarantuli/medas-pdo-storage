@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage;
 
+use Medas\Core\Interfaces\Serializer;
 use Medas\PdoStorage\Drivers\Driver;
 use Medas\PdoStorage\Exceptions\DriverNotImplemented;
 use Medas\PdoStorage\Queries\Query;
-use Medas\Core\Interfaces\Serializer;
 use Medas\StorageManager\Interfaces\{ActionBuilder, StorageController};
 use Medas\StorageManager\Migrations\MigrationBuilder;
 

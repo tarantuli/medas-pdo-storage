@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\Drivers;
 
+use Medas\Core\GlobalRepository;
+
 class Sqlite extends BaseDriver
 {
     public function quote(string $identifier): string
@@ -24,14 +26,16 @@ class Sqlite extends BaseDriver
             'database' => $this->controller->database(),
         ];
 
-        $this->tableStructureFinder = sm()->instantiate(Sqlite\TableStructureFinder::class, $givenArguments);
-        $this->alterTableBuilder = sm()->instantiate(Sqlite\AlterTableBuilder::class, $givenArguments);
-        $this->createTableBuilder = sm()->instantiate(Sqlite\CreateTableBuilder::class, $givenArguments);
-        $this->fieldHandler = sm()->instantiate(Sqlite\FieldHandler::class, $givenArguments);
-        $this->migrationBuilder = sm()->instantiate(Sqlite\MigrationBuilder::class, $givenArguments);
-        $this->queryBuilder = sm()->instantiate(Sqlite\QueryBuilder::class, $givenArguments);
-        $this->selectQueryBuilder = sm()->instantiate(Sqlite\SelectQueryBuilder::class, $givenArguments);
-        $this->serializer = sm()->instantiate(Sqlite\Serializer::class, $givenArguments);
-        $this->typeHandler = sm()->instantiate(Sqlite\TypeHandler::class, $givenArguments);
+        $oi = GlobalRepository::objectInstantiator();
+
+        $this->tableStructureFinder = $oi->instantiate(Sqlite\TableStructureFinder::class, $givenArguments);
+        $this->alterTableBuilder = $oi->instantiate(Sqlite\AlterTableBuilder::class, $givenArguments);
+        $this->createTableBuilder = $oi->instantiate(Sqlite\CreateTableBuilder::class, $givenArguments);
+        $this->fieldHandler = $oi->instantiate(Sqlite\FieldHandler::class, $givenArguments);
+        $this->migrationBuilder = $oi->instantiate(Sqlite\MigrationBuilder::class, $givenArguments);
+        $this->queryBuilder = $oi->instantiate(Sqlite\QueryBuilder::class, $givenArguments);
+        $this->selectQueryBuilder = $oi->instantiate(Sqlite\SelectQueryBuilder::class, $givenArguments);
+        $this->serializer = $oi->instantiate(Sqlite\Serializer::class, $givenArguments);
+        $this->typeHandler = $oi->instantiate(Sqlite\TypeHandler::class, $givenArguments);
     }
 }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\Drivers;
 
+use Medas\Core\GlobalRepository;
+
 class Mysql extends BaseDriver
 {
     public function quote(string $identifier): string
@@ -24,14 +26,16 @@ class Mysql extends BaseDriver
             'database' => $this->controller->database(),
         ];
 
-        $this->tableStructureFinder = sm()->instantiate(Mysql\TableStructureFinder::class, $givenArguments);
-        $this->alterTableBuilder = sm()->instantiate(Mysql\AlterTableBuilder::class, $givenArguments);
-        $this->createTableBuilder = sm()->instantiate(Mysql\CreateTableBuilder::class, $givenArguments);
-        $this->fieldHandler = sm()->instantiate(Mysql\FieldHandler::class, $givenArguments);
-        $this->migrationBuilder = sm()->instantiate(Mysql\MigrationBuilder::class, $givenArguments);
-        $this->queryBuilder = sm()->instantiate(Mysql\QueryBuilder::class, $givenArguments);
-        $this->selectQueryBuilder = sm()->instantiate(Mysql\SelectQueryBuilder::class, $givenArguments);
-        $this->serializer = sm()->instantiate(Mysql\Serializer::class, $givenArguments);
-        $this->typeHandler = sm()->instantiate(Mysql\TypeHandler::class, $givenArguments);
+        $oi = GlobalRepository::objectInstantiator();
+
+        $this->tableStructureFinder = $oi->instantiate(Mysql\TableStructureFinder::class, $givenArguments);
+        $this->alterTableBuilder = $oi->instantiate(Mysql\AlterTableBuilder::class, $givenArguments);
+        $this->createTableBuilder = $oi->instantiate(Mysql\CreateTableBuilder::class, $givenArguments);
+        $this->fieldHandler = $oi->instantiate(Mysql\FieldHandler::class, $givenArguments);
+        $this->migrationBuilder = $oi->instantiate(Mysql\MigrationBuilder::class, $givenArguments);
+        $this->queryBuilder = $oi->instantiate(Mysql\QueryBuilder::class, $givenArguments);
+        $this->selectQueryBuilder = $oi->instantiate(Mysql\SelectQueryBuilder::class, $givenArguments);
+        $this->serializer = $oi->instantiate(Mysql\Serializer::class, $givenArguments);
+        $this->typeHandler = $oi->instantiate(Mysql\TypeHandler::class, $givenArguments);
     }
 }
