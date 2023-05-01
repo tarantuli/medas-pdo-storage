@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\ConfigOptions;
 
 use Medas\Core\Interfaces\ConfigGroup;
-use Medas\ServiceManager\AsSingleton;
+use Medas\Core\AsSingleton;
 
 class RootGroup implements ConfigGroup
 {

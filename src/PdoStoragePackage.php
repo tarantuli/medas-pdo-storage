@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage;
 
-use Medas\ServiceManager\{AsSingleton, BasePackage};
+use Medas\Core\AsSingleton;
+use Medas\ServiceManager\BasePackage;
 use Medas\StorageManager\StorageManagerPackage;
 
 class PdoStoragePackage extends BasePackage
