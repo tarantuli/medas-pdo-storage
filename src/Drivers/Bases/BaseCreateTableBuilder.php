@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\Drivers\Bases;
 
 use Medas\PdoStorage\Database;
-use Medas\PdoStorage\Drivers\{DriverHandler, Interfaces\CreateTableBuilder};
+use Medas\PdoStorage\Drivers\{Handler, Interfaces\CreateTableBuilder};
 use Medas\PdoStorage\Queries\{Query, QueryCollection};
 use Medas\StorageManager\Structure\Blueprint;
 use Medas\StorageManager\UnitOfWork\Priority;
@@ -17,8 +17,8 @@ abstract class BaseCreateTableBuilder implements CreateTableBuilder
     protected array $foreignKeys;
 
     public function __construct(
-        protected readonly DriverHandler $driver,
-        protected readonly Database      $database,
+        protected readonly Handler  $driver,
+        protected readonly Database $database,
     )
     {
         $this->initialize();

@@ -15,12 +15,8 @@ use Medas\PdoStorage\Drivers\Interfaces\{AlterTableBuilder,
 };
 use Medas\StorageManager\Migrations\MigrationBuilder;
 
-interface DriverHandler
+interface Handler
 {
-    public function canHandle(string $driverName): bool;
-
-    public function priority(): int;
-
     public function quote(string $identifier): string;
 
     public function escape(mixed $value): string;

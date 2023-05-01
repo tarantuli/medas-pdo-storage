@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Medas\PdoStorage;
 
 use Medas\Core\Interfaces\Serializer;
-use Medas\PdoStorage\Drivers\DriverHandler;
+use Medas\PdoStorage\Drivers\Handler;
 use Medas\PdoStorage\Queries\Query;
 use Medas\StorageManager\Interfaces\{ActionBuilder, StorageController};
 use Medas\StorageManager\Migrations\MigrationBuilder;
@@ -15,7 +15,7 @@ class DatabaseController implements StorageController
     private \PDO $pdo;
     private Executor $executor;
     private Transaction $transaction;
-    private DriverHandler $driver;
+    private Handler $driver;
 
     public function __construct(
         private readonly Database $database,
@@ -47,7 +47,7 @@ class DatabaseController implements StorageController
     {
         $driver = $this->pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
 
-        $this->driver = service(DriverHandlerManager::class)->find($driver);
+        $this->driver = service(DriverHandlerManager::class)->find($driver, $this);
     }
 
     public function transaction(): Transaction
@@ -80,7 +80,7 @@ class DatabaseController implements StorageController
         return $this->driver->migrationBuilder();
     }
 
-    public function driver(): DriverHandler
+    public function driver(): Handler
     {
         return $this->driver;
     }

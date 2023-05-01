@@ -7,7 +7,7 @@ namespace Medas\PdoStorage\Drivers\Bases;
 use Medas\EntityManager\Filters\{Between, LessThan, MoreThan};
 use Medas\EntityManager\Selector\Selector;
 use Medas\PdoStorage\Database;
-use Medas\PdoStorage\Drivers\{DriverHandler, Interfaces\QueryBuilder};
+use Medas\PdoStorage\Drivers\{Handler, Interfaces\QueryBuilder};
 use Medas\PdoStorage\Queries\{Query, QueryCollection};
 use Medas\PdoStorage\Table;
 use Medas\StorageManager\Structure\Blueprint;
@@ -19,8 +19,8 @@ abstract class BaseQueryBuilder implements QueryBuilder
     protected array $arguments;
 
     public function __construct(
-        protected readonly DriverHandler $driver,
-        protected readonly Database      $database,
+        protected readonly Handler  $driver,
+        protected readonly Database $database,
     )
     {
     }

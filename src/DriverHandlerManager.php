@@ -5,32 +5,33 @@ declare(strict_types=1);
 namespace Medas\PdoStorage;
 
 use Medas\Core\Attributes\Service;
-use Medas\PdoStorage\Drivers\DriverHandler;
+use Medas\PdoStorage\Drivers\Handler;
+use Medas\PdoStorage\Drivers\HandlerManager;
 use Medas\PdoStorage\Exceptions\DriverNotImplemented;
 
 #[Service]
 class DriverHandlerManager
 {
-    /** @var DriverHandler[] */
-    private array $handlers = [];
+    /** @var HandlerManager[] */
+    private array $handlerManagers = [];
 
-    public function find(string $driverName): DriverHandler
+    public function find(string $driverName, DatabaseController $controller): Handler
     {
-        foreach ($this->handlers as $handler) {
+        foreach ($this->handlerManagers as $handler) {
             if ($handler->canHandle($driverName)) {
-                return $handler;
+                return $handler->initialize($controller);
             }
         }
 
         throw new DriverNotImplemented($driverName);
     }
 
-    public function add(DriverHandler $handler): void
+    public function addManager(HandlerManager $manager): void
     {
-        $this->handlers[] = $handler;
+        $this->handlerManagers[] = $manager;
 
-        usort($this->handlers,
-            fn(DriverHandler $a, DriverHandler $b) => -($a->priority() <=> $b->priority())
+        usort($this->handlerManagers,
+            fn(HandlerManager $a, HandlerManager $b) => -($a->priority() <=> $b->priority())
         );
     }
 }

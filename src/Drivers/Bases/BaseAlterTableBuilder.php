@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\Drivers\Bases;
 
 use Medas\PdoStorage\Database;
-use Medas\PdoStorage\Drivers\{DriverHandler, Interfaces\AlterTableBuilder, Interfaces\ForeignKeyConstraintBuilder};
+use Medas\PdoStorage\Drivers\{Handler, Interfaces\AlterTableBuilder, Interfaces\ForeignKeyConstraintBuilder};
 use Medas\PdoStorage\Queries\{Query, QueryCollection};
 use Medas\StorageManager\Structure\Changes\Changes;
 use Medas\StorageManager\UnitOfWork\Priority;
@@ -19,8 +19,8 @@ abstract class BaseAlterTableBuilder implements AlterTableBuilder
     private string|null $addForeignKeysQuery;
 
     public function __construct(
-        private readonly DriverHandler $driver,
-        private readonly Database      $database,
+        private readonly Handler  $driver,
+        private readonly Database $database,
     )
     {
         $this->initialize();
