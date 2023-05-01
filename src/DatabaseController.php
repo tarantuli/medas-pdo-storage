@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace Medas\PdoStorage;
 
 use Medas\Core\Interfaces\Serializer;
-use Medas\PdoStorage\Drivers\Driver;
-use Medas\PdoStorage\Exceptions\DriverNotImplemented;
+use Medas\PdoStorage\Drivers\DriverHandler;
 use Medas\PdoStorage\Queries\Query;
 use Medas\StorageManager\Interfaces\{ActionBuilder, StorageController};
 use Medas\StorageManager\Migrations\MigrationBuilder;
@@ -16,7 +15,7 @@ class DatabaseController implements StorageController
     private \PDO $pdo;
     private Executor $executor;
     private Transaction $transaction;
-    private Driver $driver;
+    private DriverHandler $driver;
 
     public function __construct(
         private readonly Database $database,
@@ -26,7 +25,7 @@ class DatabaseController implements StorageController
     )
     {
         $this->initializePdo();
-        $this->initializeBuilder();
+        $this->initializeDriverHandler();
         $this->executor = new Executor();
     }
 
@@ -44,15 +43,11 @@ class DatabaseController implements StorageController
         $this->transaction = new Transaction($this->pdo);
     }
 
-    private function initializeBuilder(): void
+    private function initializeDriverHandler(): void
     {
         $driver = $this->pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
 
-        $this->driver = match ($driver) {
-            'mysql' => new Drivers\Mysql($this),
-            'sqlite' => new Drivers\Sqlite($this),
-            default => throw new DriverNotImplemented($driver),
-        };
+        $this->driver = service(DriverHandlerManager::class)->find($driver);
     }
 
     public function transaction(): Transaction
@@ -85,7 +80,7 @@ class DatabaseController implements StorageController
         return $this->driver->migrationBuilder();
     }
 
-    public function driver(): Driver
+    public function driver(): DriverHandler
     {
         return $this->driver;
     }

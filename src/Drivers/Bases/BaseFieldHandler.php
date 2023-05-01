@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\Drivers\Bases;
 
-use Medas\PdoStorage\Drivers\{Driver, Interfaces\FieldHandler};
+use Medas\PdoStorage\Drivers\{DriverHandler, Interfaces\FieldHandler};
 
 abstract class BaseFieldHandler implements FieldHandler
 {
     public function __construct(
-        protected readonly Driver $driver,
+        protected readonly DriverHandler $driver,
     )
     {
     }

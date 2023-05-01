@@ -15,7 +15,7 @@ use Medas\PdoStorage\Drivers\Interfaces\{AlterTableBuilder,
     TypeHandler};
 use Medas\StorageManager\Migrations\MigrationBuilder;
 
-abstract class BaseDriver implements Driver
+abstract class BaseHandler implements DriverHandler
 {
     protected AlterTableBuilder $alterTableBuilder;
     protected CreateTableBuilder $createTableBuilder;

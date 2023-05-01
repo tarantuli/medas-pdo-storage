@@ -28,7 +28,7 @@ use Medas\EntityManager\Selector\{Conditions\Condition,
     Selector,
     Sorting\SortBy};
 use Medas\PdoStorage\Database;
-use Medas\PdoStorage\Drivers\{Driver, Interfaces\SelectQueryBuilder};
+use Medas\PdoStorage\Drivers\{DriverHandler, Interfaces\SelectQueryBuilder};
 use Medas\PdoStorage\Exceptions\StorageIsNotDatabase;
 use Medas\PdoStorage\Queries\{ParameterizedQuery, Query};
 use Medas\PdoStorage\ValueSerializer;
@@ -44,7 +44,7 @@ class BaseSelectQueryBuilder implements SelectQueryBuilder
 
     public function __construct(
         private readonly CacheManager    $cacheManager,
-        private readonly Driver          $driver,
+        private readonly DriverHandler   $driver,
         private readonly MetaDataManager $metaDataManager,
     )
     {
