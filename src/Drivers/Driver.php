@@ -11,11 +11,14 @@ use Medas\PdoStorage\Drivers\Interfaces\{AlterTableBuilder,
     QueryBuilder,
     SelectQueryBuilder,
     TableStructureFinder,
-    TypeHandler};
+    TypeHandler
+};
 use Medas\StorageManager\Migrations\MigrationBuilder;
 
 interface Driver
 {
+    public function canHandle(string $driverName): bool;
+
     public function quote(string $identifier): string;
 
     public function escape(mixed $value): string;
