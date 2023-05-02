@@ -31,8 +31,8 @@ class Executor
     private function serializeArguments(Query $query): void
     {
         $serializer = service(ValueSerializer::class);
-        foreach ($query->arguments as $argument) {
-            $query->serializedArguments[] = $serializer->serialize($argument);
+        foreach ($query->arguments as $key => $argument) {
+            $query->serializedArguments[$key] = $serializer->serialize($argument);
         }
     }
 }
