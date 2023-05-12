@@ -39,7 +39,7 @@ abstract class BaseAlterTableBuilder implements AlterTableBuilder
         $this->processIndexes();
         $this->processForeignKeys();
 
-        $queryCollection = new QueryCollection([]);
+        $queryCollection = new QueryCollection();
 
         if ($this->baseQuery !== null) {
             $queryCollection[] = new Query(
