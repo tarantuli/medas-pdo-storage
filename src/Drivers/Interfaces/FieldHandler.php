@@ -8,5 +8,5 @@ use Medas\StorageManager\Structure\Blueprint\Field;
 
 interface FieldHandler
 {
-    public function buildDefinition(Field $field): string;
+    public function buildDefinition(Field $field): string|null;
 }

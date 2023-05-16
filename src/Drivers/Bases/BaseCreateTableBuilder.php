@@ -68,11 +68,15 @@ abstract class BaseCreateTableBuilder implements CreateTableBuilder
     protected function addFields(): void
     {
         foreach ($this->blueprint->fields() as $field) {
-            $this->query .= sprintf(
-                " %s %s,\n",
-                $this->driver->quote($field->name),
-                $this->driver->fieldHandler()->buildDefinition($field),
-            );
+            $definition = $this->driver->fieldHandler()->buildDefinition($field);
+
+            if ($definition !== null) {
+                $this->query .= sprintf(
+                    " %s %s,\n",
+                    $this->driver->quote($field->name),
+                    $definition,
+                );
+            }
         }
     }
 

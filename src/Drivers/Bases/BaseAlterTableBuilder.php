@@ -75,19 +75,27 @@ abstract class BaseAlterTableBuilder implements AlterTableBuilder
         }
 
         foreach ($this->changes->addFields as $field) {
-            $this->baseQuery .= sprintf(
-                "add column %s %s,\n",
-                $this->driver->quote($field->name),
-                $this->driver->fieldHandler()->buildDefinition($field),
-            );
+            $definition = $this->driver->fieldHandler()->buildDefinition($field);
+
+            if ($definition !== null) {
+                $this->baseQuery .= sprintf(
+                    "add column %s %s,\n",
+                    $this->driver->quote($field->name),
+                    $definition,
+                );
+            }
         }
 
         foreach ($this->changes->changeFields as $field) {
-            $this->baseQuery .= sprintf(
-                "modify column %1\$s %2\$s,\n",
-                $this->driver->quote($field->name),
-                $this->driver->fieldHandler()->buildDefinition($field),
-            );
+            $definition = $this->driver->fieldHandler()->buildDefinition($field);
+
+            if ($definition !== null) {
+                $this->baseQuery .= sprintf(
+                    "modify column %1\$s %2\$s,\n",
+                    $this->driver->quote($field->name),
+                    $definition,
+                );
+            }
         }
     }
 
