@@ -6,7 +6,7 @@ namespace Medas\PdoStorage;
 
 use Medas\Core\Attributes\Service;
 use Medas\Core\Interfaces\{Guid, GuidProvider, HasId, Serializer, Type};
-use Medas\EntityManager\Types\{Boolean, Guid as GuidType};
+use Medas\EntityManager\Types\{Boolean, Guid as GuidType, Relation};
 
 #[Service]
 class ValueSerializer implements Serializer
@@ -50,6 +50,10 @@ class ValueSerializer implements Serializer
 
         if ($type instanceof Boolean) {
             return (bool) $value;
+        }
+
+        if ($type instanceof Relation) {
+            return em()->get($type->entity, $value);
         }
 
         return $value;

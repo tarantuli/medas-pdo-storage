@@ -6,6 +6,7 @@ namespace Medas\PdoStorage\Drivers\Bases;
 
 use Medas\PdoStorage\Database;
 use Medas\PdoStorage\Drivers\{Handler, Interfaces\CreateTableBuilder};
+use Medas\PdoStorage\JoinTableManager;
 use Medas\PdoStorage\Queries\{Query, QueryCollection};
 use Medas\StorageManager\Structure\Blueprint;
 use Medas\StorageManager\UnitOfWork\Priority;
@@ -15,6 +16,8 @@ abstract class BaseCreateTableBuilder implements CreateTableBuilder
     protected Blueprint $blueprint;
     protected string $query;
     protected array $foreignKeys;
+    /** @var Blueprint\Field[] */
+    protected array $collections;
 
     public function __construct(
         protected readonly Handler  $driver,
@@ -29,6 +32,7 @@ abstract class BaseCreateTableBuilder implements CreateTableBuilder
     public function create(Blueprint $blueprint): QueryCollection
     {
         $this->foreignKeys = [];
+        $this->collections = [];
         $this->blueprint = $blueprint;
 
         $tableName = $this->driver->quote($this->blueprint->name());
@@ -62,12 +66,40 @@ abstract class BaseCreateTableBuilder implements CreateTableBuilder
             );
         }
 
+        if ($this->collections) {
+            foreach ($this->collections as $collectionField) {
+                $joinTable = service(JoinTableManager::class)->determineName($blueprint->name(), $collectionField->name);
+                $idField = $this->blueprint->primaryIndex()->fields()[0];
+
+                $joinQuery = sprintf(
+                    "create table %s (
+                    id %s,
+                    value %s
+                    )",
+                    $this->driver->quote($joinTable),
+                    $this->driver->typeHandler()->getBaseDefinition($idField),
+                    $this->driver->typeHandler()->getBaseDefinition($collectionField, useCollectionType: true),
+                );
+
+                $queryCollection[] = new Query(
+                    query: $joinQuery,
+                    database: $this->database,
+                    priority: Priority::AddCollectionStore,
+                );
+            }
+        }
+
         return $queryCollection;
     }
 
     protected function addFields(): void
     {
         foreach ($this->blueprint->fields() as $field) {
+            if ($field->type === Blueprint\Type::Collection) {
+                $this->collections[] = $field;
+                continue;
+            }
+
             $definition = $this->driver->fieldHandler()->buildDefinition($field);
 
             if ($definition !== null) {

@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage;
 
+use Medas\EntityManager\MetaData\Property;
+use Medas\EntityManager\Types\Collection;
 use Medas\PdoStorage\Queries\Query;
 use Medas\StorageManager\Interfaces\{Store, StoreRecord};
-use Medas\StorageManager\UnitOfWork\Action;
+use Medas\StorageManager\UnitOfWork\{Action, ActionCollection};
 
 class Table implements Store
 {
@@ -56,6 +58,18 @@ class Table implements Store
     public function prepareDelete(array $conditions): Action
     {
         return $this->controller->actionBuilder()->delete($this, $conditions);
+    }
+
+    public function prepareCollectionUpdate(object $entity, string $name, Collection $type, iterable $values): ActionCollection
+    {
+        return $this->controller->actionBuilder()->collectionUpdate($this, $entity, $name, $type, $values);
+    }
+
+    public function fetchCollectionRecord(object $entity, Property $property): iterable
+    {
+        $joinTable = service(JoinTableManager::class)->determineName($this->name, $property->name);
+
+        return $this->storage()->store($joinTable)->fetchAll(['id' => $entity]);
     }
 
     public function getCreateTable(): string|null

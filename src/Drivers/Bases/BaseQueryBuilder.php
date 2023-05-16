@@ -6,8 +6,10 @@ namespace Medas\PdoStorage\Drivers\Bases;
 
 use Medas\EntityManager\Filters\{Between, LessThan, MoreThan};
 use Medas\EntityManager\Selector\Selector;
+use Medas\EntityManager\Types\Collection;
 use Medas\PdoStorage\Database;
 use Medas\PdoStorage\Drivers\{Handler, Interfaces\QueryBuilder};
+use Medas\PdoStorage\JoinTableManager;
 use Medas\PdoStorage\Queries\{Query, QueryCollection};
 use Medas\PdoStorage\Table;
 use Medas\StorageManager\Structure\Blueprint;
@@ -110,6 +112,18 @@ abstract class BaseQueryBuilder implements QueryBuilder
         return new Query($this->query, $this->arguments, $this->database, Priority::DeleteRecord);
     }
 
+    public function collectionUpdate(Table $table, object $entity, string $name, Collection $type, iterable $values): QueryCollection
+    {
+        $joinTable = $table->storage()->store(service(JoinTableManager::class)->determineName($table->name, $name));
+        $queries = new QueryCollection();
+
+        foreach ($values as $value) {
+            $queries[] = $this->create($joinTable, ['id' => $entity, 'value' => $value], Priority::UpdateCollection);
+        }
+
+        return $queries;
+    }
+
     public function showCreate(Table $table): Query
     {
         return new Query('show create table ' . $this->driver->quote($table->name), [], $this->database);
@@ -129,7 +143,7 @@ abstract class BaseQueryBuilder implements QueryBuilder
         return $this->driver->createTableBuilder()->create($blueprint);
     }
 
-    public function create(Table $table, array $values): Query
+    public function create(Table $table, array $values, Priority $priority = Priority::CreateRecord): Query
     {
         $this->arguments = [];
 
@@ -144,7 +158,7 @@ abstract class BaseQueryBuilder implements QueryBuilder
             . ' (' . implode(',', $names) . ')'
             . ' values (' . implode(',', array_fill(0, count($names), '?')) . ')';
 
-        return new Query($this->query, $this->arguments, $this->database, Priority::CreateRecord);
+        return new Query($this->query, $this->arguments, $this->database, $priority);
     }
 
     public function fromSelector(Selector $selector, array $arguments): Action
