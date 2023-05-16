@@ -6,10 +6,10 @@ namespace Medas\PdoStorage;
 
 use Medas\StorageManager\Interfaces\Transaction as TransactionInterface;
 
-class Transaction implements TransactionInterface
+readonly class Transaction implements TransactionInterface
 {
     public function __construct(
-        private readonly \PDO $pdo,
+        private \PDO $pdo,
     )
     {
     }

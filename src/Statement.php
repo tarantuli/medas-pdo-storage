@@ -7,10 +7,10 @@ namespace Medas\PdoStorage;
 use Medas\StorageManager\Interfaces\RecordSet;
 use Medas\StorageManager\Interfaces\StoreRecord;
 
-class Statement implements RecordSet
+readonly class Statement implements RecordSet
 {
     public function __construct(
-        private readonly \PDOStatement $pdoStatement,
+        private \PDOStatement $pdoStatement,
     )
     {
     }

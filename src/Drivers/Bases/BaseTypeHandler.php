@@ -10,7 +10,7 @@ use Medas\StorageManager\Structure\Blueprint\{Field, Type};
 
 abstract class BaseTypeHandler implements TypeHandler
 {
-    public function getBaseDefinition(Field $field): string
+    public function getBaseDefinition(Field $field): string|null
     {
         return match ($field->type) {
             Type::Text => $this->handleText($field),
@@ -19,6 +19,7 @@ abstract class BaseTypeHandler implements TypeHandler
             Type::Integer => $this->handleInteger($field),
             Type::Boolean => $this->handleBoolean(),
             Type::Float => $this->handleFloat(),
+            Type::Collection => $this->handleCollection(),
         };
     }
 
@@ -81,5 +82,10 @@ abstract class BaseTypeHandler implements TypeHandler
     private function handleBoolean(): string
     {
         return 'tinyint unsigned';
+    }
+
+    private function handleCollection(): null
+    {
+        return null;
     }
 }

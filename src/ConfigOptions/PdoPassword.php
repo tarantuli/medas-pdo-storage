@@ -36,7 +36,7 @@ class PdoPassword implements ConfigOption
         return false;
     }
 
-    public function default(): mixed
+    public function default(): null
     {
         return null;
     }

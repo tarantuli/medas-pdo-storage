@@ -6,10 +6,10 @@ namespace Medas\PdoStorage\Drivers\Bases;
 
 use Medas\PdoStorage\Drivers\{Handler, Interfaces\FieldHandler};
 
-abstract class BaseFieldHandler implements FieldHandler
+abstract readonly class BaseFieldHandler implements FieldHandler
 {
     public function __construct(
-        protected readonly Handler $driver,
+        protected Handler $driver,
     )
     {
     }

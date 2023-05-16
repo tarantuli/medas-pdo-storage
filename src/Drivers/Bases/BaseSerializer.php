@@ -7,9 +7,9 @@ namespace Medas\PdoStorage\Drivers\Bases;
 use Medas\Core\Interfaces\{Serializer, Type};
 use Medas\PdoStorage\ValueSerializer;
 
-abstract class BaseSerializer implements Serializer
+abstract readonly class BaseSerializer implements Serializer
 {
-    private readonly ValueSerializer $valueSerializer;
+    private ValueSerializer $valueSerializer;
 
     public function __construct()
     {
