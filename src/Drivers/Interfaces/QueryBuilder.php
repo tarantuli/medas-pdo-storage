@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\Drivers\Interfaces;
 
+use Medas\Core\Interfaces\TracksAddsDeletions;
 use Medas\EntityManager\Types\Collection;
 use Medas\PdoStorage\Queries\{Query, QueryCollection};
 use Medas\PdoStorage\Table;
@@ -20,7 +21,7 @@ interface QueryBuilder extends ActionBuilder
 
     public function delete(Table $table, array $conditions): Query;
 
-    public function collectionUpdate(Table $table, object $entity, string $name, Collection $type, iterable $values): QueryCollection;
+    public function collectionUpdate(Table $table, object $entity, string $name, Collection $type, TracksAddsDeletions $values): QueryCollection;
 
     public function showCreate(Table $table): Query;
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\Drivers\Bases;
 
+use Medas\Core\Interfaces\TracksAddsDeletions;
 use Medas\EntityManager\Filters\{Between, LessThan, MoreThan};
 use Medas\EntityManager\Selector\Selector;
 use Medas\EntityManager\Types\Collection;
@@ -102,23 +103,27 @@ abstract class BaseQueryBuilder implements QueryBuilder
         $this->query = substr($this->query, 0, -2);
     }
 
-    public function delete(Table $table, array $conditions): Query
+    public function delete(Table $table, array $conditions, Priority $priority = Priority::DeleteRecord): Query
     {
         $this->arguments = [];
 
         $this->query = 'delete from ' . $table->name . ' where ';
         $this->appendConditions($conditions);
 
-        return new Query($this->query, $this->arguments, $this->database, Priority::DeleteRecord);
+        return new Query($this->query, $this->arguments, $this->database, $priority);
     }
 
-    public function collectionUpdate(Table $table, object $entity, string $name, Collection $type, iterable $values): QueryCollection
+    public function collectionUpdate(Table $table, object $entity, string $name, Collection $type, TracksAddsDeletions $values): QueryCollection
     {
         $joinTable = $table->storage()->store(service(JoinTableManager::class)->determineName($table->name, $name));
         $queries = new QueryCollection();
 
-        foreach ($values as $value) {
+        foreach ($values->getAdditions() as $value) {
             $queries[] = $this->create($joinTable, ['id' => $entity, 'value' => $value], Priority::UpdateCollection);
+        }
+
+        foreach ($values->getDeletions() as $value) {
+            $queries[] = $this->delete($joinTable, ['id' => $entity, 'value' => $value], Priority::UpdateCollection);
         }
 
         return $queries;
