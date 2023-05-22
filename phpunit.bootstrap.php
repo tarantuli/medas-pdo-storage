@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use Medas\ConfigManager\{ConfigManager, ConfigManagerPackage};
 use Medas\ConfigOptions\ConfigOptionsPackage;
-use Medas\Core\GlobalRepository;
 use Medas\PdoStorage\{Database, PdoStoragePackage};
 use Medas\RamseyUuidBridge\RamseyUuidBridgePackage;
 use Medas\ServiceManager\{ServiceConfig, ServiceManager};
@@ -30,4 +29,4 @@ service(ConfigManager::class)
     ->addDirectory('tests/MockUps');
 
 service(StorageManager::class)
-    ->add(GlobalRepository::objectInstantiator()->instantiate(Database::class));
+    ->add(medas()->objectInstantiator()->instantiate(Database::class));

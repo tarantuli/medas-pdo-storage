@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\Drivers\Bases;
 
-use Medas\Core\Interfaces\TracksAddsDeletions;
+use Medas\Core\Interfaces\ManagedCollection;
 use Medas\EntityManager\Filters\{Between, LessThan, MoreThan};
 use Medas\EntityManager\Selector\Selector;
 use Medas\EntityManager\Types\Collection;
@@ -113,7 +113,7 @@ abstract class BaseQueryBuilder implements QueryBuilder
         return new Query($this->query, $this->arguments, $this->database, $priority);
     }
 
-    public function collectionUpdate(Table $table, object $entity, string $name, Collection $type, TracksAddsDeletions $values): QueryCollection
+    public function collectionUpdate(Table $table, object $entity, string $name, Collection $type, ManagedCollection $values): QueryCollection
     {
         $joinTable = $table->storage()->store(service(JoinTableManager::class)->determineName($table->name, $name));
         $queries = new QueryCollection();

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage;
 
-use Medas\Core\Interfaces\TracksAddsDeletions;
+use Medas\Core\Interfaces\ManagedCollection;
 use Medas\EntityManager\MetaData\Property;
 use Medas\EntityManager\Types\Collection;
 use Medas\PdoStorage\Queries\Query;
@@ -61,7 +61,7 @@ class Table implements Store
         return $this->controller->actionBuilder()->delete($this, $conditions);
     }
 
-    public function prepareCollectionUpdate(object $entity, string $name, Collection $type, TracksAddsDeletions $values): ActionCollection
+    public function prepareCollectionUpdate(object $entity, string $name, Collection $type, ManagedCollection $values): ActionCollection
     {
         return $this->controller->actionBuilder()->collectionUpdate($this, $entity, $name, $type, $values);
     }
