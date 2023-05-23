@@ -70,14 +70,13 @@ abstract class BaseAlterTableBuilder implements AlterTableBuilder
 
     private function processFields(): void
     {
-        if ($this->changes->addFields || $this->changes->changeFields) {
-            $this->baseQuery = $this->startAlterQuery();
-        }
-
         foreach ($this->changes->addFields as $field) {
             $definition = $this->driver->fieldHandler()->buildDefinition($field);
 
             if ($definition !== null) {
+                if ($this->baseQuery === null) {
+                    $this->baseQuery = $this->startAlterQuery();
+                }
                 $this->baseQuery .= sprintf(
                     "add column %s %s,\n",
                     $this->driver->quote($field->name),
@@ -90,6 +89,9 @@ abstract class BaseAlterTableBuilder implements AlterTableBuilder
             $definition = $this->driver->fieldHandler()->buildDefinition($field);
 
             if ($definition !== null) {
+                if ($this->baseQuery === null) {
+                    $this->baseQuery = $this->startAlterQuery();
+                }
                 $this->baseQuery .= sprintf(
                     "modify column %1\$s %2\$s,\n",
                     $this->driver->quote($field->name),

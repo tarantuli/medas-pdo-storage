@@ -54,11 +54,13 @@ abstract class BaseMigrationBuilder implements MigrationBuilder
             $queryString = addcslashes(trim($query->query), '"');
 
             $migrateMethod->body .= <<<PHP
-            \$unitOfWork->addAction(new \\$queryClass(
-                query: "$queryString",
-                priority: \\$priorityClass::{$query->priority()->name}
-            ));
-        PHP;
+\$unitOfWork->addAction(new \\$queryClass(
+    query: <<<SQL
+$queryString
+SQL,
+    priority: \\$priorityClass::{$query->priority()->name}
+));
+PHP;
         }
 
         return true;
