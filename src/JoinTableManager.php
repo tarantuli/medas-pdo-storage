@@ -28,11 +28,12 @@ class JoinTableManager
 
         $idField = $blueprint->primaryIndex()->fields()[0];
 
-        $joinQuery = sprintf(
-            "create table %s (
-                    id %s,
-                    value %s
-                    )",
+        $joinQuery = sprintf(<<<TEXT
+create table %s (
+    id %s,
+    value %s
+)
+TEXT,
             $driver->quote($joinTable),
             $driver->typeHandler()->getBaseDefinition($idField),
             $driver->typeHandler()->getBaseDefinition($field, useCollectionType: true),
