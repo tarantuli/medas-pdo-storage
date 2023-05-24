@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\Drivers\Bases;
 
-use Medas\PdoStorage\Database;
-use Medas\PdoStorage\Drivers\{Handler, Interfaces\AlterTableBuilder, Interfaces\ForeignKeyConstraintBuilder};
+use Medas\PdoStorage\Drivers\{Interfaces\AlterTableBuilder, Interfaces\ForeignKeyConstraintBuilder};
 use Medas\PdoStorage\Queries\{Query, QueryCollection};
+use Medas\StorageManager\Structure\Blueprint;
+use Medas\StorageManager\Structure\Blueprint\Type;
 use Medas\StorageManager\Structure\Changes\Changes;
 use Medas\StorageManager\UnitOfWork\Priority;
 
-abstract class BaseAlterTableBuilder implements AlterTableBuilder
+abstract class BaseAlterTableBuilder extends BaseBuilder implements AlterTableBuilder
 {
     private Changes $changes;
 
@@ -18,31 +19,23 @@ abstract class BaseAlterTableBuilder implements AlterTableBuilder
     private string|null $dropForeignKeysQuery;
     private string|null $addForeignKeysQuery;
 
-    public function __construct(
-        private readonly Handler  $driver,
-        private readonly Database $database,
-    )
-    {
-        $this->initialize();
-    }
-
-    abstract protected function initialize(): void;
-
-    public function create(Changes $changes): QueryCollection
+    public function create(Blueprint $blueprint, Changes $changes): QueryCollection
     {
         $this->changes = $changes;
+        $this->blueprint = $blueprint;
         $this->baseQuery = null;
         $this->dropForeignKeysQuery = null;
         $this->addForeignKeysQuery = null;
+        $this->collections = [];
 
         $this->processFields();
         $this->processIndexes();
         $this->processForeignKeys();
 
-        $queryCollection = new QueryCollection();
+        $this->queryCollection = new QueryCollection();
 
         if ($this->baseQuery !== null) {
-            $queryCollection[] = new Query(
+            $this->queryCollection[] = new Query(
                 query: substr($this->baseQuery, 0, -2),
                 database: $this->database,
                 priority: Priority::AlterStore
@@ -50,7 +43,7 @@ abstract class BaseAlterTableBuilder implements AlterTableBuilder
         }
 
         if ($this->dropForeignKeysQuery !== null) {
-            $queryCollection[] = new Query(
+            $this->queryCollection[] = new Query(
                 query: substr($this->dropForeignKeysQuery, 0, -2),
                 database: $this->database,
                 priority: Priority::DeleteStoreRelations
@@ -58,19 +51,26 @@ abstract class BaseAlterTableBuilder implements AlterTableBuilder
         }
 
         if ($this->addForeignKeysQuery !== null) {
-            $queryCollection[] = new Query(
+            $this->queryCollection[] = new Query(
                 query: substr($this->addForeignKeysQuery, 0, -2),
                 database: $this->database,
                 priority: Priority::AddStoreRelations
             );
         }
 
-        return $queryCollection;
+        $this->processCollections();
+
+        return $this->queryCollection;
     }
 
     private function processFields(): void
     {
         foreach ($this->changes->addFields as $field) {
+            if ($field->type === Type::Collection) {
+                $this->collections[] = $field;
+                continue;
+            }
+
             $definition = $this->driver->fieldHandler()->buildDefinition($field);
 
             if ($definition !== null) {

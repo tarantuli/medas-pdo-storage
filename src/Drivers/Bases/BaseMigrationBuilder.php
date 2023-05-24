@@ -78,7 +78,7 @@ PHP;
         }
         else {
             $changes = $this->changeFinder->find($expectedStructure, $existingStructure);
-            return $changes ? $driver->alterTableBuilder()->create($changes) : null;
+            return $changes ? $driver->alterTableBuilder()->create($expectedStructure, $changes) : null;
         }
     }
 }

@@ -17,6 +17,7 @@
     },
     "require-dev": {
         "morphp/medas-config-manager": "dev-dev",
+        "morphp/medas-pdo-mysql": "dev-dev",
         "morphp/medas-config-options": "dev-dev",
         "morphp/medas-ramsey-uuid-bridge": "dev-dev",
         "phpunit/phpunit": "^9.5"

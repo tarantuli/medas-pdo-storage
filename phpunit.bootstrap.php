@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Medas\ConfigManager\{ConfigManager, ConfigManagerPackage};
 use Medas\ConfigOptions\ConfigOptionsPackage;
+use Medas\PdoMysql\PdoMysqlPackage;
 use Medas\PdoStorage\{Database, PdoStoragePackage};
 use Medas\RamseyUuidBridge\RamseyUuidBridgePackage;
 use Medas\ServiceManager\{ServiceConfig, ServiceManager};
@@ -16,6 +17,7 @@ new ServiceManager(function (): ServiceConfig {
 
     $config->addPackages([
         PdoStoragePackage::instance(),
+        PdoMysqlPackage::instance(),
         ConfigManagerPackage::instance(),
         ConfigOptionsPackage::instance(),
         RamseyUuidBridgePackage::instance(),
