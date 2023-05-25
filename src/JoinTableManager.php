@@ -5,10 +5,7 @@ declare(strict_types=1);
 namespace Medas\PdoStorage;
 
 use Medas\Core\Attributes\Service;
-use Medas\PdoStorage\Drivers\Handler;
-use Medas\PdoStorage\Queries\Query;
 use Medas\StorageManager\Structure\Blueprint;
-use Medas\StorageManager\UnitOfWork\Priority;
 
 #[Service]
 class JoinTableManager
@@ -18,31 +15,30 @@ class JoinTableManager
         return $sourceTable . '__' . $property;
     }
 
-    public function createQueries(Database $database, Handler $driver, Blueprint $blueprint, Blueprint\Field $field): array
+    public function createQueries(Database $database, Blueprint $sourceBlueprint, Blueprint\Field $field): iterable|null
     {
-        $joinTable = $this->determineName($blueprint->name(), $field->name);
+        $joinBlueprint = new Blueprint();
 
-        if ($database->store($joinTable)->exists()) {
-            return [];
-        }
+        $idField = clone $sourceBlueprint->primaryIndex()->fields()[0];
+        $idField->name = 'id';
+        $idField->isGenerated = false;
 
-        $idField = $blueprint->primaryIndex()->fields()[0];
+        $valueField = clone $field->collectionField;
+        $valueField->name = 'value';
+        $valueField->isGenerated = false;
 
-        $joinQuery = sprintf(<<<TEXT
-create table %s (
-    id %s,
-    value %s
-)
-TEXT,
-            $driver->quote($joinTable),
-            $driver->typeHandler()->getBaseDefinition($idField),
-            $driver->typeHandler()->getBaseDefinition($field, useCollectionType: true),
+        $foreignKey = new Blueprint\ForeignKey(
+            'value',
+            $field->collectionStore,
+            $field->collectionField->name,
+            true,
         );
 
-        return [new Query(
-            query: $joinQuery,
-            database: $database,
-            priority: Priority::AddCollectionStore,
-        )];
+        $joinBlueprint->setName($this->determineName($sourceBlueprint->name(), $field->name))
+            ->addField($idField)
+            ->addField($valueField)
+            ->addForeignKey($foreignKey);
+
+        return $database->controller()->migrationBuilder()->buildQueries($joinBlueprint);
     }
 }

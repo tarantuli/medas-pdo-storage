@@ -16,7 +16,6 @@ abstract class BaseBuilder
     protected Blueprint $blueprint;
     /** @var Field[] */
     protected array $collections;
-    protected QueryCollection $queryCollection;
 
     public function __construct(
         protected readonly Handler  $driver,
@@ -28,7 +27,7 @@ abstract class BaseBuilder
 
     abstract protected function initialize(): void;
 
-    protected function processCollections(): void
+    protected function processCollections(QueryCollection $queryCollection): void
     {
         if (!$this->collections) {
             return;
@@ -37,10 +36,12 @@ abstract class BaseBuilder
         $joinTableManager = service(JoinTableManager::class);
 
         foreach ($this->collections as $collectionField) {
-            $queries = $joinTableManager->createQueries($this->database, $this->driver, $this->blueprint, $collectionField);
+            $queries = $joinTableManager->createQueries($this->database, $this->blueprint, $collectionField);
 
-            foreach ($queries as $query) {
-                $this->queryCollection[] = $query;
+            if ($queries) {
+                foreach ($queries as $query) {
+                    $queryCollection[] = $query;
+                }
             }
         }
     }

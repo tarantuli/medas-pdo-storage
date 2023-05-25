@@ -31,7 +31,7 @@ abstract class BaseCreateTableBuilder extends BaseBuilder implements CreateTable
         $this->query = substr($this->query, 0, -2);
         $this->query .= "\n)\n";
 
-        $this->queryCollection = new QueryCollection([new Query(
+        $queryCollection = new QueryCollection([new Query(
             query: $this->query,
             database: $this->database,
             priority: Priority::CreateStore
@@ -44,16 +44,16 @@ abstract class BaseCreateTableBuilder extends BaseBuilder implements CreateTable
                 implode(",\n", $this->foreignKeys)
             );
 
-            $this->queryCollection[] = new Query(
+            $queryCollection[] = new Query(
                 query: $query,
                 database: $this->database,
                 priority: Priority::AddStoreRelations
             );
         }
 
-        $this->processCollections();
+        $this->processCollections($queryCollection);
 
-        return $this->queryCollection;
+        return $queryCollection;
     }
 
     protected function addFields(): void

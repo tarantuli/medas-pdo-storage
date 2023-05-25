@@ -7,7 +7,6 @@ namespace Medas\PdoStorage;
 use Medas\Core\Interfaces\ManagedCollection;
 use Medas\EntityManager\MetaData\Property;
 use Medas\EntityManager\Types\Collection;
-use Medas\PdoStorage\Queries\Query;
 use Medas\StorageManager\Interfaces\{Store, StoreRecord};
 use Medas\StorageManager\UnitOfWork\{Action, ActionCollection};
 
@@ -109,7 +108,6 @@ class Table implements Store
 
     public function exists(): bool
     {
-        /** @var Query $query */
         $query = $this->controller->actionBuilder()->showTables($this->name);
         $query->execute();
 

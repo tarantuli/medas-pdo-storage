@@ -11,6 +11,7 @@ use Medas\PdoStorage\Queries\{Query, QueryCollection};
 use Medas\StorageManager\Interfaces\Storage;
 use Medas\StorageManager\Migrations\MigrationBuilder;
 use Medas\StorageManager\StorageManager;
+use Medas\StorageManager\Structure\Blueprint;
 use Medas\StorageManager\Structure\Changes\ChangeFinder;
 use Medas\StorageManager\Structure\EntityStructureFinder;
 use Medas\StorageManager\UnitOfWork\Priority;
@@ -41,7 +42,8 @@ abstract class BaseMigrationBuilder implements MigrationBuilder
 
         $this->database = $storage;
 
-        $queries = $this->buildQueries($className);
+        $expectedStructure = $this->entityStructureFinder->find($className);
+        $queries = $this->buildQueries($expectedStructure);
 
         if (count($queries) === 0) {
             return false;
@@ -66,11 +68,10 @@ PHP;
         return true;
     }
 
-    private function buildQueries(string $className): QueryCollection|null
+    public function buildQueries(Blueprint $expectedStructure): QueryCollection|null
     {
         $driver = $this->database->controller()->driver();
 
-        $expectedStructure = $this->entityStructureFinder->find($className);
         $existingStructure = $driver->tableStructureFinder()->find($this->database->store($expectedStructure->name()));
 
         if ($existingStructure === null) {

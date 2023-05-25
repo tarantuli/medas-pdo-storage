@@ -10,9 +10,9 @@ use Medas\StorageManager\Structure\Blueprint\{Field, Type};
 
 abstract class BaseTypeHandler implements TypeHandler
 {
-    public function getBaseDefinition(Field $field, bool $useCollectionType = false): string|null
+    public function getBaseDefinition(Field $field): string|null
     {
-        return match ($useCollectionType ? $field->collectionType : $field->type) {
+        return match ($field->type) {
             Type::Text => $this->handleText($field),
             Type::Binary => $this->handleBinary($field),
             Type::DateTime => $this->handleDateTime(),

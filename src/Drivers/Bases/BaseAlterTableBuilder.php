@@ -32,10 +32,10 @@ abstract class BaseAlterTableBuilder extends BaseBuilder implements AlterTableBu
         $this->processIndexes();
         $this->processForeignKeys();
 
-        $this->queryCollection = new QueryCollection();
+        $queryCollection = new QueryCollection();
 
         if ($this->baseQuery !== null) {
-            $this->queryCollection[] = new Query(
+            $queryCollection[] = new Query(
                 query: substr($this->baseQuery, 0, -2),
                 database: $this->database,
                 priority: Priority::AlterStore
@@ -43,7 +43,7 @@ abstract class BaseAlterTableBuilder extends BaseBuilder implements AlterTableBu
         }
 
         if ($this->dropForeignKeysQuery !== null) {
-            $this->queryCollection[] = new Query(
+            $queryCollection[] = new Query(
                 query: substr($this->dropForeignKeysQuery, 0, -2),
                 database: $this->database,
                 priority: Priority::DeleteStoreRelations
@@ -51,16 +51,16 @@ abstract class BaseAlterTableBuilder extends BaseBuilder implements AlterTableBu
         }
 
         if ($this->addForeignKeysQuery !== null) {
-            $this->queryCollection[] = new Query(
+            $queryCollection[] = new Query(
                 query: substr($this->addForeignKeysQuery, 0, -2),
                 database: $this->database,
                 priority: Priority::AddStoreRelations
             );
         }
 
-        $this->processCollections();
+        $this->processCollections($queryCollection);
 
-        return $this->queryCollection;
+        return $queryCollection;
     }
 
     private function processFields(): void
