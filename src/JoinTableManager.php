@@ -19,6 +19,10 @@ class JoinTableManager
     {
         $joinBlueprint = new Blueprint();
 
+        if ($sourceBlueprint->primaryIndex() === null) {
+            return null;
+        }
+
         $idField = clone $sourceBlueprint->primaryIndex()->fields()[0];
         $idField->name = 'id';
         $idField->isGenerated = false;
