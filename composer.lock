@@ -145,12 +145,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:tarantuli/medas-entity-manager.git",
-                "reference": "1fd6bead5d2fb23a0ebdbc4d957bb9fbf4bb5a6a"
+                "reference": "6044137d65a50c9a807d5122ab5e41581df85c0a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tarantuli/medas-entity-manager/zipball/1fd6bead5d2fb23a0ebdbc4d957bb9fbf4bb5a6a",
-                "reference": "1fd6bead5d2fb23a0ebdbc4d957bb9fbf4bb5a6a",
+                "url": "https://api.github.com/repos/tarantuli/medas-entity-manager/zipball/6044137d65a50c9a807d5122ab5e41581df85c0a",
+                "reference": "6044137d65a50c9a807d5122ab5e41581df85c0a",
                 "shasum": ""
             },
             "require": {
@@ -184,7 +184,7 @@
                 "source": "https://github.com/tarantuli/medas-entity-manager/tree/dev",
                 "issues": "https://github.com/tarantuli/medas-entity-manager/issues"
             },
-            "time": "2023-05-24T11:27:39+00:00"
+            "time": "2023-05-26T11:17:52+00:00"
         },
         {
             "name": "morphp/medas-file-builder",
@@ -490,12 +490,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:tarantuli/medas-storage-manager.git",
-                "reference": "3e5ec3b5bab9a838fb7b5649bcd6ab6e90d1ee16"
+                "reference": "e2c3f2b32715fba9b435979418ea23ca9267c3b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tarantuli/medas-storage-manager/zipball/3e5ec3b5bab9a838fb7b5649bcd6ab6e90d1ee16",
-                "reference": "3e5ec3b5bab9a838fb7b5649bcd6ab6e90d1ee16",
+                "url": "https://api.github.com/repos/tarantuli/medas-storage-manager/zipball/e2c3f2b32715fba9b435979418ea23ca9267c3b1",
+                "reference": "e2c3f2b32715fba9b435979418ea23ca9267c3b1",
                 "shasum": ""
             },
             "require": {
@@ -536,7 +536,7 @@
                 "source": "https://github.com/tarantuli/medas-storage-manager/tree/dev",
                 "issues": "https://github.com/tarantuli/medas-storage-manager/issues"
             },
-            "time": "2023-05-25T09:34:46+00:00"
+            "time": "2023-05-26T10:49:51+00:00"
         }
     ],
     "packages-dev": [
@@ -2724,16 +2724,16 @@
         },
         {
             "name": "symfony/deprecation-contracts",
-            "version": "v3.2.1",
+            "version": "v3.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/deprecation-contracts.git",
-                "reference": "e2d1534420bd723d0ef5aec58a22c5fe60ce6f5e"
+                "reference": "7c3aff79d10325257a001fcf92d991f24fc967cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/e2d1534420bd723d0ef5aec58a22c5fe60ce6f5e",
-                "reference": "e2d1534420bd723d0ef5aec58a22c5fe60ce6f5e",
+                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/7c3aff79d10325257a001fcf92d991f24fc967cf",
+                "reference": "7c3aff79d10325257a001fcf92d991f24fc967cf",
                 "shasum": ""
             },
             "require": {
@@ -2742,7 +2742,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "3.3-dev"
+                    "dev-main": "3.4-dev"
                 },
                 "thanks": {
                     "name": "symfony/contracts",
@@ -2771,7 +2771,7 @@
             "description": "A generic function and convention to trigger deprecation notices",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.2.1"
+                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.3.0"
             },
             "funding": [
                 {
@@ -2787,7 +2787,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-03-01T10:25:55+00:00"
+            "time": "2023-05-23T14:45:45+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",

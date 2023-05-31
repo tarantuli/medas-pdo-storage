@@ -68,7 +68,7 @@ abstract class BaseCreateTableBuilder extends BaseBuilder implements CreateTable
 
             if ($definition !== null) {
                 $this->query .= sprintf(
-                    "%s %s,\n",
+                    " %s %s,\n",
                     $this->driver->quote($field->name),
                     $definition,
                 );

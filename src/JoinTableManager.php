@@ -27,21 +27,35 @@ class JoinTableManager
         $idField->name = 'id';
         $idField->isGenerated = false;
 
+        $idForeignKey = new Blueprint\ForeignKey(
+            'id',
+            $sourceBlueprint->name(),
+            $sourceBlueprint->primaryIndex()->fields()[0]->name,
+            true
+        );
+
         $valueField = clone $field->collectionField;
         $valueField->name = 'value';
         $valueField->isGenerated = false;
 
-        $foreignKey = new Blueprint\ForeignKey(
+        $valueForeignKey = new Blueprint\ForeignKey(
             'value',
             $field->collectionStore,
             $field->collectionField->name,
             true,
         );
 
+        $primaryIndex = new Blueprint\Index(
+            [$idField, $valueField],
+            true
+        );
+
         $joinBlueprint->setName($this->determineName($sourceBlueprint->name(), $field->name))
             ->addField($idField)
             ->addField($valueField)
-            ->addForeignKey($foreignKey);
+            ->addIndex($primaryIndex)
+            ->addForeignKey($idForeignKey)
+            ->addForeignKey($valueForeignKey);
 
         return $database->controller()->migrationBuilder()->buildQueries($joinBlueprint);
     }
