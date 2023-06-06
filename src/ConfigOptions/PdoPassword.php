@@ -4,16 +4,21 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\ConfigOptions;
 
-use Medas\Core\AsSingleton;
+use Medas\Core\Attributes\Service;
 use Medas\Core\Interfaces\{ConfigGroup, ConfigOption};
 
-class PdoPassword implements ConfigOption
+#[Service]
+readonly class PdoPassword implements ConfigOption
 {
-    use AsSingleton;
+    public function __construct(
+        private PdoGroup $group,
+    )
+    {
+    }
 
     public function group(): ConfigGroup
     {
-        return PdoGroup::instance();
+        return $this->group;
     }
 
     public function name(): string
