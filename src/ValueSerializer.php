@@ -53,6 +53,10 @@ class ValueSerializer implements Serializer
         }
 
         if ($type instanceof Relation) {
+            if (enum_exists($type->entity)) {
+                return $value;
+            }
+
             return em()->get($type->entity, $value);
         }
 
