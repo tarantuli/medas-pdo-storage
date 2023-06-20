@@ -54,6 +54,16 @@ abstract class BaseCreateTableBuilder extends BaseBuilder implements CreateTable
     protected function addFields(BuildJob $job): void
     {
         foreach ($job->blueprint->fields() as $field) {
+            if ($field->store !== $job->blueprint->name()) {
+                // If this is the primary key, add it without generating value
+                if (in_array($field, $job->blueprint->primaryIndex()->fields())) {
+                    $field->isGenerated = false;
+                }
+                else {
+                    continue;
+                }
+            }
+
             if ($field->type === Blueprint\Type::Collection) {
                 $job->collections[] = $field;
                 continue;

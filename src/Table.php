@@ -8,7 +8,7 @@ use Medas\Core\Interfaces\ManagedCollection;
 use Medas\EntityManager\MetaData\Property;
 use Medas\EntityManager\Types\Collection;
 use Medas\StorageManager\Interfaces\{Store, StoreRecord};
-use Medas\StorageManager\UnitOfWork\{Action, ActionCollection};
+use Medas\StorageManager\UnitOfWork\ActionCollection;
 
 class Table implements Store
 {
@@ -40,22 +40,22 @@ class Table implements Store
         return $query->recordSet()->fetchRecords();
     }
 
-    public function prepareGet(array $filters): Action
+    public function prepareGet(array $filters): ActionCollection
     {
         return $this->controller->actionBuilder()->select([$this], $filters);
     }
 
-    public function prepareCreate(array $values): Action
+    public function prepareCreate(array $values): ActionCollection
     {
         return $this->controller->actionBuilder()->create($this, $values);
     }
 
-    public function prepareUpdate(array $updates, array $conditions): Action
+    public function prepareUpdate(array $updates, array $conditions): ActionCollection
     {
         return $this->controller->actionBuilder()->update($this, $updates, $conditions);
     }
 
-    public function prepareDelete(array $conditions): Action
+    public function prepareDelete(array $conditions): ActionCollection
     {
         return $this->controller->actionBuilder()->delete($this, $conditions);
     }

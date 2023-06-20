@@ -29,7 +29,7 @@ abstract class BaseQueryBuilder implements QueryBuilder
     }
 
     /** @param Table[] $tables */
-    public function select(array $tables, array $filters): Query
+    public function select(array $tables, array $filters): QueryCollection
     {
         $this->arguments = [];
         $this->query = /** @lang text */
@@ -46,7 +46,7 @@ abstract class BaseQueryBuilder implements QueryBuilder
             $this->appendConditions($filters);
         }
 
-        return new Query($this->query, $this->arguments, $this->database);
+        return QueryCollection::fromQuery(new Query($this->query, $this->arguments, $this->database));
     }
 
     /** @noinspection PhpSameParameterValueInspection */
@@ -80,7 +80,7 @@ abstract class BaseQueryBuilder implements QueryBuilder
         $this->query = substr($this->query, 0, -2 - strlen($separator));
     }
 
-    public function update(Table $table, array $updates, array $conditions): Query
+    public function update(Table $table, array $updates, array $conditions): QueryCollection
     {
         $this->arguments = [];
 
@@ -90,7 +90,7 @@ abstract class BaseQueryBuilder implements QueryBuilder
         $this->query .= ' where ';
         $this->appendConditions($conditions);
 
-        return new Query($this->query, $this->arguments, $this->database, Priority::UpdateRecord);
+        return QueryCollection::fromQuery(new Query($this->query, $this->arguments, $this->database, Priority::UpdateRecord));
     }
 
     private function appendFields(array $fields): void
@@ -103,14 +103,14 @@ abstract class BaseQueryBuilder implements QueryBuilder
         $this->query = substr($this->query, 0, -2);
     }
 
-    public function delete(Table $table, array $conditions, Priority $priority = Priority::DeleteRecord): Query
+    public function delete(Table $table, array $conditions, Priority $priority = Priority::DeleteRecord): QueryCollection
     {
         $this->arguments = [];
 
         $this->query = 'delete from ' . $table->name . ' where ';
         $this->appendConditions($conditions);
 
-        return new Query($this->query, $this->arguments, $this->database, $priority);
+        return QueryCollection::fromQuery(new Query($this->query, $this->arguments, $this->database, $priority));
     }
 
     public function collectionUpdate(Table $table, object $entity, string $name, Collection $type, ManagedCollection $values): QueryCollection
@@ -129,18 +129,18 @@ abstract class BaseQueryBuilder implements QueryBuilder
         return $queries;
     }
 
-    public function showCreate(Table $table): Query
+    public function showCreate(Table $table): QueryCollection
     {
-        return new Query('show create table ' . $this->driver->quote($table->name), [], $this->database);
+        return QueryCollection::fromQuery(new Query('show create table ' . $this->driver->quote($table->name), [], $this->database));
     }
 
-    public function dropTable(string $name): Query
+    public function dropTable(string $name): QueryCollection
     {
-        return new Query(
+        return QueryCollection::fromQuery(new Query(
             query: 'drop table if exists ' . $this->driver->quote($name),
             database: $this->database,
             priority: Priority::DeleteStore
-        );
+        ));
     }
 
     public function createStore(Blueprint $blueprint): QueryCollection
@@ -148,7 +148,7 @@ abstract class BaseQueryBuilder implements QueryBuilder
         return $this->driver->createTableBuilder()->create($blueprint);
     }
 
-    public function create(Table $table, array $values, Priority $priority = Priority::CreateRecord): Query
+    public function create(Table $table, array $values, Priority $priority = Priority::CreateRecord): QueryCollection
     {
         $this->arguments = [];
 
@@ -163,7 +163,7 @@ abstract class BaseQueryBuilder implements QueryBuilder
             . ' (' . implode(',', $names) . ')'
             . ' values (' . implode(',', array_fill(0, count($names), '?')) . ')';
 
-        return new Query($this->query, $this->arguments, $this->database, $priority);
+        return QueryCollection::fromQuery(new Query($this->query, $this->arguments, $this->database, $priority));
     }
 
     public function fromSelector(Selector $selector, array $arguments): Action

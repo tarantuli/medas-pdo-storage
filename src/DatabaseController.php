@@ -57,7 +57,9 @@ class DatabaseController implements StorageController
 
     public function deleteStore(string $name): void
     {
-        $this->execute($this->actionBuilder()->dropTable($name));
+        foreach ($this->actionBuilder()->dropTable($name) as $query) {
+            $this->execute($query);
+        }
     }
 
     public function execute(Query $query): void
