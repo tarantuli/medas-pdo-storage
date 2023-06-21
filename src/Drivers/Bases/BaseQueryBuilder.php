@@ -119,11 +119,15 @@ abstract class BaseQueryBuilder implements QueryBuilder
         $queries = new QueryCollection();
 
         foreach ($values->getAdditions() as $value) {
-            $queries[] = $this->create($joinTable, ['id' => $entity, 'value' => $value], Priority::UpdateCollection);
+            foreach ($this->create($joinTable, ['id' => $entity, 'value' => $value], Priority::UpdateCollection) as $query) {
+                $queries[] = $query;
+            }
         }
 
         foreach ($values->getDeletions() as $value) {
-            $queries[] = $this->delete($joinTable, ['id' => $entity, 'value' => $value], Priority::UpdateCollection);
+            foreach ($this->delete($joinTable, ['id' => $entity, 'value' => $value], Priority::UpdateCollection) as $query) {
+                $queries[] = $query;
+            }
         }
 
         return $queries;
@@ -150,20 +154,20 @@ abstract class BaseQueryBuilder implements QueryBuilder
 
     public function create(Table $table, array $values, Priority $priority = Priority::CreateRecord): QueryCollection
     {
-        $this->arguments = [];
+        $arguments = [];
 
         $names = [];
 
         foreach ($values as $field => $value) {
             $names[] = $this->driver->quote($field);
-            $this->arguments[] = $value;
+            $arguments[] = $value;
         }
 
-        $this->query = 'insert into ' . $this->driver->quote($table->name)
+        $query = 'insert into ' . $this->driver->quote($table->name)
             . ' (' . implode(',', $names) . ')'
             . ' values (' . implode(',', array_fill(0, count($names), '?')) . ')';
 
-        return QueryCollection::fromQuery(new Query($this->query, $this->arguments, $this->database, $priority));
+        return QueryCollection::fromQuery(new Query($query, $arguments, $this->database, $priority));
     }
 
     public function fromSelector(Selector $selector, array $arguments): Action
