@@ -57,7 +57,11 @@ abstract class BaseCreateTableBuilder extends BaseBuilder implements CreateTable
             if ($field->store !== null && $field->store !== $job->blueprint->name()) {
                 // If this is the primary key, add it without generating value
                 $primaryIndex = $job->blueprint->primaryIndex();
+
                 if ($primaryIndex && in_array($field, $primaryIndex->fields())) {
+                    $foreignKey = new Blueprint\ForeignKey($field->name, $field->store, $field->name, true);
+
+                    $job->blueprint->addForeignKey($foreignKey);
                     $field->isGenerated = false;
                 }
                 else {
