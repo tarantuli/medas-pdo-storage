@@ -23,6 +23,7 @@ use Medas\EntityManager\Selector\{Conditions\Condition,
     Operants\Operant,
     Operants\Property,
     Operants\Value,
+    Pagination,
     Parameter,
     Relations\Relation,
     Selector,
@@ -93,6 +94,7 @@ class BaseSelectQueryBuilder implements SelectQueryBuilder
         $this->processConditions($definition->conditions);
         $this->processSorting($definition->sorts);
         $this->processParameters($definition->parameters);
+        $this->processPagination($definition->pagination);
 
         return new ParameterizedQuery($this->query, $definition->parameters, $this->foundConstants, $database);
     }
@@ -224,5 +226,17 @@ class BaseSelectQueryBuilder implements SelectQueryBuilder
         }
 
         return $query;
+    }
+
+    private function processPagination(Pagination|null $pagination): void
+    {
+        if ($pagination === null) {
+            return;
+        }
+
+        $limit = $pagination->perPage;
+        $offset = ($pagination->page - 1) * $pagination->perPage;
+
+        $this->query .= ' limit ' . $offset . ', ' . $limit;
     }
 }
