@@ -26,7 +26,9 @@ use Medas\EntityManager\Selector\{Conditions\Condition,
     Parameter,
     Relations\Relation,
     Selector,
-    Sorting\SortBy};
+    Sorting\SortBy,
+    Sorting\SortDirection
+};
 use Medas\PdoStorage\Database;
 use Medas\PdoStorage\Drivers\{Handler, Interfaces\SelectQueryBuilder};
 use Medas\PdoStorage\Exceptions\StorageIsNotDatabase;
@@ -168,13 +170,18 @@ class BaseSelectQueryBuilder implements SelectQueryBuilder
             . ($isNull ? ' is null' : ' is not null');
     }
 
+    private const SORTING_DIRECTIONS = [
+        SortDirection::ASC->name => 'asc',
+        SortDirection::DESC->name => 'desc',
+    ];
+
     /** @param SortBy[] $sorts */
     private function processSorting(array $sorts): void
     {
         $parts = [];
         foreach ($sorts as $sort) {
             if ($sort instanceof SortBy && $sort->operant instanceof Property) {
-                $parts[] = $sort->operant->name . ' ' . $sort->direction->name;
+                $parts[] = $this->driver->quote($sort->operant->name) . ' ' . self::SORTING_DIRECTIONS[$sort->direction->name];
                 continue;
             }
 
