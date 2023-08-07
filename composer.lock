@@ -7,6 +7,48 @@
     "content-hash": "07dda4c3e11c88c08710fcd14f7612a7",
     "packages": [
         {
+            "name": "morphp/medas-cache",
+            "version": "dev-dev",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:tarantuli/medas-cache.git",
+                "reference": "165b721e9a10409809ac96bba4aae13fc9b4d707"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tarantuli/medas-cache/zipball/165b721e9a10409809ac96bba4aae13fc9b4d707",
+                "reference": "165b721e9a10409809ac96bba4aae13fc9b4d707",
+                "shasum": ""
+            },
+            "require": {
+                "morphp/medas-core": "dev-dev",
+                "morphp/medas-file-system": "dev-dev"
+            },
+            "require-dev": {
+                "morphp/medas-service-manager": "dev-dev",
+                "phpunit/phpunit": "^9.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Medas\\Cache\\": "src/",
+                    "Medas\\CacheTest\\": "tests/"
+                }
+            },
+            "authors": [
+                {
+                    "name": "Patrick Morpey",
+                    "email": "patrick@morphp.nl"
+                }
+            ],
+            "description": "Medas cache",
+            "support": {
+                "source": "https://github.com/tarantuli/medas-cache/tree/dev",
+                "issues": "https://github.com/tarantuli/medas-cache/issues"
+            },
+            "time": "2023-08-03T07:57:36+00:00"
+        },
+        {
             "name": "morphp/medas-config-options",
             "version": "dev-dev",
             "source": {
@@ -145,12 +187,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:tarantuli/medas-core.git",
-                "reference": "219c1b99518a42377ce437bf11f7d2c7897bfdce"
+                "reference": "f34d39a5f4feb51f992b5a9b71db7500e8e07e28"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tarantuli/medas-core/zipball/219c1b99518a42377ce437bf11f7d2c7897bfdce",
-                "reference": "219c1b99518a42377ce437bf11f7d2c7897bfdce",
+                "url": "https://api.github.com/repos/tarantuli/medas-core/zipball/f34d39a5f4feb51f992b5a9b71db7500e8e07e28",
+                "reference": "f34d39a5f4feb51f992b5a9b71db7500e8e07e28",
                 "shasum": ""
             },
             "require": {
@@ -183,7 +225,7 @@
                 "source": "https://github.com/tarantuli/medas-core/tree/dev",
                 "issues": "https://github.com/tarantuli/medas-core/issues"
             },
-            "time": "2023-07-13T07:43:20+00:00"
+            "time": "2023-08-03T07:54:38+00:00"
         },
         {
             "name": "morphp/medas-entity-manager",
@@ -489,12 +531,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:tarantuli/medas-service-manager.git",
-                "reference": "5add485768ed7cffb465d39652b77ec128ebe603"
+                "reference": "4e8e96238a36762029049307801536d084faefce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tarantuli/medas-service-manager/zipball/5add485768ed7cffb465d39652b77ec128ebe603",
-                "reference": "5add485768ed7cffb465d39652b77ec128ebe603",
+                "url": "https://api.github.com/repos/tarantuli/medas-service-manager/zipball/4e8e96238a36762029049307801536d084faefce",
+                "reference": "4e8e96238a36762029049307801536d084faefce",
                 "shasum": ""
             },
             "require": {
@@ -528,7 +570,7 @@
                 "source": "https://github.com/tarantuli/medas-service-manager/tree/dev",
                 "issues": "https://github.com/tarantuli/medas-service-manager/issues"
             },
-            "time": "2023-07-13T07:15:18+00:00"
+            "time": "2023-08-03T07:56:11+00:00"
         },
         {
             "name": "morphp/medas-storage-manager",
@@ -536,15 +578,16 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:tarantuli/medas-storage-manager.git",
-                "reference": "2658c8b7f79c3648b94d5905b431d1baaa600dd2"
+                "reference": "ff1bd52f0f836763d6084726727d867438173be8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tarantuli/medas-storage-manager/zipball/2658c8b7f79c3648b94d5905b431d1baaa600dd2",
-                "reference": "2658c8b7f79c3648b94d5905b431d1baaa600dd2",
+                "url": "https://api.github.com/repos/tarantuli/medas-storage-manager/zipball/ff1bd52f0f836763d6084726727d867438173be8",
+                "reference": "ff1bd52f0f836763d6084726727d867438173be8",
                 "shasum": ""
             },
             "require": {
+                "morphp/medas-cache": "dev-dev",
                 "morphp/medas-config-options": "dev-dev",
                 "morphp/medas-console": "dev-dev",
                 "morphp/medas-console-printer": "dev-dev",
@@ -584,7 +627,7 @@
                 "source": "https://github.com/tarantuli/medas-storage-manager/tree/dev",
                 "issues": "https://github.com/tarantuli/medas-storage-manager/issues"
             },
-            "time": "2023-07-26T10:23:12+00:00"
+            "time": "2023-08-07T10:47:16+00:00"
         }
     ],
     "packages-dev": [
@@ -1209,16 +1252,16 @@
         },
         {
             "name": "phpunit/php-code-coverage",
-            "version": "9.2.26",
+            "version": "9.2.27",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "443bc6912c9bd5b409254a40f4b0f4ced7c80ea1"
+                "reference": "b0a88255cb70d52653d80c890bd7f38740ea50d1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/443bc6912c9bd5b409254a40f4b0f4ced7c80ea1",
-                "reference": "443bc6912c9bd5b409254a40f4b0f4ced7c80ea1",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/b0a88255cb70d52653d80c890bd7f38740ea50d1",
+                "reference": "b0a88255cb70d52653d80c890bd7f38740ea50d1",
                 "shasum": ""
             },
             "require": {
@@ -1274,7 +1317,8 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues",
-                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/9.2.26"
+                "security": "https://github.com/sebastianbergmann/php-code-coverage/security/policy",
+                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/9.2.27"
             },
             "funding": [
                 {
@@ -1282,7 +1326,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-03-06T12:58:08+00:00"
+            "time": "2023-07-26T13:44:30+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -2315,16 +2359,16 @@
         },
         {
             "name": "sebastian/global-state",
-            "version": "5.0.5",
+            "version": "5.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/global-state.git",
-                "reference": "0ca8db5a5fc9c8646244e629625ac486fa286bf2"
+                "reference": "bde739e7565280bda77be70044ac1047bc007e34"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/global-state/zipball/0ca8db5a5fc9c8646244e629625ac486fa286bf2",
-                "reference": "0ca8db5a5fc9c8646244e629625ac486fa286bf2",
+                "url": "https://api.github.com/repos/sebastianbergmann/global-state/zipball/bde739e7565280bda77be70044ac1047bc007e34",
+                "reference": "bde739e7565280bda77be70044ac1047bc007e34",
                 "shasum": ""
             },
             "require": {
@@ -2367,7 +2411,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/global-state/issues",
-                "source": "https://github.com/sebastianbergmann/global-state/tree/5.0.5"
+                "source": "https://github.com/sebastianbergmann/global-state/tree/5.0.6"
             },
             "funding": [
                 {
@@ -2375,7 +2419,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-02-14T08:28:10+00:00"
+            "time": "2023-08-02T09:26:13+00:00"
         },
         {
             "name": "sebastian/lines-of-code",

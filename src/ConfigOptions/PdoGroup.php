@@ -10,9 +10,15 @@ use Medas\StorageManager\ConfigOptions\RootGroup;
 #[Service]
 class PdoGroup implements ConfigGroup
 {
+    public function __construct(
+        private readonly RootGroup $group,
+    )
+    {
+    }
+
     public function parent(): ConfigGroup|null
     {
-        return RootGroup::instance();
+        return $this->group;
     }
 
     public function name(): string
