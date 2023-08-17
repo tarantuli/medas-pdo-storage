@@ -14,9 +14,9 @@ class PdoStoragePackage extends BasePackage
 
     public function dependencies(): array
     {
-        return $this->dependenciesByClass([
-            StorageManagerPackage::class,
-        ]);
+        return [
+            StorageManagerPackage::instance(),
+        ];
     }
 
     public function sourceDirectory(): string
