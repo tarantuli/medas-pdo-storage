@@ -12,6 +12,7 @@ use Medas\PdoStorage\Drivers\Interfaces\{FieldHandler,
     TypeHandler};
 use Medas\PdoStorage\Table;
 use Medas\StorageManager\Interfaces\RecordFetchers;
+use Medas\StorageManager\Interfaces\Storage;
 use Medas\StorageManager\Migrations\MigrationBuilder;
 
 interface DriverHandler
@@ -20,11 +21,11 @@ interface DriverHandler
 
     public function priority(): int;
 
-    public function quote(string $identifier): string;
+    public function quote(Storage $storage, string $identifier): string;
 
-    public function escape(mixed $value): string;
+    public function escape(Storage $storage, mixed $value): string;
 
-    public function table(string $name): Table;
+    public function table(Storage $storage, string $name): Table;
 
     public function tableStructureFinder(): TableStructureFinder;
 
