@@ -54,7 +54,7 @@ class PdoStorageController implements StorageController
 
     public function store(string $name, Storage $storage = null): Table
     {
-        return $this->getDatabaseController($storage ?? $this->defaultDatabase)->driverHandler->table($name);
+        return $this->getDatabaseController($storage ?? $this->defaultDatabase)->driverHandler->table($storage, $name);
     }
 
     public function actionBuilders(Storage $storage = null): ActionBuilders
@@ -81,7 +81,7 @@ class PdoStorageController implements StorageController
 
     public function hasStore(Store $store, Storage $storage = null): bool
     {
-        $query = $this->getDatabaseController($storage ?? $this->defaultDatabase)->driverHandler->queryBuilders()->showTables()->build($storage->name());
+        $query = $this->getDatabaseController($storage ?? $this->defaultDatabase)->driverHandler->queryBuilders()->showTables()->build($storage, $storage->name());
         $query->execute();
 
         return $query->recordSet()->hasRecords();
@@ -90,6 +90,16 @@ class PdoStorageController implements StorageController
     public function recordFetchers(Storage $storage = null): RecordFetchers
     {
         return $this->getDatabaseController($storage ?? $this->defaultDatabase)->driverHandler->recordFetchers();
+    }
+
+    public function quote(Database $database, string $identifier): string
+    {
+        return $this->getDatabaseController($database)->driverHandler->quote($database, $identifier);
+    }
+
+    public function escape(Database $database, mixed $value): string
+    {
+        return $this->getDatabaseController($database)->driverHandler->escape($database, $value);
     }
 
     /*        private readonly QueryExecutor                 $executor,
