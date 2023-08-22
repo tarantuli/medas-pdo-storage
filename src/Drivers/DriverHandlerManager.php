@@ -8,7 +8,7 @@ use Medas\Core\Attributes\Service;
 use Medas\PdoStorage\Exceptions\DriverNotImplemented;
 
 #[Service]
-class DriverHandlerFinder
+class DriverHandlerManager
 {
     /** @var DriverHandler[] */
     private array $driverHandlers = [];

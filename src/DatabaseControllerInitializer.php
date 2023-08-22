@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Medas\PdoStorage;
 
 use Medas\Core\Attributes\Service;
-use Medas\PdoStorage\Drivers\DriverHandlerFinder;
+use Medas\PdoStorage\Drivers\DriverHandlerManager;
 
 #[Service]
 class DatabaseControllerInitializer
 {
     public function __construct(
-        private readonly DriverHandlerFinder $driverHandlerFinder,
+        private readonly DriverHandlerManager $driverHandlerManager,
     )
     {
     }
@@ -27,7 +27,7 @@ class DatabaseControllerInitializer
 
         $pdo = new \PDO($database->dns, $database->username, $database->password, $options);
         $transaction = new Transaction($pdo);
-        $driverHandler = $this->driverHandlerFinder->find($pdo->getAttribute(\PDO::ATTR_DRIVER_NAME));
+        $driverHandler = $this->driverHandlerManager->find($pdo->getAttribute(\PDO::ATTR_DRIVER_NAME));
 
         return new DatabaseController($pdo, $transaction, $driverHandler);
     }
