@@ -2,13 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Medas\PdoStorage;
+namespace Medas\PdoStorage\Queries;
 
+use Medas\Core\Attributes\Service;
 use Medas\PdoStorage\Exceptions\PdoDatabase;
-use Medas\PdoStorage\Queries\Query;
+use Medas\PdoStorage\Statement;
+use Medas\PdoStorage\ValueSerializer;
 use Medas\StorageManager\Entities\LastInsertIdPlaceholder;
 
-class Executor
+#[Service]
+class QueryExecutor
 {
     public function execute(\PDO $pdo, Query $query): void
     {

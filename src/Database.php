@@ -5,41 +5,22 @@ declare(strict_types=1);
 namespace Medas\PdoStorage;
 
 use Medas\Core\Attributes\ConfigValue;
-use Medas\PdoStorage\ConfigOptions\{PdoDns, PdoPassword, PdoUsername};
-use Medas\StorageManager\Interfaces\{Storage, StorageController};
+use Medas\PdoStorage\ConfigOptions\{PdoDns, PdoName, PdoPassword, PdoUsername};
+use Medas\StorageManager\Interfaces\Storage;
 
 class Database implements Storage
 {
-
-    /** @var Table[] */
-    private array $tables = [];
-    private DatabaseController $controller;
-
     public function __construct(
-        #[ConfigValue(PdoDns::class)] private readonly string      $dns,
-        #[ConfigValue(PdoUsername::class)] private readonly string $username,
-        #[ConfigValue(PdoPassword::class)] private readonly string $password,
+        #[ConfigValue(PdoDns::class)] public readonly string      $dns,
+        #[ConfigValue(PdoUsername::class)] public readonly string $username,
+        #[ConfigValue(PdoPassword::class)] public readonly string $password,
+        #[ConfigValue(PdoName::class)] public readonly string     $name,
     )
     {
-        $this->controller = new DatabaseController($this, $this->dns, $this->username, $this->password);
     }
 
-    public function stores(): array
+    public function name(): string
     {
-        return $this->tables;
-    }
-
-    public function store(string $name): Table
-    {
-        if (!isset($this->tables[$name])) {
-            $this->tables[$name] = new Table($this, $name);
-        }
-
-        return $this->tables[$name];
-    }
-
-    public function controller(): StorageController
-    {
-        return $this->controller;
+        return $this->name;
     }
 }

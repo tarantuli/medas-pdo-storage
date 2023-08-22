@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Medas\PdoStorage;
 
 use Medas\StorageManager\Interfaces\RecordSet;
-use Medas\StorageManager\Interfaces\StoreRecord;
 
 readonly class Statement implements RecordSet
 {
@@ -15,9 +14,10 @@ readonly class Statement implements RecordSet
     {
     }
 
-    public function fetchRecord(): StoreRecord|null
+    public function fetchRecord(): Record|null
     {
         $data = $this->pdoStatement->fetch();
+
         return is_array($data) ? new Record($data) : null;
     }
 

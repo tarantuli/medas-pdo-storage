@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage;
 
-use Medas\StorageManager\Interfaces\StoreRecord;
+use Medas\StorageManager\Interfaces\Record as RecordInterface;
 
-class Record implements StoreRecord
+class Record implements RecordInterface
 {
     private int $keyIndex;
     private array $keys;

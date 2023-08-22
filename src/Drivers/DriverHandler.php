@@ -5,37 +5,40 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\Drivers;
 
 use Medas\Core\Interfaces\Serializer;
-use Medas\PdoStorage\Drivers\Interfaces\{AlterTableBuilder,
-    CreateTableBuilder,
-    FieldHandler,
-    QueryBuilder,
+use Medas\PdoStorage\Drivers\Interfaces\{FieldHandler,
+    QueryBuilders,
     SelectQueryBuilder,
     TableStructureFinder,
-    TypeHandler
-};
+    TypeHandler};
+use Medas\PdoStorage\Table;
+use Medas\StorageManager\Interfaces\RecordFetchers;
 use Medas\StorageManager\Migrations\MigrationBuilder;
 
-interface Handler
+interface DriverHandler
 {
+    public function canHandle(string $driverName): bool;
+
+    public function priority(): int;
+
     public function quote(string $identifier): string;
 
     public function escape(mixed $value): string;
 
+    public function table(string $name): Table;
+
     public function tableStructureFinder(): TableStructureFinder;
-
-    public function alterTableBuilder(): AlterTableBuilder;
-
-    public function createTableBuilder(): CreateTableBuilder;
 
     public function fieldHandler(): FieldHandler;
 
     public function migrationBuilder(): MigrationBuilder;
 
-    public function queryBuilder(): QueryBuilder;
+    public function queryBuilders(): QueryBuilders;
 
     public function selectQueryBuilder(): SelectQueryBuilder;
 
     public function serializer(): Serializer;
 
     public function typeHandler(): TypeHandler;
+
+    public function recordFetchers(): RecordFetchers;
 }

@@ -10,6 +10,12 @@ use Medas\StorageManager\Structure\Blueprint;
 #[Service]
 class JoinTableManager
 {
+    public function __construct(
+        private readonly PdoStorageController $pdoStorageController,
+    )
+    {
+    }
+
     public function determineName(string $sourceTable, string $property): string
     {
         return $sourceTable . '__' . $property;
@@ -57,6 +63,6 @@ class JoinTableManager
             ->addForeignKey($idForeignKey)
             ->addForeignKey($valueForeignKey);
 
-        return $database->controller()->migrationBuilder()->buildQueries($joinBlueprint);
+        return $this->pdoStorageController->migrationBuilder($database)->buildQueries($joinBlueprint);
     }
 }

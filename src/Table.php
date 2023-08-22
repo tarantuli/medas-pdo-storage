@@ -4,22 +4,15 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage;
 
-use Medas\Core\Interfaces\ManagedCollection;
-use Medas\EntityManager\MetaData\Property;
-use Medas\EntityManager\Types\Collection;
-use Medas\StorageManager\Interfaces\{Store, StoreRecord};
-use Medas\StorageManager\UnitOfWork\ActionCollection;
+use Medas\StorageManager\Interfaces\Store;
 
 class Table implements Store
 {
-    private DatabaseController $controller;
-
     public function __construct(
         public Database $database,
         public string   $name,
     )
     {
-        $this->controller = $this->database->controller();
     }
 
     public function name(): string
@@ -30,87 +23,5 @@ class Table implements Store
     public function storage(): Database
     {
         return $this->database;
-    }
-
-    public function fetchAll(array $filters): array|null
-    {
-        $query = $this->prepareGet($filters);
-        $query->execute();
-
-        return $query->recordSet()->fetchRecords();
-    }
-
-    public function prepareGet(array $filters): ActionCollection
-    {
-        return $this->controller->actionBuilder()->select([$this], $filters);
-    }
-
-    public function prepareCreate(array $values): ActionCollection
-    {
-        return $this->controller->actionBuilder()->create($this, $values);
-    }
-
-    public function prepareUpdate(array $updates, array $conditions): ActionCollection
-    {
-        return $this->controller->actionBuilder()->update($this, $updates, $conditions);
-    }
-
-    public function prepareDelete(array $conditions): ActionCollection
-    {
-        return $this->controller->actionBuilder()->delete($this, $conditions);
-    }
-
-    public function prepareCollectionUpdate(object $entity, string $name, Collection $type, ManagedCollection $values): ActionCollection
-    {
-        return $this->controller->actionBuilder()->collectionUpdate($this, $entity, $name, $type, $values);
-    }
-
-    public function fetchCollectionRecord(object $entity, Property $property): iterable
-    {
-        $joinTable = service(JoinTableManager::class)->determineName($this->name, $property->name);
-
-        return $this->storage()->store($joinTable)->fetchAll(['id' => $entity]);
-    }
-
-    public function getCreateTable(): string|null
-    {
-        try {
-            $query = $this->controller->actionBuilder()->showCreate($this);
-            $query->execute();
-            $record = $query->recordSet()->fetchRecord();
-
-            if ($record instanceof Record) {
-                $data = $record->data();
-
-                if (array_key_exists('Create Table', $data)) {
-                    return $data['Create Table'];
-                }
-
-                if (array_key_exists('sql', $data)) {
-                    return $data['sql'];
-                }
-            }
-
-            return null;
-        }
-        catch (\Exception) {
-            return null;
-        }
-    }
-
-    public function fetchRecord(array $filters): StoreRecord|null
-    {
-        $query = $this->prepareGet($filters);
-        $query->execute();
-
-        return $query->recordSet()->fetchRecord();
-    }
-
-    public function exists(): bool
-    {
-        $query = $this->controller->actionBuilder()->showTables($this->name);
-        $query->execute();
-
-        return $query->recordSet()->fetchRecord() !== null;
     }
 }
