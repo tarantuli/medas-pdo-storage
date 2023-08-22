@@ -43,5 +43,5 @@ interface DriverHandler
 
     public function recordFetchers(): RecordFetchers;
 
-    public function tableStructureString(Table $table): string;
+    public function tableStructureString(Table $table): string|null;
 }
