@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\Drivers;
 
 use Medas\Core\Interfaces\Serializer;
+use Medas\PdoStorage\Database;
 use Medas\PdoStorage\Drivers\Interfaces\{FieldHandler,
     QueryBuilders,
     SelectQueryBuilder,
@@ -12,7 +13,6 @@ use Medas\PdoStorage\Drivers\Interfaces\{FieldHandler,
     TypeHandler};
 use Medas\PdoStorage\Table;
 use Medas\StorageManager\Interfaces\RecordFetchers;
-use Medas\StorageManager\Interfaces\Storage;
 use Medas\StorageManager\Migrations\MigrationBuilder;
 
 interface DriverHandler
@@ -21,11 +21,11 @@ interface DriverHandler
 
     public function priority(): int;
 
-    public function quote(Storage $storage, string $identifier): string;
+    public function quote(Database $database, string $identifier): string;
 
-    public function escape(Storage $storage, mixed $value): string;
+    public function escape(Database $database, mixed $value): string;
 
-    public function table(Storage $storage, string $name): Table;
+    public function table(Database $database, string $name): Table;
 
     public function tableStructureFinder(): TableStructureFinder;
 
@@ -42,4 +42,6 @@ interface DriverHandler
     public function typeHandler(): TypeHandler;
 
     public function recordFetchers(): RecordFetchers;
+
+    public function tableStructureString(Table $table): string;
 }
