@@ -9,9 +9,9 @@ use Medas\StorageManager\Interfaces\RecordSet;
 use Medas\StorageManager\UnitOfWork\ActionSet;
 
 /** @extends GenericCollection<Query> */
-class QueryCollection extends GenericCollection implements ActionSet
+class QuerySet extends GenericCollection implements ActionSet
 {
-    public static function fromQuery(Query $query): QueryCollection
+    public static function fromQuery(Query $query): QuerySet
     {
         return new self([$query]);
     }
