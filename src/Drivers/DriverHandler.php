@@ -6,11 +6,7 @@ namespace Medas\PdoStorage\Drivers;
 
 use Medas\Core\Interfaces\Serializer;
 use Medas\PdoStorage\Database;
-use Medas\PdoStorage\Drivers\Interfaces\{FieldHandler,
-    QueryBuilders,
-    SelectQueryBuilder,
-    TableStructureFinder,
-    TypeHandler};
+use Medas\PdoStorage\Drivers\Interfaces\{FieldHandler, QueryBuilders, TableStructureFinder, TypeHandler};
 use Medas\PdoStorage\Table;
 use Medas\StorageManager\Interfaces\RecordFetchers;
 use Medas\StorageManager\Migrations\MigrationBuilder;
@@ -34,8 +30,6 @@ interface DriverHandler
     public function migrationBuilder(): MigrationBuilder;
 
     public function queryBuilders(): QueryBuilders;
-
-    public function selectQueryBuilder(): SelectQueryBuilder;
 
     public function serializer(): Serializer;
 
