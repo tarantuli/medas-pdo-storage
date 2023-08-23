@@ -27,4 +27,9 @@ class QuerySet extends GenericCollection implements ActionSet
     {
         return $this->lastRecordSet;
     }
+
+    public function setRecordSet(RecordSet $recordSet): void
+    {
+        $this->lastRecordSet = $recordSet;
+    }
 }

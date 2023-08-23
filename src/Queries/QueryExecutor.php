@@ -32,6 +32,7 @@ readonly class QueryExecutor implements ActionExecutor
     {
         foreach ($actionSet as $action) {
             $this->execute($action);
+            $actionSet->setRecordSet($action->recordSet());
         }
     }
 
