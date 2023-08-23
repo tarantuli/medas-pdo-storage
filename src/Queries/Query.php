@@ -27,4 +27,14 @@ class Query extends BaseAction
     {
         return $this->statement;
     }
+
+    public function __serialize(): array
+    {
+        return [
+            'query' => $this->query,
+            'arguments' => $this->arguments,
+            'database' => $this->database,
+            'priority' => $this->priority,
+        ];
+    }
 }
