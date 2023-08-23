@@ -35,6 +35,6 @@ readonly class Statement implements RecordSet
 
     public function hasRecords(): bool
     {
-        return (bool) $this->pdoStatement->rowCount();
+        return $this->pdoStatement->rowCount() && $this->pdoStatement->columnCount();
     }
 }
