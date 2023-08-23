@@ -11,6 +11,8 @@ use Medas\StorageManager\UnitOfWork\ActionSet;
 /** @extends GenericCollection<Query> */
 class QuerySet extends GenericCollection implements ActionSet
 {
+    private RecordSet|null $lastRecordSet = null;
+
     public static function fromQuery(Query $query): QuerySet
     {
         return new self([$query]);
@@ -19,16 +21,6 @@ class QuerySet extends GenericCollection implements ActionSet
     public function current(): Query
     {
         return parent::current();
-    }
-
-    private RecordSet|null $lastRecordSet = null;
-
-    public function execute(): void
-    {
-        foreach ($this->data as $query) {
-            $query->execute();
-            $this->lastRecordSet = $query->recordSet();
-        }
     }
 
     public function recordSet(): RecordSet

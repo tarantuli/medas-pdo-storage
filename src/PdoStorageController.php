@@ -109,12 +109,14 @@ class PdoStorageController implements StorageController
     {
         $storage ??= $this->defaultDatabase;
 
-        $query = $this->getDatabaseController($storage)->driverHandler
+        $controller = $this->getDatabaseController($storage);
+
+        $querySet = $controller->driverHandler
             ->queryBuilders()->showTables()->build($storage, $storage->name());
 
-        $query->execute();
+        $this->actionExecutor()->executeSet($querySet);
 
-        return $query->recordSet()->hasRecords();
+        return $querySet->recordSet()->hasRecords();
     }
 
     public function recordFetchers(): RecordFetchers
