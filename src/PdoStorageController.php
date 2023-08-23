@@ -59,6 +59,14 @@ class PdoStorageController implements StorageController
             ->table($storage, $name);
     }
 
+    public function deleteStore(Store $store): void
+    {
+        $querySet = $this->getDatabaseController($store->storage())->driverHandler
+            ->queryBuilders()->deleteStore()->build($store);
+
+        $this->actionExecutor()->executeSet($querySet);
+    }
+
     public function actionBuilders(): ActionBuilders
     {
         return $this->getDatabaseController($this->defaultDatabase)->driverHandler

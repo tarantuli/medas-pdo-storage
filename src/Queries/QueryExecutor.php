@@ -12,6 +12,7 @@ use Medas\PdoStorage\ValueSerializer;
 use Medas\StorageManager\Entities\LastInsertIdPlaceholder;
 use Medas\StorageManager\Interfaces\ActionExecutor;
 use Medas\StorageManager\UnitOfWork\Action;
+use Medas\StorageManager\UnitOfWork\ActionSet;
 
 #[Service]
 readonly class QueryExecutor implements ActionExecutor
@@ -25,6 +26,13 @@ readonly class QueryExecutor implements ActionExecutor
     public function execute(Action $action): void
     {
         $this->executeQuery($this->pdoStorageController->getDatabaseController($action->storage())->pdo, $action);
+    }
+
+    public function executeSet(ActionSet $actionSet): void
+    {
+        foreach ($actionSet as $action) {
+            $this->execute($action);
+        }
     }
 
     public function executeQuery(\PDO $pdo, Query $query): void
