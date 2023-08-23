@@ -13,10 +13,10 @@ class Query extends BaseAction
     private Statement $statement;
 
     public function __construct(
-        public readonly string        $query,
-        public array                  $arguments = [],
-        public readonly Database|null $database = null,
-        Priority                      $priority = Priority::Default
+        public readonly string   $query,
+        public array             $arguments,
+        public readonly Database $database,
+        Priority                 $priority = Priority::Default
     )
     {
         $this->priority = $priority;
