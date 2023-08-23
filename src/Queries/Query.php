@@ -10,7 +10,7 @@ use Medas\StorageManager\{Interfaces\RecordSet, UnitOfWork\BaseAction, UnitOfWor
 class Query extends BaseAction
 {
     public array $serializedArguments = [];
-    private Statement $statement;
+    public Statement $statement;
 
     public function __construct(
         public readonly string   $query,
@@ -19,14 +19,8 @@ class Query extends BaseAction
         Priority                 $priority = Priority::Default
     )
     {
+        $this->storage = $this->database;
         $this->priority = $priority;
-    }
-
-    public function setStatement(Statement $statement): self
-    {
-        $this->statement = $statement;
-
-        return $this;
     }
 
     public function recordSet(): RecordSet

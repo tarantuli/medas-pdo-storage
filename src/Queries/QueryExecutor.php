@@ -43,7 +43,7 @@ readonly class QueryExecutor implements ActionExecutor
             $statement = $pdo->prepare($query->query);
             $statement->execute($query->serializedArguments);
 
-            $query->setStatement(new Statement($statement));
+            $query->statement = new Statement($statement);
         }
         catch (\Exception|\Error $e) {
             throw new PdoDatabase($e->getMessage(), $query);
