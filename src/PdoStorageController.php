@@ -6,7 +6,8 @@ namespace Medas\PdoStorage;
 
 use Medas\Core\Attributes\Service;
 use Medas\Core\Interfaces\Serializer;
-use Medas\StorageManager\Interfaces\{ActionBuilders, RecordFetchers, Storage, StorageController, Store};
+use Medas\PdoStorage\Queries\QueryExecutor;
+use Medas\StorageManager\Interfaces\{ActionBuilders, ActionExecutor, RecordFetchers, Storage, StorageController, Store};
 use Medas\StorageManager\Migrations\MigrationBuilder;
 
 #[Service]
@@ -19,6 +20,7 @@ class PdoStorageController implements StorageController
 
     public function __construct(
         private readonly DatabaseControllerInitializer $controllerInitializer,
+        private readonly QueryExecutor                 $queryExecutor,
     )
     {
     }
@@ -58,10 +60,15 @@ class PdoStorageController implements StorageController
             ->table($storage, $name);
     }
 
-    public function actionBuilders(Storage $storage = null): ActionBuilders
+    public function actionBuilders(): ActionBuilders
     {
-        return $this->getDatabaseController($storage ?? $this->defaultDatabase)->driverHandler
+        return $this->getDatabaseController($this->defaultDatabase)->driverHandler
             ->queryBuilders();
+    }
+
+    public function actionExecutor(): ActionExecutor
+    {
+        return $this->queryExecutor;
     }
 
     public function serializer(Storage $storage = null): Serializer
@@ -70,9 +77,9 @@ class PdoStorageController implements StorageController
             ->serializer();
     }
 
-    public function migrationBuilder(Storage $storage = null): MigrationBuilder
+    public function migrationBuilder(): MigrationBuilder
     {
-        return $this->getDatabaseController($storage ?? $this->defaultDatabase)->driverHandler
+        return $this->getDatabaseController($this->defaultDatabase)->driverHandler
             ->migrationBuilder();
     }
 
@@ -93,9 +100,9 @@ class PdoStorageController implements StorageController
         return $query->recordSet()->hasRecords();
     }
 
-    public function recordFetchers(Storage $storage = null): RecordFetchers
+    public function recordFetchers(): RecordFetchers
     {
-        return $this->getDatabaseController($storage ?? $this->defaultDatabase)->driverHandler
+        return $this->getDatabaseController($this->defaultDatabase)->driverHandler
             ->recordFetchers();
     }
 

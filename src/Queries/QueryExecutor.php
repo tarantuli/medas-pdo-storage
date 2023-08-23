@@ -6,14 +6,28 @@ namespace Medas\PdoStorage\Queries;
 
 use Medas\Core\Attributes\Service;
 use Medas\PdoStorage\Exceptions\PdoDatabase;
+use Medas\PdoStorage\PdoStorageController;
 use Medas\PdoStorage\Statement;
 use Medas\PdoStorage\ValueSerializer;
 use Medas\StorageManager\Entities\LastInsertIdPlaceholder;
+use Medas\StorageManager\Interfaces\ActionExecutor;
+use Medas\StorageManager\UnitOfWork\Action;
 
 #[Service]
-class QueryExecutor
+readonly class QueryExecutor implements ActionExecutor
 {
-    public function execute(\PDO $pdo, Query $query): void
+    public function __construct(
+        private PdoStorageController $pdoStorageController,
+    )
+    {
+    }
+
+    public function execute(Action $action): void
+    {
+        $this->executeQuery($this->pdoStorageController->getDatabaseController($action->storage())->pdo, $action);
+    }
+
+    public function executeQuery(\PDO $pdo, Query $query): void
     {
         $lastInsertId = $this->serializeArguments($pdo, $query);
 
