@@ -112,7 +112,7 @@ class PdoStorageController implements StorageController
         $controller = $this->getDatabaseController($storage);
 
         $querySet = $controller->driverHandler
-            ->queryBuilders()->showTables()->build($storage, $storage->name());
+            ->queryBuilders()->showTables()->build($storage, $store->name());
 
         $this->actionExecutor()->executeSet($querySet);
 
