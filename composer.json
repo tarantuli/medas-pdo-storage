@@ -16,7 +16,7 @@
         "morphp/medas-entity-manager": "dev-dev",
         "morphp/medas-file-builder": "dev-dev",
         "morphp/medas-service-manager": "dev-dev",
-        "morphp/medas-storage-manager": "dev-with-controllers"
+        "morphp/medas-storage-manager": "dev-dev"
     },
     "require-dev": {
         "morphp/medas-config-manager": "dev-dev",
