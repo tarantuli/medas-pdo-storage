@@ -20,7 +20,6 @@ class PdoStorageController implements StorageController
 
     public function __construct(
         private readonly DatabaseControllerInitializer $controllerInitializer,
-        private readonly QueryExecutor                 $queryExecutor,
     )
     {
     }
@@ -68,7 +67,8 @@ class PdoStorageController implements StorageController
 
     public function actionExecutor(): ActionExecutor
     {
-        return $this->queryExecutor;
+        // We can't inject this as a dependency as QueryExecutor depends on this class itself
+        return service(QueryExecutor::class);
     }
 
     public function serializer(Storage $storage = null): Serializer
