@@ -60,7 +60,9 @@ class PdoStorageController implements StorageController
 
     public function store(string $name, Storage $storage = null): Table
     {
-        return $this->getDatabaseController($storage ?? $this->defaultDatabase)->driverHandler
+        $storage ??= $this->defaultDatabase;
+
+        return $this->getDatabaseController($storage)->driverHandler
             ->table($storage, $name);
     }
 
@@ -105,7 +107,9 @@ class PdoStorageController implements StorageController
 
     public function hasStore(Store $store, Storage $storage = null): bool
     {
-        $query = $this->getDatabaseController($storage ?? $this->defaultDatabase)->driverHandler
+        $storage ??= $this->defaultDatabase;
+
+        $query = $this->getDatabaseController($storage)->driverHandler
             ->queryBuilders()->showTables()->build($storage, $storage->name());
 
         $query->execute();
