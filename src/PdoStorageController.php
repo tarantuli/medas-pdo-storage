@@ -45,7 +45,12 @@ class PdoStorageController implements StorageController
     public function handles(Storage $storage): bool
     {
         /** @noinspection PhpConditionAlreadyCheckedInspection */
-        return $storage instanceof Database;
+        if ($storage instanceof Database) {
+            $this->getDatabaseController($storage);
+            return true;
+        }
+
+        return false;
     }
 
     public function transaction(Storage $storage = null): Transaction
