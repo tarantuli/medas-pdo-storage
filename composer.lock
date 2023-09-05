@@ -188,12 +188,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:tarantuli/medas-core.git",
-                "reference": "bafc10a773629b7698a0d86d8ccce7ccec0c488c"
+                "reference": "fd1db78f5f68e7fd59dbd142e3d3a4140c4ca5a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tarantuli/medas-core/zipball/bafc10a773629b7698a0d86d8ccce7ccec0c488c",
-                "reference": "bafc10a773629b7698a0d86d8ccce7ccec0c488c",
+                "url": "https://api.github.com/repos/tarantuli/medas-core/zipball/fd1db78f5f68e7fd59dbd142e3d3a4140c4ca5a9",
+                "reference": "fd1db78f5f68e7fd59dbd142e3d3a4140c4ca5a9",
                 "shasum": ""
             },
             "require": {
@@ -227,7 +227,7 @@
                 "source": "https://github.com/tarantuli/medas-core/tree/dev",
                 "issues": "https://github.com/tarantuli/medas-core/issues"
             },
-            "time": "2023-08-29T11:44:57+00:00"
+            "time": "2023-09-04T08:00:50+00:00"
         },
         {
             "name": "morphp/medas-entity-manager",
@@ -585,12 +585,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:tarantuli/medas-storage-manager.git",
-                "reference": "84ab1c00478f3baad19dda70021d237f9deab15f"
+                "reference": "0d62216e1d17cc0bf2d51b5d977b11ec998b2133"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tarantuli/medas-storage-manager/zipball/84ab1c00478f3baad19dda70021d237f9deab15f",
-                "reference": "84ab1c00478f3baad19dda70021d237f9deab15f",
+                "url": "https://api.github.com/repos/tarantuli/medas-storage-manager/zipball/0d62216e1d17cc0bf2d51b5d977b11ec998b2133",
+                "reference": "0d62216e1d17cc0bf2d51b5d977b11ec998b2133",
                 "shasum": ""
             },
             "require": {
@@ -632,7 +632,7 @@
                 "source": "https://github.com/tarantuli/medas-storage-manager/tree/dev",
                 "issues": "https://github.com/tarantuli/medas-storage-manager/issues"
             },
-            "time": "2023-08-29T11:48:18+00:00"
+            "time": "2023-09-05T14:48:30+00:00"
         },
         {
             "name": "psr/event-dispatcher",
@@ -879,12 +879,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:tarantuli/medas-config-manager.git",
-                "reference": "60e5780de31be4b8798039902d91ae51dfc7574f"
+                "reference": "85ee4079b025178a16e941e7a5f5b5c9146c23e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tarantuli/medas-config-manager/zipball/60e5780de31be4b8798039902d91ae51dfc7574f",
-                "reference": "60e5780de31be4b8798039902d91ae51dfc7574f",
+                "url": "https://api.github.com/repos/tarantuli/medas-config-manager/zipball/85ee4079b025178a16e941e7a5f5b5c9146c23e2",
+                "reference": "85ee4079b025178a16e941e7a5f5b5c9146c23e2",
                 "shasum": ""
             },
             "require": {
@@ -914,7 +914,7 @@
                 "source": "https://github.com/tarantuli/medas-config-manager/tree/dev",
                 "issues": "https://github.com/tarantuli/medas-config-manager/issues"
             },
-            "time": "2023-08-16T14:16:54+00:00"
+            "time": "2023-09-04T08:01:20+00:00"
         },
         {
             "name": "morphp/medas-ramsey-uuid-bridge",

@@ -6,9 +6,9 @@ namespace Medas\PdoStorage;
 
 use Medas\Core\Attributes\Service;
 use Medas\Core\Interfaces\Serializer;
+use Medas\PdoStorage\Drivers\Interfaces\PdoMigrationBuilder;
 use Medas\PdoStorage\Queries\QueryExecutor;
 use Medas\StorageManager\Interfaces\{ActionBuilders, ActionExecutor, RecordFetchers, Storage, StorageController, Store};
-use Medas\StorageManager\Migrations\MigrationBuilder;
 
 #[Service]
 class PdoStorageController implements StorageController
@@ -92,7 +92,7 @@ class PdoStorageController implements StorageController
             ->serializer();
     }
 
-    public function migrationBuilder(): MigrationBuilder
+    public function migrationBuilder(): PdoMigrationBuilder
     {
         return $this->getDatabaseController($this->defaultDatabase)->driverHandler
             ->migrationBuilder();
