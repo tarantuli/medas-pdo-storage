@@ -11,8 +11,7 @@ use Medas\PdoStorage\Statement;
 use Medas\PdoStorage\ValueSerializer;
 use Medas\StorageManager\Entities\LastInsertIdPlaceholder;
 use Medas\StorageManager\Interfaces\ActionExecutor;
-use Medas\StorageManager\UnitOfWork\Action;
-use Medas\StorageManager\UnitOfWork\ActionSet;
+use Medas\StorageManager\UnitOfWork\{Action, ActionSet};
 
 #[Service]
 readonly class QueryExecutor implements ActionExecutor
@@ -23,51 +22,54 @@ readonly class QueryExecutor implements ActionExecutor
     {
     }
 
-    public function execute(Action $action): void
+    public function execute(Action $action, ActionSet $actionSet = null): void
     {
-        $this->executeQuery($this->pdoStorageController->getDatabaseController($action->storage())->pdo, $action);
+        /**
+         * @var Query $action
+         */
+
+        $pdo = $this->pdoStorageController->getDatabaseController($action->storage())->pdo;
+        $this->serializeArguments($action, $actionSet);
+
+        try {
+            $statement = $pdo->prepare($action->query);
+            $statement->execute($action->serializedArguments);
+
+            $lastInsertId = $pdo->lastInsertId();
+
+            if ($lastInsertId && $actionSet) {
+                $actionSet->lastInsertId = $lastInsertId;
+            }
+
+            $action->statement = new Statement($statement);
+        }
+        catch (\Exception|\Error $e) {
+            throw new PdoDatabase($e->getMessage(), $action);
+        }
+
+        if ($onComplete = $action->onComplete()) {
+            $onComplete($action->storage(), $actionSet ? $actionSet->lastInsertId : $lastInsertId);
+        }
     }
 
     public function executeSet(ActionSet $actionSet): void
     {
         foreach ($actionSet as $action) {
-            $this->execute($action);
-            $actionSet->setRecordSet($action->recordSet());
+            $this->execute($action, $actionSet);
+            $actionSet->lastRecordSet = $action->recordSet();
         }
     }
 
-    public function executeQuery(\PDO $pdo, Query $query): void
+    private function serializeArguments(Query $query, ActionSet $querySet = null): void
     {
-        $lastInsertId = $this->serializeArguments($pdo, $query);
-
-        try {
-            $statement = $pdo->prepare($query->query);
-            $statement->execute($query->serializedArguments);
-
-            $query->statement = new Statement($statement);
-        }
-        catch (\Exception|\Error $e) {
-            throw new PdoDatabase($e->getMessage(), $query);
-        }
-
-        if ($onComplete = $query->onComplete()) {
-            $onComplete($query->storage(), $lastInsertId);
-        }
-    }
-
-    private function serializeArguments(\PDO $pdo, Query $query): int|null
-    {
-        $lastInsertId = null;
         $serializer = service(ValueSerializer::class);
 
         foreach ($query->arguments as $key => $argument) {
-            if ($argument instanceof LastInsertIdPlaceholder) {
-                $lastInsertId = $argument = (int) $pdo->lastInsertId();
+            if ($querySet && $argument instanceof LastInsertIdPlaceholder) {
+                $argument = $querySet->lastInsertId;
             }
 
             $query->serializedArguments[$key] = $serializer->serialize($argument);
         }
-
-        return $lastInsertId;
     }
 }

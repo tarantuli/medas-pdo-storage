@@ -35,7 +35,7 @@ class JoinTableManager
 
         $idForeignKey = new Blueprint\ForeignKey(
             'id',
-            $sourceBlueprint->name(),
+            $sourceBlueprint->name,
             $sourceBlueprint->primaryIndex()->fields()[0]->name,
             true
         );
@@ -56,7 +56,9 @@ class JoinTableManager
             true
         );
 
-        $joinBlueprint->setName($this->determineName($sourceBlueprint->name(), $field->name))
+        $joinBlueprint->name = $this->determineName($sourceBlueprint->name, $field->name);
+
+        $joinBlueprint
             ->addField($idField)
             ->addField($valueField)
             ->addIndex($primaryIndex)

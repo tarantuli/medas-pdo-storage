@@ -116,7 +116,7 @@ class PdoStorageController implements StorageController
 
         $this->actionExecutor()->executeSet($querySet);
 
-        return $querySet->recordSet()->hasRecords();
+        return $querySet->lastRecordSet?->hasRecords();
     }
 
     public function recordFetchers(): RecordFetchers
