@@ -57,6 +57,7 @@ class JoinTableManager
         );
 
         $joinBlueprint->name = $this->determineName($sourceBlueprint->name, $field->name);
+        $joinBlueprint->storeOriginalClass = false;
 
         $joinBlueprint
             ->addField($idField)
