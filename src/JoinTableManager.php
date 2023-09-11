@@ -66,6 +66,6 @@ class JoinTableManager
             ->addForeignKey($idForeignKey)
             ->addForeignKey($valueForeignKey);
 
-        return $this->pdoStorageController->migrationBuilder()->buildQueries($database, $joinBlueprint);
+        return $this->pdoStorageController->migrationBuilder()->buildActions($database, $joinBlueprint);
     }
 }
