@@ -8,10 +8,10 @@ use Medas\Core\{Attributes\Service, Interfaces\ConfigGroup};
 use Medas\StorageManager\ConfigOptions\RootGroup;
 
 #[Service]
-class PdoGroup implements ConfigGroup
+readonly class PdoGroup implements ConfigGroup
 {
     public function __construct(
-        private readonly RootGroup $group,
+        private RootGroup $group,
     )
     {
     }

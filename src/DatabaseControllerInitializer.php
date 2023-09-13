@@ -8,10 +8,10 @@ use Medas\Core\Attributes\Service;
 use Medas\PdoStorage\Drivers\DriverHandlerManager;
 
 #[Service]
-class DatabaseControllerInitializer
+readonly class DatabaseControllerInitializer
 {
     public function __construct(
-        private readonly DriverHandlerManager $driverHandlerManager,
+        private DriverHandlerManager $driverHandlerManager,
     )
     {
     }

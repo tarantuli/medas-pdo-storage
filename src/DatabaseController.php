@@ -6,12 +6,12 @@ namespace Medas\PdoStorage;
 
 use Medas\PdoStorage\Drivers\DriverHandler;
 
-class DatabaseController
+readonly class DatabaseController
 {
     public function __construct(
-        public readonly \PDO          $pdo,
-        public readonly Transaction   $transaction,
-        public readonly DriverHandler $driverHandler,
+        public \PDO          $pdo,
+        public Transaction   $transaction,
+        public DriverHandler $driverHandler,
     )
     {
     }

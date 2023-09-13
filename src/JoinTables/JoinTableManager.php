@@ -2,23 +2,24 @@
 
 declare(strict_types=1);
 
-namespace Medas\PdoStorage;
+namespace Medas\PdoStorage\JoinTables;
 
-use Medas\Core\Attributes\Service;
+use Medas\Core\Attributes\{ConfigValue, Service};
+use Medas\PdoStorage\ConfigOptions\JoinTables\TableNamingStrategy;
+use Medas\PdoStorage\Database;
+use Medas\PdoStorage\PdoStorageController;
 use Medas\StorageManager\Structure\Blueprint;
 
 #[Service]
-class JoinTableManager
+readonly class JoinTableManager
 {
     public function __construct(
-        private readonly PdoStorageController $pdoStorageController,
+        private PdoStorageController $pdoStorageController,
+
+        #[ConfigValue(TableNamingStrategy::class)]
+        private NamingStrategy       $namingStrategy,
     )
     {
-    }
-
-    public function determineName(string $sourceTable, string $property): string
-    {
-        return $sourceTable . '__' . $property;
     }
 
     public function createQueries(Database $database, Blueprint $sourceBlueprint, Blueprint\Field $field): iterable|null
@@ -56,7 +57,7 @@ class JoinTableManager
             true
         );
 
-        $joinBlueprint->name = $this->determineName($sourceBlueprint->name, $field->name);
+        $joinBlueprint->name = $this->namingStrategy->determine($sourceBlueprint->name, $field->name);
         $joinBlueprint->storeOriginalClass = false;
 
         $joinBlueprint
