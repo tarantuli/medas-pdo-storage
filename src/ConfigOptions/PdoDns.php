@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\ConfigOptions;
 
 use Medas\Core\Attributes\Service;
-use Medas\Core\Interfaces\{ConfigGroup, ConfigOption};
+use Medas\Core\Interfaces\{ConfigGroup, ConfigOption, Validator};
 
 #[Service]
-readonly class PdoDns implements ConfigOption
+readonly class PdoDns implements ConfigOption, Validator
 {
     public function __construct(
         private PdoGroup $group,

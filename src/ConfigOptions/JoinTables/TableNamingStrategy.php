@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\ConfigOptions\JoinTables;
 
 use Medas\Core\Attributes\Service;
-use Medas\Core\Interfaces\ConfigGroup;
-use Medas\Core\Interfaces\ConfigOption;
+use Medas\Core\Interfaces\{ConfigGroup, ConfigOption, Validator};
 use Medas\PdoStorage\JoinTables\NamingStrategies\DoubleUnderscoreConcatenation;
 use Medas\PdoStorage\JoinTables\NamingStrategy;
 
 #[Service]
-readonly class TableNamingStrategy implements ConfigOption
+readonly class TableNamingStrategy implements ConfigOption, Validator
 {
     public function __construct(
         private JoinTableGroup $group,
@@ -32,6 +31,11 @@ readonly class TableNamingStrategy implements ConfigOption
     public function description(): string
     {
         return 'The strategy to use to determine the name of joining tables per property';
+    }
+
+    public function isValid(mixed $value): bool
+    {
+        return $value instanceof NamingStrategy;
     }
 
     public function hasDefault(): bool
