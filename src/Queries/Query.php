@@ -19,13 +19,7 @@ class Query extends BaseAction
         Priority                 $priority = Priority::Default
     )
     {
-        $this->storage = $this->database;
-        $this->priority = $priority;
-    }
-
-    public function recordSet(): RecordSet
-    {
-        return $this->statement;
+        parent::__construct($this->database, $priority);
     }
 
     public function __serialize(): array
@@ -36,5 +30,10 @@ class Query extends BaseAction
             'database' => $this->database,
             'priority' => $this->priority,
         ];
+    }
+
+    public function recordSet(): RecordSet
+    {
+        return $this->statement;
     }
 }

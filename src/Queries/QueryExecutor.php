@@ -24,9 +24,7 @@ readonly class QueryExecutor implements ActionExecutor
 
     public function execute(Action $action, ActionSet $actionSet = null): void
     {
-        /**
-         * @var Query $action
-         */
+        /** @var Query $action */
 
         $pdo = $this->pdoStorageController->getDatabaseController($action->storage())->pdo;
         $this->serializeArguments($action, $actionSet);
