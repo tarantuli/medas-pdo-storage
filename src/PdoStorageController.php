@@ -4,11 +4,18 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage;
 
-use Medas\Core\Attributes\Service;
-use Medas\Core\Interfaces\Serializer;
-use Medas\PdoStorage\Queries\QueryExecutor;
-use Medas\StorageManager\Interfaces\{ActionBuilders, ActionExecutor, RecordFetchers, Storage, StorageController, Store};
-use Medas\StorageManager\Migrations\MigrationBuilder;
+use Medas\Core\{Attributes\Service, Interfaces\Serializer};
+
+use Medas\StorageManager\{
+    Interfaces\ActionBuilders,
+    Interfaces\ActionExecutor,
+    Interfaces\RecordFetchers,
+    Interfaces\Storage,
+    Interfaces\StorageController,
+    Interfaces\Store,
+    Migrations\MigrationBuilder
+
+};
 
 #[Service]
 class PdoStorageController implements StorageController
@@ -47,6 +54,7 @@ class PdoStorageController implements StorageController
         /** @noinspection PhpConditionAlreadyCheckedInspection */
         if ($storage instanceof Database) {
             $this->getDatabaseController($storage);
+
             return true;
         }
 
@@ -83,7 +91,7 @@ class PdoStorageController implements StorageController
     public function actionExecutor(): ActionExecutor
     {
         // We can't inject this as a dependency as QueryExecutor depends on this class itself
-        return service(QueryExecutor::class);
+        return service(Queries\QueryExecutor::class);
     }
 
     public function serializer(Storage $storage = null): Serializer
@@ -108,9 +116,7 @@ class PdoStorageController implements StorageController
     public function hasStore(Store $store, Storage $storage = null): bool
     {
         $storage ??= $this->defaultDatabase;
-
         $controller = $this->getDatabaseController($storage);
-
         $querySet = $controller->driverHandler
             ->queryBuilders()->showTables()->build($storage, $store->name());
 

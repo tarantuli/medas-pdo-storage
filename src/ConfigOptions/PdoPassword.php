@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\ConfigOptions;
 
-use Medas\Core\Attributes\Service;
-use Medas\Core\Interfaces\{ConfigGroup, ConfigOption, Validator};
+use Medas\Core\{Attributes\Service, Interfaces\ConfigGroup, Interfaces\ConfigOption, Interfaces\Validator};
 
 #[Service]
 readonly class PdoPassword implements ConfigOption, Validator

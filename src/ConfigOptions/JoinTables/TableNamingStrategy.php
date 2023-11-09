@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\ConfigOptions\JoinTables;
 
-use Medas\Core\Attributes\Service;
-use Medas\Core\Interfaces\{ConfigGroup, ConfigOption, Validator};
-use Medas\PdoStorage\JoinTables\NamingStrategies\DoubleUnderscoreConcatenation;
-use Medas\PdoStorage\JoinTables\NamingStrategy;
+use Medas\Core\{Attributes\Service, Interfaces\ConfigGroup, Interfaces\ConfigOption, Interfaces\Validator};
+use Medas\PdoStorage\JoinTables\{NamingStrategies\DoubleUnderscoreConcatenation, NamingStrategy};
 
 #[Service]
 readonly class TableNamingStrategy implements ConfigOption, Validator

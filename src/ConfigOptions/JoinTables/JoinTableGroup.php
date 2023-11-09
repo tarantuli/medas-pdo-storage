@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\ConfigOptions\JoinTables;
 
-use Medas\Core\Attributes\Service;
-use Medas\Core\Interfaces\ConfigGroup;
+use Medas\Core\{Attributes\Service, Interfaces\ConfigGroup};
 use Medas\PdoStorage\ConfigOptions\PdoGroup;
 
 #[Service]

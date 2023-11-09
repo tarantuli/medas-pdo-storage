@@ -15,14 +15,17 @@ readonly class JoinTableManager
 {
     public function __construct(
         private PdoStorageController $pdoStorageController,
-
         #[ConfigValue(TableNamingStrategy::class)]
         private NamingStrategy       $namingStrategy,
     )
     {
     }
 
-    public function createQueries(Database $database, Blueprint $sourceBlueprint, Blueprint\Field $field): iterable|null
+    public function createQueries(
+        Database        $database,
+        Blueprint       $sourceBlueprint,
+        Blueprint\Field $field
+    ): iterable|null
     {
         $joinBlueprint = new Blueprint();
 
@@ -52,11 +55,7 @@ readonly class JoinTableManager
             true,
         );
 
-        $primaryIndex = new Blueprint\Index(
-            [$idField, $valueField],
-            true
-        );
-
+        $primaryIndex = new Blueprint\Index([$idField, $valueField], true);
         $joinBlueprint->name = $this->namingStrategy->determine($sourceBlueprint->name, $field->name);
         $joinBlueprint->storeOriginalClass = false;
 

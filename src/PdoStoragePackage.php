@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace Medas\PdoStorage;
 
 use Medas\Core\AsSingleton;
-use Medas\ServiceManager\BasePackage;
-use Medas\ServiceManager\ServiceConfig;
-use Medas\StorageManager\StorageManager;
-use Medas\StorageManager\StorageManagerPackage;
+use Medas\ServiceManager\{BasePackage, ServiceConfig};
+use Medas\StorageManager\{StorageManager, StorageManagerPackage};
 
 class PdoStoragePackage extends BasePackage
 {
@@ -29,7 +27,6 @@ class PdoStoragePackage extends BasePackage
     public function initialize(ServiceConfig $config): void
     {
         service(StorageManager::class)->registerController(service(PdoStorageController::class));
-
         parent::initialize($config);
     }
 }

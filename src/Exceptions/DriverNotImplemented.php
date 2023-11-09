@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\Exceptions;
 
-use Medas\Core\Exceptions\BaseException;
-use Medas\Core\Exceptions\Suggestions;
+use Medas\Core\Exceptions\{BaseException, Suggestions};
 
 class DriverNotImplemented extends BaseException implements Suggestions
 {

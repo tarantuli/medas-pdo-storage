@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Medas\PdoStorage;
 
 use Medas\Core\Attributes\Service;
-use Medas\PdoStorage\Drivers\DriverHandlerManager;
 
 #[Service]
 readonly class DatabaseControllerInitializer
 {
     public function __construct(
-        private DriverHandlerManager $driverHandlerManager,
+        private Drivers\DriverHandlerManager $driverHandlerManager,
     )
     {
     }

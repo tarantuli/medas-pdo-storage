@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\Queries;
 
 use Medas\Core\Attributes\Service;
-use Medas\PdoStorage\Exceptions\PdoDatabase;
-use Medas\PdoStorage\PdoStorageController;
-use Medas\PdoStorage\Statement;
-use Medas\PdoStorage\ValueSerializer;
-use Medas\StorageManager\Entities\LastInsertIdPlaceholder;
-use Medas\StorageManager\Interfaces\ActionExecutor;
-use Medas\StorageManager\UnitOfWork\{Action, ActionSet};
+use Medas\PdoStorage\{Exceptions\PdoDatabase, PdoStorageController, Statement, ValueSerializer};
+
+use Medas\StorageManager\{
+    Entities\LastInsertIdPlaceholder,
+    Interfaces\ActionExecutor,
+    UnitOfWork\Action,
+    UnitOfWork\ActionSet
+
+};
 
 #[Service]
 readonly class QueryExecutor implements ActionExecutor
@@ -25,12 +27,13 @@ readonly class QueryExecutor implements ActionExecutor
     public function execute(Action $action, ActionSet $actionSet = null): void
     {
         /** @var Query $action */
-
         $pdo = $this->pdoStorageController->getDatabaseController($action->storage())->pdo;
+
         $this->serializeArguments($action, $actionSet);
 
         try {
             $statement = $pdo->prepare($action->query);
+
             $statement->execute($action->serializedArguments);
 
             $lastInsertId = $pdo->lastInsertId();
@@ -54,6 +57,7 @@ readonly class QueryExecutor implements ActionExecutor
     {
         foreach ($actionSet as $action) {
             $this->execute($action, $actionSet);
+
             $actionSet->lastRecordSet = $action->recordSet();
         }
     }

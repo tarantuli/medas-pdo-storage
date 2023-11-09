@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\Drivers\Interfaces;
 
-use Medas\PdoStorage\Database;
-use Medas\PdoStorage\Queries\QuerySet;
+use Medas\PdoStorage\{Database, Queries\QuerySet};
 
 interface ShowTablesBuilder
 {

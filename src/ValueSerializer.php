@@ -4,8 +4,14 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage;
 
-use Medas\Core\Attributes\Service;
-use Medas\Core\Interfaces\{Guid, GuidProvider, HasId, Serializer, Type};
+use Medas\Core\{
+    Attributes\Service,
+    Interfaces\Guid,
+    Interfaces\GuidProvider,
+    Interfaces\HasId,
+    Interfaces\Serializer,
+    Interfaces\Type
+};
 use Medas\EntityManager\Types\{Boolean, Guid as GuidType, Relation};
 
 #[Service]
@@ -24,6 +30,7 @@ class ValueSerializer implements Serializer
 
         if ($value instanceof \DateTime) {
             $value->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+
             return $value->format('Y-m-d H:i:s');
         }
 

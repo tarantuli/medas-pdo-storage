@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage;
 
-use Medas\StorageManager\Entities\Record;
-use Medas\StorageManager\Interfaces\RecordSet;
+use Medas\StorageManager\{Entities\Record, Interfaces\RecordSet};
 
 readonly class Statement implements RecordSet
 {
