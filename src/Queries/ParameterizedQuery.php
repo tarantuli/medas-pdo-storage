@@ -11,6 +11,7 @@ class ParameterizedQuery
 {
     public function __construct(
         public string                                    $query,
+
         /** @var Parameter[] $parameters */ public array $parameters,
         public array                                     $constants,
         public Database                                  $database,

@@ -12,10 +12,13 @@ readonly class Database implements Storage
     public function __construct(
         #[ConfigValue(ConfigOptions\PdoDns::class)]
         public string $dns,
+
         #[ConfigValue(ConfigOptions\PdoUsername::class)]
         public string $username,
+
         #[ConfigValue(ConfigOptions\PdoPassword::class)]
         public string $password,
+
         #[ConfigValue(ConfigOptions\PdoName::class)]
         public string $name,
     )

@@ -15,6 +15,7 @@ readonly class JoinTableManager
 {
     public function __construct(
         private PdoStorageController $pdoStorageController,
+
         #[ConfigValue(TableNamingStrategy::class)]
         private NamingStrategy       $namingStrategy,
     )
