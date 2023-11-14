@@ -27,6 +27,7 @@ class PdoStoragePackage extends BasePackage
     public function initialize(ServiceConfig $config): void
     {
         service(StorageManager::class)->registerController(service(PdoStorageController::class));
+
         parent::initialize($config);
     }
 }
