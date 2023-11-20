@@ -10,11 +10,12 @@ use Medas\PdoStorage\Database;
 class ParameterizedQuery
 {
     public function __construct(
-        public string                                    $query,
+        public string   $query,
 
-        /** @var Parameter[] $parameters */ public array $parameters,
-        public array                                     $constants,
-        public Database                                  $database,
+        /** @var Parameter[] $parameters */
+        public array    $parameters,
+        public array    $constants,
+        public Database $database,
     )
     {
     }
