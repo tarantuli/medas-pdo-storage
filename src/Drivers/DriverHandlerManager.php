@@ -28,6 +28,9 @@ class DriverHandlerManager
     {
         $this->driverHandlers[] = $handler;
 
-        usort($this->driverHandlers, fn(DriverHandler $a, DriverHandler $b) => -($a->priority() <=> $b->priority()));
+        usort(
+            $this->driverHandlers,
+            fn(DriverHandler $a, DriverHandler $b) => -($a->priority() <=> $b->priority())
+        );
     }
 }

@@ -131,7 +131,10 @@ class PdoStorageController implements StorageController
 
     public function quote(Database $database, string $identifier): string
     {
-        return $this->getDatabaseController($database)->driverHandler->quote($database, $identifier);
+        return $this->getDatabaseController($database)->driverHandler->quote(
+            $database,
+            $identifier
+        );
     }
 
     public function escape(Database $database, mixed $value): string

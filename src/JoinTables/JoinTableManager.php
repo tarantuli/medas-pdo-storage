@@ -57,7 +57,12 @@ readonly class JoinTableManager
         );
 
         $primaryIndex = new Blueprint\Index([$idField, $valueField], true);
-        $joinBlueprint->name = $this->namingStrategy->determine($sourceBlueprint->name, $field->name);
+
+        $joinBlueprint->name = $this->namingStrategy->determine(
+            $sourceBlueprint->name,
+            $field->name
+        );
+
         $joinBlueprint->storeOriginalClass = false;
 
         $joinBlueprint
@@ -67,6 +72,9 @@ readonly class JoinTableManager
             ->addForeignKey($idForeignKey)
             ->addForeignKey($valueForeignKey);
 
-        return $this->pdoStorageController->migrationBuilder()->buildActions($database, $joinBlueprint);
+        return $this->pdoStorageController->migrationBuilder()->buildActions(
+            $database,
+            $joinBlueprint
+        );
     }
 }

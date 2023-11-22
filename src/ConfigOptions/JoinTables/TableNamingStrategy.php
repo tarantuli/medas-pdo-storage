@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\ConfigOptions\JoinTables;
 
-use Medas\Core\{Attributes\Service, Interfaces\ConfigGroup, Interfaces\ConfigOption, Interfaces\Validator};
+use Medas\Core\{
+    Attributes\Service,
+    Interfaces\ConfigGroup,
+    Interfaces\ConfigOption,
+    Interfaces\Validator
+};
 use Medas\PdoStorage\JoinTables\{NamingStrategies\DoubleUnderscoreConcatenation, NamingStrategy};
 
 #[Service]
