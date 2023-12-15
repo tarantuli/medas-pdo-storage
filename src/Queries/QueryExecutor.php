@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\Queries;
 
 use Medas\Core\Attributes\Service;
-use Medas\PdoStorage\{Exceptions\PdoDatabase, PdoStorageController, Statement, ValueSerializer};
+use Medas\PdoStorage\{Exceptions\PdoDatabase, PdoStorageController, Statement};
 use Medas\StorageManager\{
     Entities\LastInsertIdPlaceholder,
     Interfaces\ActionExecutor,
+    Shared\ValueSerializer,
     UnitOfWork\Action,
     UnitOfWork\ActionSet
 };

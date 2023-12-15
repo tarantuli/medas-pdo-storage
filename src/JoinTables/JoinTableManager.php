@@ -35,6 +35,7 @@ readonly class JoinTableManager
         }
 
         $idField = clone $sourceBlueprint->primaryIndex()->fields()[0];
+
         $idField->name = 'id';
         $idField->isGenerated = false;
 
@@ -46,6 +47,7 @@ readonly class JoinTableManager
         );
 
         $valueField = clone $field->collectionField;
+
         $valueField->name = 'value';
         $valueField->isGenerated = false;
 
