@@ -52,15 +52,6 @@ readonly class QueryExecutor implements ActionExecutor
         }
     }
 
-    public function executeSet(ActionSet $actionSet): void
-    {
-        foreach ($actionSet as $action) {
-            $this->execute($action, $actionSet);
-
-            $actionSet->lastRecordSet = $action->recordSet();
-        }
-    }
-
     private function serializeArguments(Query $query, ActionSet $querySet = null): void
     {
         $serializer = service(ValueSerializer::class);
@@ -71,6 +62,15 @@ readonly class QueryExecutor implements ActionExecutor
             }
 
             $query->serializedArguments[$key] = $serializer->serialize($argument);
+        }
+    }
+
+    public function executeSet(ActionSet $actionSet): void
+    {
+        foreach ($actionSet as $action) {
+            $this->execute($action, $actionSet);
+
+            $actionSet->lastRecordSet = $action->recordSet();
         }
     }
 }
