@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\ConfigOptions;
 
 use Medas\Core\{Attributes\Service, Interfaces\ConfigGroup};
-use Medas\StorageManager\ConfigOptions\RootGroup;
+use Medas\StorageManager\ConfigOptions\StorageManagerConfigGroup;
 
 #[Service]
 readonly class PdoGroup implements ConfigGroup
 {
     public function __construct(
-        private RootGroup $group,
+        private StorageManagerConfigGroup $group,
     )
     {
     }
