@@ -111,16 +111,21 @@ class PdoStorageController implements StorageController
         return $id === false ? null : (int) $id;
     }
 
-    public function hasStore(Store $store, Storage $storage = null): bool
+    public function getStores(Storage $storage = null, string $nameFilter = null): array
     {
         $storage ??= $this->defaultDatabase;
         $controller = $this->getDatabaseController($storage);
         $querySet = $controller->driverHandler
-            ->queryBuilders()->showTables()->build($storage, $store->name());
+            ->queryBuilders()->showTables()->build($storage, $nameFilter);
 
         $this->actionExecutor()->executeSet($querySet);
 
-        return $querySet->lastRecordSet?->hasRecords();
+        return $querySet->lastRecordSet->fetchRecords();
+    }
+
+    public function hasStore(Store $store, Storage $storage = null): bool
+    {
+        return $this->getStores() !== [];
     }
 
     public function recordFetchers(): RecordFetchers
