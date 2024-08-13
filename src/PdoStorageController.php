@@ -120,7 +120,13 @@ class PdoStorageController implements StorageController
 
         $this->actionExecutor()->executeSet($querySet);
 
-        return $querySet->lastRecordSet->fetchRecords();
+        $stores = [];
+
+        while ($record = $querySet->lastRecordSet->fetchRecord()) {
+            $stores[] = $this->store(array_values($record->data())[0], $storage);
+        }
+
+        return $stores;
     }
 
     public function hasStore(Store $store, Storage $storage = null): bool
