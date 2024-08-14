@@ -52,6 +52,7 @@ readonly class Statement implements RecordSet
             };
 
             $metaData->fields[] = new MetaData\ColumnData(
+                $data['name'],
                 $type,
                 $data['len'],
                 $data['precision'],

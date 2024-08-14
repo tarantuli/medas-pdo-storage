@@ -10,11 +10,17 @@ use Medas\StorageManager\Interfaces\FieldMetaData;
 readonly class ColumnData implements FieldMetaData
 {
     public function __construct(
+        private string   $name,
         private Type     $type,
         private int|null $length,
         private int|null $precision,
     )
     {
+    }
+
+    public function name(): string
+    {
+        return $this->name;
     }
 
     public function type(): Type
