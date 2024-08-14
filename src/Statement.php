@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage;
 
-use Medas\EntityManager\Types\{Boolean, Integer, Text};
+use Medas\EntityManager\Types\{Binary, Boolean, DateTime, Integer, Text};
 use Medas\StorageManager\{Entities\Record, Interfaces\RecordMetaData, Interfaces\RecordSet};
 
 readonly class Statement implements RecordSet
@@ -45,10 +45,12 @@ readonly class Statement implements RecordSet
 
         for ($column = 0; $column < $this->pdoStatement->columnCount(); ++$column) {
             $data = $this->pdoStatement->getColumnMeta($column);
-            $type = match ($data['pdo_type']) {
-                \PDO::PARAM_BOOL, \PDO::PARAM_NULL => new Boolean(),
-                \PDO::PARAM_INT => new Integer(),
-                \PDO::PARAM_STR, \PDO::PARAM_STR_CHAR, \PDO::PARAM_STR_NATL => new Text(),
+            $type = match ($data['native_type']) {
+                'BOOLEAN' => new Boolean(),
+                'DOUBLE', 'LONG', 'TINY' => new Integer(),
+                'BLOB' => new Binary(),
+                'DATE', 'DATETIME' => new DateTime(),
+                'VAR_STRING' => new Text(),
             };
 
             $metaData->fields[] = new MetaData\ColumnData(
