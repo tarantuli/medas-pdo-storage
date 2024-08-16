@@ -50,7 +50,7 @@ readonly class Statement implements RecordSet
                 'DOUBLE', 'LONG', 'TINY' => new Integer(),
                 'BLOB' => new Binary(),
                 'DATE', 'DATETIME' => new DateTime(),
-                'VAR_STRING' => new Text(),
+                'VAR_STRING', 'STRING' => new Text(),
             };
 
             $metaData->fields[] = new MetaData\ColumnData(
