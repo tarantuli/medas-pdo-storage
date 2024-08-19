@@ -12,6 +12,9 @@ class MetaData implements RecordMetaData
     public array $fields = [];
 
     /** @var string[] */
+    public array $fieldNames = [];
+
+    /** @var string[] */
     public array $primaryKeyFieldNames = [];
 
     public int $rowCount;
@@ -19,6 +22,11 @@ class MetaData implements RecordMetaData
     public function fields(): array
     {
         return $this->fields;
+    }
+
+    public function fieldNames(): array
+    {
+        return $this->fieldNames;
     }
 
     public function primaryKeyFieldNames(): array
