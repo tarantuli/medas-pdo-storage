@@ -11,11 +11,19 @@ class MetaData implements RecordMetaData
     /** @var ColumnData[] */
     public array $fields = [];
 
+    /** @var string[] */
+    public array $primaryKeyFieldNames = [];
+
     public int $rowCount;
 
     public function fields(): array
     {
         return $this->fields;
+    }
+
+    public function primaryKeyFieldNames(): array
+    {
+        return $this->primaryKeyFieldNames;
     }
 
     public function rowCount(): int
