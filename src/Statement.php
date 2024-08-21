@@ -60,6 +60,7 @@ readonly class Statement implements RecordSet
                 $type,
                 $data['len'],
                 $data['precision'],
+                true,
             );
         }
 

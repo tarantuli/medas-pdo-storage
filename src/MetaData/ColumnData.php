@@ -14,6 +14,7 @@ readonly class ColumnData implements FieldMetaData
         private Type     $type,
         private int|null $length,
         private int|null $precision,
+        private bool     $isNullable,
     )
     {
     }
@@ -36,5 +37,10 @@ readonly class ColumnData implements FieldMetaData
     public function precision(): int|null
     {
         return $this->precision;
+    }
+
+    public function isNullable(): bool
+    {
+        return $this->isNullable;
     }
 }
