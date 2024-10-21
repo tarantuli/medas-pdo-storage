@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\MetaData;
 
-use Medas\StorageManager\Interfaces\RecordMetaData;
+use Medas\StorageManager\Interfaces\RecordSetMetaData;
 
-class MetaData implements RecordMetaData
+class MetaData implements RecordSetMetaData
 {
     /** @var ColumnData[] */
     public array $fields = [];

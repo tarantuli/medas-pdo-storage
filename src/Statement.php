@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Medas\PdoStorage;
 
 use Medas\StorageManager\Entities\Record;
-use Medas\StorageManager\Interfaces\{RecordMetaData, RecordSet};
+use Medas\StorageManager\Interfaces\{RecordSet, RecordSetMetaData};
 use Medas\StorageManager\Structure\Blueprint\Type;
 
 readonly class Statement implements RecordSet
@@ -40,7 +40,7 @@ readonly class Statement implements RecordSet
         return $this->pdoStatement->rowCount() && $this->pdoStatement->columnCount();
     }
 
-    public function fetchMetaData(): RecordMetaData
+    public function fetchMetaData(): RecordSetMetaData
     {
         $metaData = new MetaData\MetaData();
 
