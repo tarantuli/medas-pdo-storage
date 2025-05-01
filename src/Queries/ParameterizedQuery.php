@@ -15,6 +15,7 @@ class ParameterizedQuery
         /** @var Parameter[] $parameters */
         public array    $parameters,
         public array    $constants,
+        public array    $variableSizedParameters,
         public Database $database,
     )
     {
