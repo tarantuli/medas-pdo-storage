@@ -131,7 +131,9 @@ class PdoStorageController implements StorageController
 
     public function hasStore(Store $store, Storage $storage = null): bool
     {
-        return $this->getStores() !== [];
+        return (bool) array_filter($this->getStores($storage), function ($aStore) use ($store) {
+            return $store->name() === $aStore->name();
+        });
     }
 
     public function recordFetchers(): RecordFetchers
