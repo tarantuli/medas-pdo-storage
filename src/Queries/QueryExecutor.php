@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\Queries;
 
-use Medas\Core\{Attributes\Service, Events\DebugInformation, Interfaces\EventDispatcher};
+use Medas\Core\{Attributes\Service, Events\DebugInformation};
 use Medas\PdoStorage\{Exceptions\PdoDatabase, PdoStorageController, Statement};
 use Medas\StorageManager\{
     Entities\LastInsertIdPlaceholder,
@@ -19,7 +19,6 @@ readonly class QueryExecutor implements ActionExecutor
 {
     public function __construct(
         private PdoStorageController $pdoStorageController,
-        private EventDispatcher|null $eventDispatcher,
     )
     {
     }
@@ -34,7 +33,7 @@ readonly class QueryExecutor implements ActionExecutor
         try {
             $statement = $pdo->prepare($action->query);
 
-            $this->eventDispatcher?->dispatch(new DebugInformation(
+            dispatch(new DebugInformation(
                 '[pdo-storage] executing query %s with arguments %s',
                 $action->query,
                 $action->serializedArguments
