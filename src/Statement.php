@@ -25,11 +25,25 @@ readonly class Statement implements RecordSet
 
     public function fetchRecords(): array
     {
-        $data = $this->pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
+        $data = $this->pdoStatement->fetchAll(\PDO::FETCH_NUM);
+        $names = [];
+
+        for ($column = 0; $column < $this->pdoStatement->columnCount(); ++$column) {
+            $columnMeta = $this->pdoStatement->getColumnMeta($column);
+            $name = $columnMeta['name'];
+
+            if (in_array($name, $names, true)) {
+                /** @noinspection PhpArrayKeyDoesNotMatchArrayShapeInspection */
+                $name = $columnMeta['table'] . '.' . $name;
+            }
+
+            $names[] = $name;
+        }
+
         $records = [];
 
         foreach ($data as $set) {
-            $records[] = new Record($set);
+            $records[] = new Record(array_combine($names, $set));
         }
 
         return $records;
