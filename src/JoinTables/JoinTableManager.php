@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\JoinTables;
 
 use Medas\Core\Attributes\{ConfigValue, Service};
+use Medas\EntityManager\Attributes\Relations\Action;
 use Medas\PdoStorage\ConfigOptions\JoinTables\TableNamingStrategy;
 use Medas\PdoStorage\Database;
 use Medas\PdoStorage\PdoStorageController;
@@ -43,7 +44,8 @@ readonly class JoinTableManager
             'id',
             $sourceBlueprint->name,
             $sourceBlueprint->primaryIndex()->fields()[0]->name,
-            true
+            Action::Cascade,
+            Action::Cascade
         );
 
         $valueField = clone $field->collectionField;
@@ -55,7 +57,8 @@ readonly class JoinTableManager
             'value',
             $field->collectionStore,
             $field->collectionField->name,
-            true,
+            Action::Cascade,
+            Action::Cascade
         );
 
         $primaryIndex = new Blueprint\Index([$idField, $valueField], true);
