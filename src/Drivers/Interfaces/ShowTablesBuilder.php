@@ -8,5 +8,5 @@ use Medas\PdoStorage\{Database, Queries\QuerySet};
 
 interface ShowTablesBuilder
 {
-    public function build(Database $database, string $name = null): QuerySet;
+    public function build(Database $database, string|null $name = null): QuerySet;
 }

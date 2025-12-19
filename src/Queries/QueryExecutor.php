@@ -23,7 +23,7 @@ readonly class QueryExecutor implements ActionExecutor
     {
     }
 
-    public function execute(Action $action, ActionSet $actionSet = null): void
+    public function execute(Action $action, ActionSet|null $actionSet = null): void
     {
         /** @var Query $action */
         $pdo = $this->pdoStorageController->getDatabaseController($action->storage())->pdo;
@@ -58,7 +58,7 @@ readonly class QueryExecutor implements ActionExecutor
         }
     }
 
-    private function serializeArguments(Query $query, ActionSet $querySet = null): void
+    private function serializeArguments(Query $query, ActionSet|null $querySet = null): void
     {
         $serializer = service(ValueSerializer::class);
 

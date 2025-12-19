@@ -59,12 +59,12 @@ class PdoStorageController implements StorageController
         return false;
     }
 
-    public function transaction(Storage $storage = null): Transaction
+    public function transaction(Storage|null $storage = null): Transaction
     {
         return $this->getDatabaseController($storage ?? $this->defaultDatabase)->transaction;
     }
 
-    public function store(string $name, Storage $storage = null): Table
+    public function store(string $name, Storage|null $storage = null): Table
     {
         $storage ??= $this->defaultDatabase;
 
@@ -92,7 +92,7 @@ class PdoStorageController implements StorageController
         return service(Queries\QueryExecutor::class);
     }
 
-    public function serializer(Storage $storage = null): Serializer
+    public function serializer(Storage|null $storage = null): Serializer
     {
         return $this->getDatabaseController($storage ?? $this->defaultDatabase)->driverHandler
             ->serializer();
@@ -104,14 +104,14 @@ class PdoStorageController implements StorageController
             ->migrationBuilder();
     }
 
-    public function lastGeneratedValue(Storage $storage = null): int|null
+    public function lastGeneratedValue(Storage|null $storage = null): int|null
     {
         $id = $this->getDatabaseController($storage ?? $this->defaultDatabase)->pdo->lastInsertId();
 
         return $id === false ? null : (int) $id;
     }
 
-    public function getStores(Storage $storage = null, string $nameFilter = null): array
+    public function getStores(Storage|null $storage = null, string|null $nameFilter = null): array
     {
         $storage ??= $this->defaultDatabase;
         $controller = $this->getDatabaseController($storage);
@@ -129,7 +129,7 @@ class PdoStorageController implements StorageController
         return $stores;
     }
 
-    public function hasStore(Store $store, Storage $storage = null): bool
+    public function hasStore(Store $store, Storage|null $storage = null): bool
     {
         $storage ??= $store->storage();
 
