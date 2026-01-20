@@ -28,16 +28,11 @@ readonly class JoinTableManager
         Blueprint\Field $field
     ): iterable|null
     {
-        $joinBlueprint = new Blueprint();
-
         if ($sourceBlueprint->primaryIndex() === null) {
             return null;
         }
 
-        $idField = clone $sourceBlueprint->primaryIndex()->fields()[0];
-
-        $idField->name = 'id';
-        $idField->isGenerated = false;
+        $idField = $this->getIdField($sourceBlueprint);
 
         $idForeignKey = new Blueprint\ForeignKey(
             'id',
@@ -47,10 +42,7 @@ readonly class JoinTableManager
             Action::Cascade
         );
 
-        $valueField = clone $field->collectionField;
-
-        $valueField->name = 'value';
-        $valueField->isGenerated = false;
+        $valueField = $this->getValueField($field);
 
         $valueForeignKey = new Blueprint\ForeignKey(
             'value',
@@ -60,7 +52,16 @@ readonly class JoinTableManager
             Action::Cascade
         );
 
+        $orderField = new Blueprint\Field(
+            name: 'order',
+            type: Blueprint\Type::Integer,
+            hasDefault: true,
+            default: 0
+        );
+
         $primaryIndex = new Blueprint\Index([$idField, $valueField], true);
+        $searchIndex = new Blueprint\Index([$idField, $orderField]);
+        $joinBlueprint = new Blueprint();
 
         $joinBlueprint->name = $this->namingStrategy->determine(
             $sourceBlueprint->name,
@@ -72,7 +73,9 @@ readonly class JoinTableManager
         $joinBlueprint
             ->addField($idField)
             ->addField($valueField)
+            ->addField($orderField)
             ->addIndex($primaryIndex)
+            ->addIndex($searchIndex)
             ->addForeignKey($idForeignKey)
             ->addForeignKey($valueForeignKey);
 
@@ -80,5 +83,25 @@ readonly class JoinTableManager
             $database,
             $joinBlueprint
         );
+    }
+
+    private function getIdField(Blueprint $sourceBlueprint): Blueprint\Field
+    {
+        $idField = clone $sourceBlueprint->primaryIndex()->fields()[0];
+
+        $idField->name = 'id';
+        $idField->isGenerated = false;
+
+        return $idField;
+    }
+
+    private function getValueField(Blueprint\Field $field): Blueprint\Field|null
+    {
+        $valueField = clone $field->collectionField;
+
+        $valueField->name = 'value';
+        $valueField->isGenerated = false;
+
+        return $valueField;
     }
 }
