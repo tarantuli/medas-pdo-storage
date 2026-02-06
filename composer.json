@@ -1,7 +1,7 @@
 {
   "name": "morphp/medas-pdo-storage",
   "description": "Medas pdo storage",
-  "version": "v2.0.0",
+  "version": "v1.0.0",
   "keywords": [
     "storage"
   ],
@@ -14,15 +14,16 @@
   "type": "library",
   "require": {
     "ext-pdo": "*",
-    "morphp/medas-core": "^2",
-    "morphp/medas-entity-manager": "^2",
-    "morphp/medas-storage-manager": "^2"
+    "morphp/medas-core": "^1",
+    "morphp/medas-entity-manager": "^1",
+    "morphp/medas-storage-manager": "^1",
+    "php": "^8.2"
   },
   "require-dev": {
-    "morphp/medas-service-manager": "^2",
-    "morphp/medas-config-manager": "^2",
-    "morphp/medas-config-options": "^2",
-    "morphp/medas-ramsey-uuid-bridge": "^2",
+    "morphp/medas-service-manager": "^1",
+    "morphp/medas-config-manager": "^1",
+    "morphp/medas-config-options": "^1",
+    "morphp/medas-ramsey-uuid-bridge": "^1",
     "phpunit/phpunit": "^9.5"
   },
   "autoload": {
