@@ -16,7 +16,8 @@
     "ext-pdo": "*",
     "morphp/medas-core": "^2",
     "morphp/medas-entity-manager": "^2",
-    "morphp/medas-storage-manager": "^2"
+    "morphp/medas-storage-manager": "^2",
+    "php": "^8.4"
   },
   "require-dev": {
     "morphp/medas-service-manager": "^2",
@@ -32,3 +33,4 @@
     }
   }
 }
+
