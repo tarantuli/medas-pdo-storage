@@ -1,35 +1,34 @@
 {
-    "name": "morphp/medas-pdo-storage",
-    "description": "Medas pdo storage",
-    "keywords": [
-        "storage"
-    ],
-    "authors": [
-        {
-            "name": "Patrick Morpey",
-            "email": "patrick@morphp.nl"
-        }
-    ],
-    "type": "library",
-    "minimum-stability": "dev",
-    "prefer-stable": true,
-    "require": {
-        "ext-pdo": "*",
-        "morphp/medas-core": "dev-dev",
-        "morphp/medas-entity-manager": "dev-dev",
-        "morphp/medas-storage-manager": "dev-dev"
-    },
-    "require-dev": {
-        "morphp/medas-service-manager": "dev-dev",
-        "morphp/medas-config-manager": "dev-dev",
-        "morphp/medas-config-options": "dev-dev",
-        "morphp/medas-ramsey-uuid-bridge": "dev-dev",
-        "phpunit/phpunit": "^9.5"
-    },
-    "autoload": {
-        "psr-4": {
-            "Medas\\PdoStorage\\": "src/",
-            "Medas\\PdoStorageTest\\": "tests/"
-        }
+  "name": "morphp/medas-pdo-storage",
+  "description": "Medas pdo storage",
+  "version": "v2.0.0",
+  "keywords": [
+    "storage"
+  ],
+  "authors": [
+    {
+      "name": "Patrick Morpey",
+      "email": "patrick@morphp.nl"
     }
+  ],
+  "type": "library",
+  "require": {
+    "ext-pdo": "*",
+    "morphp/medas-core": "^2",
+    "morphp/medas-entity-manager": "^2",
+    "morphp/medas-storage-manager": "^2"
+  },
+  "require-dev": {
+    "morphp/medas-service-manager": "^2",
+    "morphp/medas-config-manager": "^2",
+    "morphp/medas-config-options": "^2",
+    "morphp/medas-ramsey-uuid-bridge": "^2",
+    "phpunit/phpunit": "^9.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "Medas\\PdoStorage\\": "src/",
+      "Medas\\PdoStorageTest\\": "tests/"
+    }
+  }
 }
