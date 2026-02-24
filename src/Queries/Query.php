@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\Queries;
 
-use Medas\PdoStorage\{Database, Statement};
+use Medas\PdoStorage\{Database, Exceptions\StatementIsNotSet, Statement};
 use Medas\StorageManager\{Interfaces\RecordSet, UnitOfWork\BaseAction, UnitOfWork\Priority};
 
 class Query extends BaseAction
 {
     public array $serializedArguments = [];
-    public Statement $statement;
+    public Statement|null $statement = null;
 
     public function __construct(
         public readonly string   $query,
@@ -34,6 +34,6 @@ class Query extends BaseAction
 
     public function recordSet(): RecordSet
     {
-        return $this->statement;
+        return $this->statement ?? throw new StatementIsNotSet();
     }
 }

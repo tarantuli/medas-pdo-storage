@@ -10,8 +10,8 @@ use Medas\StorageManager\Interfaces\Storage;
 readonly class Database implements Storage
 {
     public function __construct(
-        #[ConfigValue(ConfigOptions\PdoDns::class)]
-        public string $dns,
+        #[ConfigValue(ConfigOptions\PdoDsn::class)]
+        public string $dsn,
 
         #[ConfigValue(ConfigOptions\PdoUsername::class)]
         public string $username,
@@ -21,6 +21,9 @@ readonly class Database implements Storage
 
         #[ConfigValue(ConfigOptions\PdoName::class)]
         public string $name,
+
+        #[ConfigValue(ConfigOptions\PdoPersistentConnection::class)]
+        public bool   $usePersistentConnection,
     )
     {
     }

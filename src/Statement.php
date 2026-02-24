@@ -51,7 +51,7 @@ readonly class Statement implements RecordSet
 
     public function hasRecords(): bool
     {
-        return $this->pdoStatement->rowCount() && $this->pdoStatement->columnCount();
+        return $this->pdoStatement->columnCount() > 0;
     }
 
     public function fetchMetaData(): RecordSetMetaData
@@ -62,11 +62,11 @@ readonly class Statement implements RecordSet
             $data = $this->pdoStatement->getColumnMeta($column);
             $type = match ($data['native_type']) {
                 'BOOLEAN' => Type::Boolean,
-                'DOUBLE', 'LONG', 'TINY' => Type::Integer,
-                'BLOB' => Type::Binary,
-                'DATETIME' => Type::DateTime,
+                'DOUBLE', 'LONG', 'TINY', 'FLOAT', 'NEWDECIMAL', 'INT24' => Type::Integer,
+                'BLOB', 'LONGBLOB' => Type::Binary,
+                'DATETIME', 'TIMESTAMP' => Type::DateTime,
                 'DATE' => Type::Date,
-                'VAR_STRING', 'STRING' => Type::Text,
+                default => Type::Text,
             };
 
             $metaData->fields[] = new MetaData\ColumnData(
@@ -76,7 +76,11 @@ readonly class Statement implements RecordSet
                 $data['precision'],
                 true,
             );
+
+            $metaData->fieldNames[] = $data['name'];
         }
+
+        $metaData->rowCount = $this->pdoStatement->rowCount();
 
         return $metaData;
     }

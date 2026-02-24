@@ -13,8 +13,19 @@ class DriverHandlerManager
     /** @var DriverHandler[] */
     private array $driverHandlers = [];
 
+    private bool $isSorted = false;
+
     public function find(string $driverName): DriverHandler
     {
+        if (!$this->isSorted) {
+            usort(
+                $this->driverHandlers,
+                fn(DriverHandler $a, DriverHandler $b) => -($a->priority() <=> $b->priority())
+            );
+
+            $this->isSorted = true;
+        }
+
         foreach ($this->driverHandlers as $driverHandler) {
             if ($driverHandler->canHandle($driverName)) {
                 return $driverHandler;
@@ -27,10 +38,6 @@ class DriverHandlerManager
     public function addHandler(DriverHandler $handler): void
     {
         $this->driverHandlers[] = $handler;
-
-        usort(
-            $this->driverHandlers,
-            fn(DriverHandler $a, DriverHandler $b) => -($a->priority() <=> $b->priority())
-        );
+        $this->isSorted = false;
     }
 }

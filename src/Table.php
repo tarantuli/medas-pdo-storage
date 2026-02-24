@@ -6,7 +6,7 @@ namespace Medas\PdoStorage;
 
 use Medas\StorageManager\Interfaces\Store;
 
-class Table implements Store
+readonly class Table implements Store
 {
     public function __construct(
         public Database $database,

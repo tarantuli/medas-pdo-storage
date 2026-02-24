@@ -50,7 +50,7 @@ readonly class QueryExecutor implements ActionExecutor
             $action->statement = new Statement($statement);
         }
         catch (\Exception|\Error $e) {
-            throw new PdoDatabase($e->getMessage(), $action);
+            throw new PdoDatabase($e->getMessage(), $action, $e);
         }
 
         if ($onComplete = $action->onComplete()) {

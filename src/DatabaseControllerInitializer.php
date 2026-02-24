@@ -21,10 +21,10 @@ readonly class DatabaseControllerInitializer
             \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
             \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
             \PDO::ATTR_EMULATE_PREPARES => false,
-            \PDO::ATTR_PERSISTENT => true,
+            \PDO::ATTR_PERSISTENT => $database->usePersistentConnection,
         ];
 
-        $pdo = new \PDO($database->dns, $database->username, $database->password, $options);
+        $pdo = new \PDO($database->dsn, $database->username, $database->password, $options);
         $transaction = new Transaction($pdo);
         $driverHandler = $this->driverHandlerManager->find($pdo->getAttribute(\PDO::ATTR_DRIVER_NAME));
 

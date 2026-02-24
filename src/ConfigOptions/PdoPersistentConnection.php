@@ -12,7 +12,7 @@ use Medas\Core\{
 };
 
 #[Service]
-readonly class PdoDns implements ConfigOption, Validator
+readonly class PdoPersistentConnection implements ConfigOption, Validator
 {
     public function __construct(
         private PdoGroup $group,
@@ -27,26 +27,26 @@ readonly class PdoDns implements ConfigOption, Validator
 
     public function name(): string
     {
-        return 'dns';
+        return 'persistent-connection';
     }
 
     public function description(): string
     {
-        return 'The complete dns string to the database';
-    }
-
-    public function isValid(mixed $value): bool
-    {
-        return is_string($value);
+        return 'Whether to use persistent connections';
     }
 
     public function hasDefault(): bool
     {
-        return false;
+        return true;
     }
 
-    public function default(): null
+    public function default(): true
     {
-        return null;
+        return true;
+    }
+
+    public function isValid(mixed $value): bool
+    {
+        return is_bool($value);
     }
 }

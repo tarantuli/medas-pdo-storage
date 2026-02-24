@@ -17,7 +17,7 @@ class MetaData implements RecordSetMetaData
     /** @var string[] */
     public array $primaryKeyFieldNames = [];
 
-    public int $rowCount;
+    public int $rowCount = 0;
 
     public function fields(): array
     {
@@ -29,6 +29,9 @@ class MetaData implements RecordSetMetaData
         return $this->fieldNames;
     }
 
+    /**
+     * These will always be empty in this implementation.
+     */
     public function primaryKeyFieldNames(): array
     {
         return $this->primaryKeyFieldNames;

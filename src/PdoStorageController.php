@@ -6,6 +6,7 @@ namespace Medas\PdoStorage;
 
 use Medas\Core\{Attributes\Service, Interfaces\Serializer};
 use Medas\StorageManager\{
+    Exceptions\NoDefaultStorageFound,
     Interfaces\ActionBuilders,
     Interfaces\ActionExecutor,
     Interfaces\RecordFetchers,
@@ -18,7 +19,7 @@ use Medas\StorageManager\{
 #[Service]
 class PdoStorageController implements StorageController
 {
-    private Database $defaultDatabase;
+    private Database|null $defaultDatabase = null;
 
     /** @var DatabaseController[] */
     private array $controllers = [];
@@ -61,12 +62,12 @@ class PdoStorageController implements StorageController
 
     public function transaction(Storage|null $storage = null): Transaction
     {
-        return $this->getDatabaseController($storage ?? $this->defaultDatabase)->transaction;
+        return $this->getDatabaseController($this->resolveDatabase($storage))->transaction;
     }
 
     public function store(string $name, Storage|null $storage = null): Table
     {
-        $storage ??= $this->defaultDatabase;
+        $storage = $this->resolveDatabase($storage);
 
         return $this->getDatabaseController($storage)->driverHandler
             ->table($storage, $name);
@@ -82,7 +83,7 @@ class PdoStorageController implements StorageController
 
     public function actionBuilders(): ActionBuilders
     {
-        return $this->getDatabaseController($this->defaultDatabase)->driverHandler
+        return $this->getDatabaseController($this->resolveDatabase())->driverHandler
             ->queryBuilders();
     }
 
@@ -94,26 +95,26 @@ class PdoStorageController implements StorageController
 
     public function serializer(Storage|null $storage = null): Serializer
     {
-        return $this->getDatabaseController($storage ?? $this->defaultDatabase)->driverHandler
+        return $this->getDatabaseController($this->resolveDatabase($storage))->driverHandler
             ->serializer();
     }
 
     public function migrationBuilder(): MigrationBuilder
     {
-        return $this->getDatabaseController($this->defaultDatabase)->driverHandler
+        return $this->getDatabaseController($this->resolveDatabase())->driverHandler
             ->migrationBuilder();
     }
 
     public function lastGeneratedValue(Storage|null $storage = null): int|null
     {
-        $id = $this->getDatabaseController($storage ?? $this->defaultDatabase)->pdo->lastInsertId();
+        $id = $this->getDatabaseController($this->resolveDatabase($storage))->pdo->lastInsertId();
 
         return $id === false ? null : (int) $id;
     }
 
     public function getStores(Storage|null $storage = null, string|null $nameFilter = null): array
     {
-        $storage ??= $this->defaultDatabase;
+        $storage = $this->resolveDatabase($storage);
         $controller = $this->getDatabaseController($storage);
         $querySet = $controller->driverHandler
             ->queryBuilders()->showTables()->build($storage, $nameFilter);
@@ -140,8 +141,21 @@ class PdoStorageController implements StorageController
 
     public function recordFetchers(): RecordFetchers
     {
-        return $this->getDatabaseController($this->defaultDatabase)->driverHandler
+        return $this->getDatabaseController($this->resolveDatabase())->driverHandler
             ->recordFetchers();
+    }
+
+    private function resolveDatabase(Storage|null $storage = null): Database
+    {
+        if ($storage instanceof Database) {
+            return $storage;
+        }
+
+        if ($this->defaultDatabase !== null) {
+            return $this->defaultDatabase;
+        }
+
+        throw new NoDefaultStorageFound();
     }
 
     public function quote(Database $database, string $identifier): string

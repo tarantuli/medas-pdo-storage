@@ -95,7 +95,7 @@ readonly class JoinTableManager
         return $idField;
     }
 
-    private function getValueField(Blueprint\Field $field): Blueprint\Field|null
+    private function getValueField(Blueprint\Field $field): Blueprint\Field
     {
         $valueField = clone $field->collectionField;
 

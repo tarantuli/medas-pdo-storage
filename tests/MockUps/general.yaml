@@ -2,7 +2,7 @@ env: dev
 
 storage:
   pdo:
-    dns: $env(DB_PDO_DNS)
+    dsn: $env(DB_PDO_DSN)
     username: $env(DB_PDO_USERNAME)
     password: $env(DB_PDO_PASSWORD)
   migration-directory: tests/Migrations
