@@ -10,12 +10,13 @@ use Medas\PdoStorage\Queries\Query;
 class PdoDatabase extends BaseException
 {
     public function __construct(
-        string                      $message,
-        Query                       $query,
-        private readonly \Throwable $previous,
+        string                        $message,
+        Query                         $query,
+        private readonly \Throwable   $previous,
+        public readonly ExceptionType $exceptionType,
     )
     {
-        parent::__construct($message, $query->query, $query->arguments);
+        parent::__construct($message, $query->query, $query->arguments, $this->exceptionType);
     }
 
     public function pattern(): string

@@ -34,7 +34,8 @@ readonly class QueryExecutor implements ActionExecutor
     public function execute(Action $action, ActionSet|null $actionSet = null): void
     {
         /** @var Query $action */
-        $pdo = $this->pdoStorageController->getDatabaseController($action->storage())->pdo;
+        $databaseController = $this->pdoStorageController->getDatabaseController($action->storage());
+        $pdo = $databaseController->pdo;
 
         $this->serializeArguments($action, $actionSet);
 
@@ -60,7 +61,12 @@ readonly class QueryExecutor implements ActionExecutor
             $action->statement = new Statement($statement);
         }
         catch (\Exception|\Error $e) {
-            throw new PdoDatabase($e->getMessage(), $action, $e);
+            throw new PdoDatabase(
+                $e->getMessage(),
+                $action,
+                $e,
+                $databaseController->driverHandler->exceptionTypeFinder($e)
+            );
         }
 
         if ($onComplete = $action->onComplete()) {
