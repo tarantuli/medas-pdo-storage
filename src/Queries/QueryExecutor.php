@@ -65,7 +65,7 @@ readonly class QueryExecutor implements ActionExecutor
                 $e->getMessage(),
                 $action,
                 $e,
-                $databaseController->driverHandler->exceptionTypeFinder($e)
+                $databaseController->driverHandler->exceptionTypeFinder()->find($e)
             );
         }
 

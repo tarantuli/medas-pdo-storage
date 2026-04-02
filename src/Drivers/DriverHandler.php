@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\Drivers;
 
 use Medas\Core\Interfaces\Serializer;
-use Medas\PdoStorage\{Database, Exceptions\ExceptionType, Table};
+use Medas\PdoStorage\{Database, Table};
 use Medas\StorageManager\{Interfaces\RecordFetchers, Migrations\MigrationBuilder};
 
 interface DriverHandler
@@ -36,5 +36,5 @@ interface DriverHandler
 
     public function tableStructureString(Table $table): string|null;
 
-    public function exceptionTypeFinder(\Exception|\Error $e): ExceptionType;
+    public function exceptionTypeFinder(): Interfaces\ExceptionTypeFinder;
 }
