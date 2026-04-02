@@ -25,7 +25,22 @@ class PdoStoragePackage extends BasePackage
 
     public function initialize(ServiceConfig $config): void
     {
-        service(StorageManager::class)->registerController(service(PdoStorageController::class));
+        $pdoStorageController = service(PdoStorageController::class);
+
+        service(StorageManager::class)->registerController($pdoStorageController);
+
+        // Roll back any open transaction on shutdown to prevent lock leaks
+        // on persistent connections and in error scenarios.
+        register_shutdown_function(function () use ($pdoStorageController) {
+            try {
+                $pdoStorageController
+                    ->transaction()
+                    ->rollback();
+            }
+            catch (\Throwable) {
+                // Silently discard — shutdown functions must not throw
+            }
+        });
 
         parent::initialize($config);
     }
