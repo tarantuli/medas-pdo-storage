@@ -4,19 +4,23 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\Exceptions;
 
-use Medas\Core\Exceptions\BaseException;
+use Medas\Core\{
+    Exceptions\BaseException,
+    Exceptions\StorageExceptionType,
+    Interfaces\StorageException
+};
 use Medas\PdoStorage\Queries\Query;
 
-class PdoDatabase extends BaseException
+class PdoDatabase extends BaseException implements StorageException
 {
     public function __construct(
-        string                        $message,
-        Query                         $query,
-        private readonly \Throwable   $previous,
-        public readonly ExceptionType $exceptionType,
+        string                               $message,
+        Query                                $query,
+        private readonly \Throwable          $previous,
+        public readonly StorageExceptionType $exceptionType,
     )
     {
-        parent::__construct($message, $query->query, $query->arguments, $this->exceptionType);
+        parent::__construct($message, $query->query, $query->arguments);
     }
 
     public function pattern(): string
