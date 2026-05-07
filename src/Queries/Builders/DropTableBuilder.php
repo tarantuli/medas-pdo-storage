@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\Queries\Builders;
 
 use Medas\Core\Attributes\Service;
-use Medas\PdoStorage\{PdoStorageController, Queries\Query, Queries\QuerySet};
-use Medas\StorageManager\Interfaces\{Builders\DeleteStoreBuilder, Store};
-use Medas\StorageManager\UnitOfWork\ActionSet;
+use Medas\PdoStorage\Drivers\Interfaces\DeleteStoreBuilder;
+use Medas\PdoStorage\PdoStorageController;
+use Medas\PdoStorage\Queries\{Query, QuerySet};
+use Medas\StorageManager\{Interfaces\Store, UnitOfWork\ActionSet};
 
 #[Service]
 readonly class DropTableBuilder implements DeleteStoreBuilder

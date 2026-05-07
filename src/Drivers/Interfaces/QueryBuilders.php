@@ -8,5 +8,7 @@ use Medas\StorageManager\Interfaces\ActionBuilders;
 
 interface QueryBuilders extends ActionBuilders
 {
+    public function deleteStore(): DeleteStoreBuilder;
+
     public function showTables(): ShowTablesBuilder;
 }

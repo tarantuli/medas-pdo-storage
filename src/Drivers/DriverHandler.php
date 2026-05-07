@@ -6,7 +6,7 @@ namespace Medas\PdoStorage\Drivers;
 
 use Medas\Core\Interfaces\Serializer;
 use Medas\PdoStorage\{Database, Table};
-use Medas\StorageManager\{Interfaces\RecordFetchers, Migrations\MigrationBuilder};
+use Medas\StorageManager\Interfaces\RecordFetchers;
 
 interface DriverHandler
 {
@@ -20,17 +20,9 @@ interface DriverHandler
 
     public function table(Database $database, string $name): Table;
 
-    public function tableStructureFinder(): Interfaces\TableStructureFinder;
-
-    public function fieldHandler(): Interfaces\FieldHandler;
-
-    public function migrationBuilder(): MigrationBuilder;
-
     public function queryBuilders(): Interfaces\QueryBuilders;
 
     public function serializer(): Serializer;
-
-    public function typeHandler(): Interfaces\TypeHandler;
 
     public function recordFetchers(): RecordFetchers;
 

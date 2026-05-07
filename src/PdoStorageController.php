@@ -12,8 +12,7 @@ use Medas\StorageManager\{
     Interfaces\RecordFetchers,
     Interfaces\Storage,
     Interfaces\StorageController,
-    Interfaces\Store,
-    Migrations\MigrationBuilder
+    Interfaces\Store
 };
 
 #[Service]
@@ -97,12 +96,6 @@ class PdoStorageController implements StorageController
     {
         return $this->getDatabaseController($this->resolveDatabase($storage))->driverHandler
             ->serializer();
-    }
-
-    public function migrationBuilder(): MigrationBuilder
-    {
-        return $this->getDatabaseController($this->resolveDatabase())->driverHandler
-            ->migrationBuilder();
     }
 
     public function lastGeneratedValue(Storage|null $storage = null): int|null

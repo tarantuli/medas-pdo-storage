@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\MetaData;
 
-use Medas\StorageManager\Interfaces\FieldMetaData;
-use Medas\StorageManager\Structure\Blueprint\Type;
+use Medas\StorageManager\{Interfaces\FieldMetaData, Type};
 
 readonly class ColumnData implements FieldMetaData
 {

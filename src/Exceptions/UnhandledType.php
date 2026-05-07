@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\Exceptions;
 
 use Medas\Core\Exceptions\BaseException;
-use Medas\StorageManager\Structure\Blueprint\Type;
+use Medas\StorageManager\Type;
 
 class UnhandledType extends BaseException
 {
