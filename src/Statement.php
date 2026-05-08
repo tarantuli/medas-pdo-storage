@@ -13,22 +13,17 @@ use Medas\StorageManager\{
 
 readonly class Statement implements RecordSet
 {
+    private array $columnNames;
+
     public function __construct(
         private \PDOStatement $pdoStatement,
     )
     {
+        $this->determineColumnNames();
     }
 
-    public function fetchRecord(): Record|null
+    private function determineColumnNames(): void
     {
-        $data = $this->pdoStatement->fetch();
-
-        return is_array($data) ? new Record($data) : null;
-    }
-
-    public function fetchRecords(): array
-    {
-        $data = $this->pdoStatement->fetchAll(\PDO::FETCH_NUM);
         $names = [];
 
         for ($column = 0; $column < $this->pdoStatement->columnCount(); ++$column) {
@@ -43,10 +38,23 @@ readonly class Statement implements RecordSet
             $names[] = $name;
         }
 
+        $this->columnNames = $names;
+    }
+
+    public function fetchRecord(): Record|null
+    {
+        $data = $this->pdoStatement->fetch();
+
+        return is_array($data) ? new Record($data) : null;
+    }
+
+    public function fetchRecords(): array
+    {
+        $data = $this->pdoStatement->fetchAll(\PDO::FETCH_NUM);
         $records = [];
 
         foreach ($data as $set) {
-            $records[] = new Record(array_combine($names, $set));
+            $records[] = new Record(array_combine($this->columnNames, $set));
         }
 
         return $records;

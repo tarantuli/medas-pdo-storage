@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage;
 
-use Medas\Core\{Attributes\Service, Interfaces\Serializer};
+use Medas\Core\{Attributes\EventListener, Attributes\Service, Interfaces\Serializer};
 use Medas\StorageManager\{
     Exceptions\NoDefaultStorageFound,
     Interfaces\ActionBuilders,
@@ -25,6 +25,7 @@ class PdoStorageController implements StorageController
 
     public function __construct(
         private readonly DatabaseControllerInitializer $controllerInitializer,
+        private readonly Queries\QueryExecutor         $queryExecutor,
     )
     {
     }
@@ -50,13 +51,7 @@ class PdoStorageController implements StorageController
     public function handles(Storage $storage): bool
     {
         /** @noinspection PhpConditionAlreadyCheckedInspection */
-        if ($storage instanceof Database) {
-            $this->getDatabaseController($storage);
-
-            return true;
-        }
-
-        return false;
+        return $storage instanceof Database;
     }
 
     public function transaction(Storage|null $storage = null): Transaction
@@ -88,8 +83,7 @@ class PdoStorageController implements StorageController
 
     public function actionExecutor(): ActionExecutor
     {
-        // We can't inject this as a dependency as QueryExecutor depends on this class itself
-        return service(Queries\QueryExecutor::class);
+        return $this->queryExecutor;
     }
 
     public function serializer(Storage|null $storage = null): Serializer
@@ -127,9 +121,7 @@ class PdoStorageController implements StorageController
     {
         $storage ??= $store->storage();
 
-        return (bool) array_filter($this->getStores($storage), function ($aStore) use ($store) {
-            return $store->name() === $aStore->name();
-        });
+        return (bool) $this->getStores($storage, $store->name());
     }
 
     public function recordFetchers(): RecordFetchers
@@ -162,5 +154,11 @@ class PdoStorageController implements StorageController
     public function escape(Database $database, mixed $value): string
     {
         return $this->getDatabaseController($database)->driverHandler->escape($database, $value);
+    }
+
+    #[EventListener]
+    public function requestHandler(Events\DatabaseControllerRequest $request): void
+    {
+        $request->databaseController = $this->getDatabaseController($request->database);
     }
 }

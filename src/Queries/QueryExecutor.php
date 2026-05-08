@@ -10,11 +10,11 @@ use Medas\Core\{
     ConfigOptions\DispatchDebugInformation,
     Events\DebugInformation
 };
-use Medas\PdoStorage\{Exceptions\PdoDatabase, PdoStorageController, Statement};
+use Medas\PdoStorage\{Events\DatabaseControllerRequest, Exceptions\PdoDatabase, Statement};
 use Medas\StorageManager\{
     Entities\LastInsertIdPlaceholder,
     Interfaces\ActionExecutor,
-    Shared\ValueSerializer,
+    Shared\SerializeValueRequest,
     UnitOfWork\Action,
     UnitOfWork\ActionSet
 };
@@ -23,10 +23,8 @@ use Medas\StorageManager\{
 readonly class QueryExecutor implements ActionExecutor
 {
     public function __construct(
-        private PdoStorageController $pdoStorageController,
-
         #[ConfigValue(DispatchDebugInformation::class)]
-        private bool                 $dispatchDebugInformation = false,
+        private bool $dispatchDebugInformation = false,
     )
     {
     }
@@ -34,7 +32,8 @@ readonly class QueryExecutor implements ActionExecutor
     public function execute(Action $action, ActionSet|null $actionSet = null): void
     {
         /** @var Query $action */
-        $databaseController = $this->pdoStorageController->getDatabaseController($action->storage());
+        $request = dispatch(new DatabaseControllerRequest($action->storage()));
+        $databaseController = $request->databaseController;
         $pdo = $databaseController->pdo;
 
         $this->serializeArguments($action, $actionSet);
@@ -76,14 +75,13 @@ readonly class QueryExecutor implements ActionExecutor
 
     private function serializeArguments(Query $query, ActionSet|null $querySet = null): void
     {
-        $serializer = service(ValueSerializer::class);
-
         foreach ($query->arguments as $key => $argument) {
             if ($querySet && $argument instanceof LastInsertIdPlaceholder) {
                 $argument = $querySet->lastInsertId;
             }
 
-            $query->serializedArguments[$key] = $serializer->serialize($argument);
+            $request = dispatch(new SerializeValueRequest($argument));
+            $query->serializedArguments[$key] = $request->serializedValue;
         }
     }
 
