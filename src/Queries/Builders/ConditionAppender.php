@@ -67,6 +67,8 @@ readonly class ConditionAppender
             }
         }
 
-        $query = substr($query, 0, -2 - strlen($separator));
+        if ($filters) {
+            $query = substr($query, 0, -2 - strlen($separator));
+        }
     }
 }
