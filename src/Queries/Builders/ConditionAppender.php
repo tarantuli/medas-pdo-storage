@@ -71,7 +71,7 @@ readonly class ConditionAppender
             $query = substr($query, 0, -2 - strlen($separator));
         }
         else {
-            $query = '1=1';
+            $query .= '1=1';
         }
     }
 }
