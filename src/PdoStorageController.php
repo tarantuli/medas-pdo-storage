@@ -33,18 +33,18 @@ class PdoStorageController implements StorageController
     public function getDatabaseController(Database $database): DatabaseController
     {
         if (!array_key_exists($database->name, $this->controllers)) {
-            $this->initializeDatabaseController($database);
+            $this->initialize($database);
         }
 
         return $this->controllers[$database->name];
     }
 
-    private function initializeDatabaseController(Database $database): void
+    public function initialize(Storage $storage): void
     {
-        $this->controllers[$database->name] = $this->controllerInitializer->initialize($database);
+        $this->controllers[$storage->name] = $this->controllerInitializer->initialize($storage);
 
         if (count($this->controllers) === 1) {
-            $this->defaultDatabase = $database;
+            $this->defaultDatabase = $storage;
         }
     }
 
