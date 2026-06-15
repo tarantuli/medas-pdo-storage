@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d86136a23aa9486632a4551fb5db0702",
+    "content-hash": "604b3d792f4b3919809b225bc77a82f8",
     "packages": [
         {
             "name": "morphp/medas-cache",
@@ -472,16 +472,16 @@
         },
         {
             "name": "morphp/medas-storage-manager",
-            "version": "v4.3.7",
+            "version": "v4.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tarantuli/medas-storage-manager.git",
-                "reference": "d55d4bd3ff04416ba63fd052431f4125719e04ff"
+                "reference": "2cddab0f5f0a5d7bb5cf840b5c334fc00a5836ef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tarantuli/medas-storage-manager/zipball/d55d4bd3ff04416ba63fd052431f4125719e04ff",
-                "reference": "d55d4bd3ff04416ba63fd052431f4125719e04ff",
+                "url": "https://api.github.com/repos/tarantuli/medas-storage-manager/zipball/2cddab0f5f0a5d7bb5cf840b5c334fc00a5836ef",
+                "reference": "2cddab0f5f0a5d7bb5cf840b5c334fc00a5836ef",
                 "shasum": ""
             },
             "require": {
@@ -516,10 +516,10 @@
                 "storage"
             ],
             "support": {
-                "source": "https://github.com/tarantuli/medas-storage-manager/tree/v4.3.7",
+                "source": "https://github.com/tarantuli/medas-storage-manager/tree/v4.4.0",
                 "issues": "https://github.com/tarantuli/medas-storage-manager/issues"
             },
-            "time": "2026-06-15T10:42:55+00:00"
+            "time": "2026-06-15T11:22:38+00:00"
         },
         {
             "name": "psr/event-dispatcher",

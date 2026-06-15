@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Medas\PdoStorage;
 
 use Medas\Core\{AsSingleton, BasePackage, Interfaces\ServiceConfigBuilder};
-use Medas\StorageManager\{StorageManager, StorageManagerPackage};
+use Medas\StorageManager\StorageManagerPackage;
 
 class PdoStoragePackage extends BasePackage
 {
@@ -25,15 +25,11 @@ class PdoStoragePackage extends BasePackage
 
     public function initialize(ServiceConfigBuilder $config): void
     {
-        $pdoStorageController = service(PdoStorageController::class);
-
-        service(StorageManager::class)->registerController($pdoStorageController);
-
         // Roll back any open transaction on shutdown to prevent lock leaks
         // on persistent connections and in error scenarios.
-        register_shutdown_function(function () use ($pdoStorageController) {
+        register_shutdown_function(function () {
             try {
-                $pdoStorageController
+                service(PdoStorageController::class)
                     ->transaction()
                     ->rollback();
             }
