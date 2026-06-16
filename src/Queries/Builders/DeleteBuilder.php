@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\Queries\Builders;
 
 use Medas\Core\Attributes\Service;
-use Medas\PdoStorage\{PdoStorageController, Queries\Query, Queries\QuerySet};
+use Medas\PdoStorage\{Events\QuoteIdentifierRequest, Queries\Query, Queries\QuerySet};
 use Medas\StorageManager\Interfaces\{Builders\DeleteBuilder as DeleteBuilderInterface, Store};
 use Medas\StorageManager\UnitOfWork\{ActionSet, Priority};
 
@@ -13,8 +13,7 @@ use Medas\StorageManager\UnitOfWork\{ActionSet, Priority};
 readonly class DeleteBuilder implements DeleteBuilderInterface
 {
     public function __construct(
-        private ConditionAppender    $conditionAppender,
-        private PdoStorageController $pdoStorageController,
+        private ConditionAppender $conditionAppender,
     )
     {
     }
@@ -22,10 +21,8 @@ readonly class DeleteBuilder implements DeleteBuilderInterface
     public function build(Store $store, array $conditions, Priority $priority = Priority::DeleteRecord): ActionSet
     {
         $arguments = [];
-
-        $query = 'delete from '
-            . $this->pdoStorageController->quote($store->storage(), $store->name())
-            . ' where ';
+        $request = dispatch(new QuoteIdentifierRequest($store->storage(), $store->name()));
+        $query = 'delete from ' . $request->quotedIdentifier . ' where ';
 
         $this->conditionAppender->append($store->storage(), $query, $arguments, $conditions);
 

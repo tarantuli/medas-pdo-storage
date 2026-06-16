@@ -6,13 +6,12 @@ namespace Medas\PdoStorage\Queries\Builders;
 
 use Medas\Core\Attributes\Service;
 use Medas\EntityManager\Selector\Definition;
-use Medas\PdoStorage\{Database, PdoStorageController, Queries\ParameterizedQuery};
+use Medas\PdoStorage\{Database, Events\DatabaseControllerRequest, Queries\ParameterizedQuery};
 
 #[Service]
 readonly class StoreQueryBuilder
 {
     public function __construct(
-        private PdoStorageController                    $pdoStorageController,
         private StoreQueryBuilder\CalculationsProcessor $calculationsProcessor,
         private StoreQueryBuilder\GroupingProcessor     $groupingProcessor,
         private StoreQueryBuilder\OutputValuesProcessor $outputValuesProcessor,
@@ -31,9 +30,11 @@ readonly class StoreQueryBuilder
         string     $entityName = '',
     ): ParameterizedQuery
     {
+        $request = dispatch(new DatabaseControllerRequest($database));
+
         $job = new StoreQueryBuilder\Job(
             $database,
-            $this->pdoStorageController->getDatabaseController($database)->driverHandler,
+            $request->databaseController->driverHandler,
             $entityName,
         );
 
@@ -74,9 +75,11 @@ readonly class StoreQueryBuilder
         string     $entityName = '',
     ): ParameterizedQuery
     {
+        $request = dispatch(new DatabaseControllerRequest($database));
+
         $job = new StoreQueryBuilder\Job(
             $database,
-            $this->pdoStorageController->getDatabaseController($database)->driverHandler,
+            $request->databaseController->driverHandler,
             $entityName,
         );
 

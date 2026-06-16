@@ -157,8 +157,14 @@ class PdoStorageController implements StorageController
     }
 
     #[EventListener]
-    public function requestHandler(Events\DatabaseControllerRequest $request): void
+    public function controllerRequestHandler(Events\DatabaseControllerRequest $request): void
     {
         $request->databaseController = $this->getDatabaseController($request->database);
+    }
+
+    #[EventListener]
+    public function quoteRequestHandler(Events\QuoteIdentifierRequest $request): void
+    {
+        $request->quotedIdentifier = $this->quote($request->storage, $request->identifier);
     }
 }

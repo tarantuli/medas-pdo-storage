@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\Queries\Builders;
 
 use Medas\Core\Attributes\Service;
-use Medas\PdoStorage\{PdoStorageController, Queries\Query, Queries\QuerySet};
+use Medas\PdoStorage\{Events\QuoteIdentifierRequest, Queries\Query, Queries\QuerySet};
 use Medas\StorageManager\Interfaces\{Builders\UpdateBuilder as UpdateBuilderInterface, Store};
 use Medas\StorageManager\UnitOfWork\{ActionSet, Priority};
 
@@ -13,9 +13,8 @@ use Medas\StorageManager\UnitOfWork\{ActionSet, Priority};
 readonly class UpdateBuilder implements UpdateBuilderInterface
 {
     public function __construct(
-        private ConditionAppender    $conditionAppender,
-        private FieldAppender        $fieldAppender,
-        private PdoStorageController $pdoStorageController,
+        private ConditionAppender $conditionAppender,
+        private FieldAppender     $fieldAppender,
     )
     {
     }
@@ -23,10 +22,8 @@ readonly class UpdateBuilder implements UpdateBuilderInterface
     public function build(Store $store, array $updates, array $conditions): ActionSet
     {
         $arguments = [];
-
-        $query = 'update '
-            . $this->pdoStorageController->quote($store->storage(), $store->name())
-            . ' set ';
+        $request = dispatch(new QuoteIdentifierRequest($store->storage(), $store->name()));
+        $query = 'update ' . $request->quotedIdentifier . ' set ';
 
         $this->fieldAppender->append($store->storage(), $query, $arguments, $updates);
 
