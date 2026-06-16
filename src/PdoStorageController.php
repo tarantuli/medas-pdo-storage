@@ -169,6 +169,12 @@ class PdoStorageController implements StorageController
     }
 
     #[EventListener]
+    public function escapeRequestHandler(Events\EscapeValueRequest $request): void
+    {
+        $request->escapedValue = $this->escape($request->storage, $request->value);
+    }
+
+    #[EventListener]
     public function executeSetHandler(Events\ExecuteSetRequest $request): void
     {
         $this->actionExecutor()->executeSet($request->querySet);
