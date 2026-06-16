@@ -14,8 +14,8 @@ use Medas\EntityManager\Selector\{
     Sorting\SortBy
 };
 use Medas\PdoStorage\ConfigOptions\JoinTables\TableNamingStrategy;
+use Medas\PdoStorage\Events\{ExecuteSetRequest, GetStoreRequest};
 use Medas\PdoStorage\JoinTables\NamingStrategy;
-use Medas\PdoStorage\PdoStorageController;
 use Medas\PdoStorage\Table;
 use Medas\StorageManager\Interfaces\{
     Fetchers\CollectionRecordFetcher as CollectionRecordFetcherInterface,
@@ -30,7 +30,6 @@ readonly class CollectionRecordFetcher implements CollectionRecordFetcherInterfa
 
         #[ConfigValue(TableNamingStrategy::class)]
         private NamingStrategy         $namingStrategy,
-        private PdoStorageController   $pdoStorageController,
     )
     {
     }
@@ -49,7 +48,7 @@ readonly class CollectionRecordFetcher implements CollectionRecordFetcherInterfa
             ['entity' => $entity],
         );
 
-        $this->pdoStorageController->actionExecutor()->executeSet($actionSet);
+        dispatch(new ExecuteSetRequest($actionSet));
 
         return $actionSet->lastRecordSet->fetchRecords();
     }
@@ -57,7 +56,8 @@ readonly class CollectionRecordFetcher implements CollectionRecordFetcherInterfa
     private function getJoinTable(Store $store, MetaDataProperty $property): Table
     {
         $joinTableName = $this->namingStrategy->determine($store->name(), $property->name);
+        $request = dispatch(new GetStoreRequest($store->storage(), $joinTableName));
 
-        return $this->pdoStorageController->store($joinTableName, $store->storage());
+        return $request->store;
     }
 }

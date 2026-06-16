@@ -167,4 +167,16 @@ class PdoStorageController implements StorageController
     {
         $request->quotedIdentifier = $this->quote($request->storage, $request->identifier);
     }
+
+    #[EventListener]
+    public function executeSetHandler(Events\ExecuteSetRequest $request): void
+    {
+        $this->actionExecutor()->executeSet($request->querySet);
+    }
+
+    #[EventListener]
+    public function getStoreHandler(Events\GetStoreRequest $request): void
+    {
+        $request->store = $this->store($request->name, $request->storage);
+    }
 }

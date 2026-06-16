@@ -11,8 +11,8 @@ use Medas\Core\{
     Types\Collection
 };
 use Medas\PdoStorage\ConfigOptions\JoinTables\TableNamingStrategy;
+use Medas\PdoStorage\Events\GetStoreRequest;
 use Medas\PdoStorage\JoinTables\NamingStrategy;
-use Medas\PdoStorage\PdoStorageController;
 use Medas\PdoStorage\Queries\QuerySet;
 use Medas\StorageManager\Interfaces\{
     Builders\CollectionUpdateBuilder as CollectionUpdateBuilderInterface,
@@ -24,13 +24,12 @@ use Medas\StorageManager\UnitOfWork\{ActionSet, Priority};
 readonly class CollectionUpdateBuilder implements CollectionUpdateBuilderInterface
 {
     public function __construct(
-        private DeleteBuilder        $deleteBuilder,
-        private InsertBuilder        $insertBuilder,
+        private DeleteBuilder  $deleteBuilder,
+        private InsertBuilder  $insertBuilder,
 
         #[ConfigValue(TableNamingStrategy::class)]
-        private NamingStrategy       $namingStrategy,
-        private PdoStorageController $pdoStorageController,
-        private UpdateBuilder        $updateBuilder,
+        private NamingStrategy $namingStrategy,
+        private UpdateBuilder  $updateBuilder,
     )
     {
     }
@@ -43,11 +42,12 @@ readonly class CollectionUpdateBuilder implements CollectionUpdateBuilderInterfa
         ManagedCollection $values,
     ): ActionSet
     {
-        $joinTable = $this->pdoStorageController->store(
-            $this->namingStrategy->determine($store->name(), $name),
+        $request = dispatch(new GetStoreRequest(
             $store->storage(),
-        );
+            $this->namingStrategy->determine($store->name(), $name)
+        ));
 
+        $joinTable = $request->store;
         $queries = new QuerySet();
 
         foreach ($values->getAdditions() as $order => $value) {
