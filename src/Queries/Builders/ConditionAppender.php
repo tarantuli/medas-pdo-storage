@@ -6,17 +6,11 @@ namespace Medas\PdoStorage\Queries\Builders;
 
 use Medas\Core\Attributes\Service;
 use Medas\EntityManager\Filters\{Between, LessThan, MoreThan};
-use Medas\PdoStorage\{Database, PdoStorageController};
+use Medas\PdoStorage\{Database, Events\DatabaseControllerRequest};
 
 #[Service]
 readonly class ConditionAppender
 {
-    public function __construct(
-        private PdoStorageController $pdoStorageController,
-    )
-    {
-    }
-
     public function append(
         Database $database,
         string   &$query,
@@ -25,7 +19,8 @@ readonly class ConditionAppender
         string   $separator = 'and',
     ): void
     {
-        $driverHandler = $this->pdoStorageController->getDatabaseController($database)->driverHandler;
+        $request = dispatch(new DatabaseControllerRequest($database));
+        $driverHandler = $request->databaseController->driverHandler;
 
         foreach ($filters as $field => $value) {
             if ($value instanceof LessThan) {
