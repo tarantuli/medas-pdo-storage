@@ -4,15 +4,13 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\Drivers;
 
-use Medas\Core\Interfaces\Serializer;
+use Medas\Core\Interfaces\{DeclaresPriority, Serializer};
 use Medas\PdoStorage\{Database, Table};
 use Medas\StorageManager\Interfaces\RecordFetchers;
 
-interface DriverHandler
+interface DriverHandler extends DeclaresPriority
 {
     public function canHandle(string $driverName): bool;
-
-    public function priority(): int;
 
     public function quote(Database $database, string $identifier): string;
 
