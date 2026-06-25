@@ -16,6 +16,6 @@ readonly class SliceAppender
             return;
         }
 
-        $query .= ' limit ' . $slice->from . ', ' . $slice->count;
+        $query .= ' limit ' . $slice->count . ' offset ' . $slice->from;
     }
 }
