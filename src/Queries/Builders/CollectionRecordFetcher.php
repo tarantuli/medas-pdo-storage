@@ -16,6 +16,7 @@ use Medas\EntityManager\Selector\{
 use Medas\PdoStorage\ConfigOptions\JoinTables\TableNamingStrategy;
 use Medas\PdoStorage\Events\{ExecuteSetRequest, GetStoreRequest};
 use Medas\PdoStorage\JoinTables\NamingStrategy;
+use Medas\PdoStorage\Queries\Selector\DefinitionQueryBuilder;
 use Medas\PdoStorage\Table;
 use Medas\StorageManager\Interfaces\{
     Fetchers\CollectionRecordFetcher as CollectionRecordFetcherInterface,
@@ -26,10 +27,9 @@ use Medas\StorageManager\Interfaces\{
 readonly class CollectionRecordFetcher implements CollectionRecordFetcherInterface
 {
     public function __construct(
-        private DefinitionQueryBuilder $definitionQueryBuilder,
-
         #[ConfigValue(TableNamingStrategy::class)]
         private NamingStrategy         $namingStrategy,
+        private DefinitionQueryBuilder $definitionQueryBuilder,
     )
     {
     }

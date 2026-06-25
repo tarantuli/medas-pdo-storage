@@ -2,38 +2,38 @@
 
 declare(strict_types=1);
 
-namespace Medas\PdoStorage\Queries\Builders\StoreQueryBuilder;
+namespace Medas\PdoStorage\Queries\Builders\Shared;
 
 use Medas\Core\Attributes\Service;
 use Medas\EntityManager\Selector\{
     Exceptions\UnhandledSortType,
     Operants\Property,
     Operants\Value,
-    Sorting\SortBy,
-    Sorting\SortDirection
+    Sorting\SortBy
 };
+use Medas\PdoStorage\Database;
+use Medas\PdoStorage\Events\DatabaseControllerRequest;
 use Medas\PdoStorage\Exceptions\UntrustedValueUsedInSorting;
+use Medas\PdoStorage\Queries\Selector\StoreQueryBuilder\SortingProcessor;
 
 #[Service]
-readonly class SortingProcessor
+readonly class SortAppender
 {
-    public const array SORTING_DIRECTIONS = [
-        SortDirection::ASC->name => 'asc',
-        SortDirection::DESC->name => 'desc',
-    ];
-
-    /** @param SortBy[] $sorts */
-    public function process(Job $job, array $sorts): void
+    public function append(
+        Database $database,
+        string   &$query,
+        array    $sorts,
+    ): void
     {
+        $request = dispatch(new DatabaseControllerRequest($database));
+        $driverHandler = $request->databaseController->driverHandler;
         $parts = [];
 
         foreach ($sorts as $sort) {
             if ($sort instanceof SortBy && $sort->operant instanceof Property) {
-                $parts[] = $job->stores[$sort->operant->entity ?? $job->mainEntity]
-                    . '.'
-                    . $job->driverHandler->quote($job->database, $sort->operant->name)
+                $parts[] = $driverHandler->quote($database, $sort->operant->name)
                     . ' '
-                    . self::SORTING_DIRECTIONS[$sort->direction->name];
+                    . SortingProcessor::SORTING_DIRECTIONS[$sort->direction->name];
 
                 continue;
             }
@@ -45,7 +45,7 @@ readonly class SortingProcessor
 
                 $parts[] = $sort->operant->value
                     . ' '
-                    . self::SORTING_DIRECTIONS[$sort->direction->name];
+                    . SortingProcessor::SORTING_DIRECTIONS[$sort->direction->name];
 
                 continue;
             }
@@ -54,7 +54,7 @@ readonly class SortingProcessor
         }
 
         if ($parts) {
-            $job->query .= ' order by ' . implode(', ', $parts);
+            $query .= ' order by ' . implode(', ', $parts);
         }
     }
 }

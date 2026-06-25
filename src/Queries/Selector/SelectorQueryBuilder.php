@@ -2,16 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Medas\PdoStorage\Queries\Builders;
+namespace Medas\PdoStorage\Queries\Selector;
 
 use Medas\Core\{Attributes\Service, Interfaces\NotCacheable};
 use Medas\EntityManager\{MetaDataManager, Selector\Selector};
-use Medas\PdoStorage\{
-    Database,
-    Exceptions\StorageIsNotDatabase,
-    Queries\ParameterizedQuery,
-    Queries\QuerySet
-};
+use Medas\PdoStorage\{Database, Exceptions\StorageIsNotDatabase, Queries\QuerySet};
 use Medas\StorageManager\Interfaces\Builders\SelectorActionBuilder;
 use Medas\StorageManager\StorageManager;
 use Medas\StorageManager\UnitOfWork\ActionSet;

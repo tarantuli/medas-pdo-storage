@@ -8,7 +8,9 @@ use Medas\PdoStorage\Queries\QuerySet;
 
 readonly class ExecuteSetRequest
 {
-    public function __construct(public readonly QuerySet $querySet)
+    public function __construct(
+        public QuerySet $querySet,
+    )
     {
     }
 }

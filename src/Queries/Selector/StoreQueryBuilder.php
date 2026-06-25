@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Medas\PdoStorage\Queries\Builders;
+namespace Medas\PdoStorage\Queries\Selector;
 
 use Medas\Core\Attributes\Service;
 use Medas\EntityManager\Selector\Definition;
-use Medas\PdoStorage\{Database, Events\DatabaseControllerRequest, Queries\ParameterizedQuery};
+use Medas\PdoStorage\{Database, Events\DatabaseControllerRequest};
 
 #[Service]
 readonly class StoreQueryBuilder
@@ -15,9 +15,9 @@ readonly class StoreQueryBuilder
         private StoreQueryBuilder\CalculationsProcessor $calculationsProcessor,
         private StoreQueryBuilder\GroupingProcessor     $groupingProcessor,
         private StoreQueryBuilder\OutputValuesProcessor $outputValuesProcessor,
-        private StoreQueryBuilder\PaginationProcessor   $paginationProcessor,
         private StoreQueryBuilder\ParametersProcessor   $parametersProcessor,
         private StoreQueryBuilder\RelationsProcessor    $relationsProcessor,
+        private StoreQueryBuilder\SliceProcessor        $sliceProcessor,
         private StoreQueryBuilder\SortingProcessor      $sortingProcessor,
     )
     {
@@ -57,7 +57,7 @@ readonly class StoreQueryBuilder
         $this->groupingProcessor->process($job, $definition->groupings);
         $this->sortingProcessor->process($job, $definition->sorts);
         $this->parametersProcessor->process($job, $definition->parameters);
-        $this->paginationProcessor->process($job, $definition->pagination);
+        $this->sliceProcessor->process($job, $definition->slice);
 
         return new ParameterizedQuery(
             $job->query,

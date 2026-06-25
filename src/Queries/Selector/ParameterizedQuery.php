@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Medas\PdoStorage\Queries;
+namespace Medas\PdoStorage\Queries\Selector;
 
 use Medas\EntityManager\Selector\Parameter;
 use Medas\PdoStorage\Database;

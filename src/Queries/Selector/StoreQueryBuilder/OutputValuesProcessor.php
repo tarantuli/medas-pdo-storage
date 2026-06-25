@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Medas\PdoStorage\Queries\Builders\StoreQueryBuilder;
+namespace Medas\PdoStorage\Queries\Selector\StoreQueryBuilder;
 
 use Medas\Core\Attributes\Service;
 use Medas\EntityManager\Selector\OutputValues\{

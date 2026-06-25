@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Medas\PdoStorage\Queries\Builders;
+namespace Medas\PdoStorage\Queries\Selector;
 
 use Medas\Core\Attributes\Service;
-use Medas\PdoStorage\Queries\{ParameterizedQuery, Query};
+use Medas\PdoStorage\Queries\Query;
 
 #[Service]
 readonly class ParameterizedQueryToQuery

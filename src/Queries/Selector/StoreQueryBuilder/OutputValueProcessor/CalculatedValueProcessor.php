@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Medas\PdoStorage\Queries\Builders\StoreQueryBuilder\OutputValueProcessor;
+namespace Medas\PdoStorage\Queries\Selector\StoreQueryBuilder\OutputValueProcessor;
 
 use Medas\Core\Attributes\Service;
 use Medas\EntityManager\Selector\OutputValues\{CalculatedValue, Count, Sum};
 use Medas\PdoStorage\Exceptions\UnsupportedOutputValueType;
-use Medas\PdoStorage\Queries\Builders\StoreQueryBuilder\{CalculationsProcessor, Job};
+use Medas\PdoStorage\Queries\Selector\StoreQueryBuilder\{CalculationsProcessor, Job};
 
 #[Service]
 readonly class CalculatedValueProcessor

@@ -13,7 +13,7 @@ use Medas\StorageManager\UnitOfWork\ActionSet;
 readonly class GetBuilder implements GetBuilderInterface
 {
     public function __construct(
-        private ConditionAppender $conditionAppender,
+        private Shared\ConditionAppender $conditionAppender,
     )
     {
     }

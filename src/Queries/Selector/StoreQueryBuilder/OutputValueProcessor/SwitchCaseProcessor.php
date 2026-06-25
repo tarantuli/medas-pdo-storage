@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Medas\PdoStorage\Queries\Builders\StoreQueryBuilder\OutputValueProcessor;
+namespace Medas\PdoStorage\Queries\Selector\StoreQueryBuilder\OutputValueProcessor;
 
 use Medas\Core\Attributes\Service;
 use Medas\EntityManager\Selector\OutputValues\SwitchCase;
-use Medas\PdoStorage\Queries\Builders\StoreQueryBuilder\{CalculationsProcessor, Job};
+use Medas\PdoStorage\Queries\Selector\StoreQueryBuilder\{CalculationsProcessor, Job};
 
 #[Service]
 readonly class SwitchCaseProcessor
