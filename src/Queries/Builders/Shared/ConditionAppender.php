@@ -5,7 +5,15 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\Queries\Builders\Shared;
 
 use Medas\Core\Attributes\Service;
-use Medas\EntityManager\Filters\{Between, LessThan, MoreThan};
+use Medas\EntityManager\Filters\{
+    Between,
+    IsNotNull,
+    IsNull,
+    LessThan,
+    LessThanOrEqual,
+    MoreThan,
+    MoreThanOrEqual
+};
 use Medas\PdoStorage\{Database, Events\DatabaseControllerRequest};
 
 #[Service]
@@ -31,6 +39,14 @@ readonly class ConditionAppender
 
                 $arguments[] = $value->value;
             }
+            elseif ($value instanceof LessThanOrEqual) {
+                $query .= $driverHandler->quote($database, $value->field)
+                    . ' <= ? '
+                    . $separator
+                    . ' ';
+
+                $arguments[] = $value->value;
+            }
             elseif ($value instanceof MoreThan) {
                 $query .= $driverHandler->quote($database, $value->field)
                     . ' > ? '
@@ -38,6 +54,20 @@ readonly class ConditionAppender
                     . ' ';
 
                 $arguments[] = $value->value;
+            }
+            elseif ($value instanceof MoreThanOrEqual) {
+                $query .= $driverHandler->quote($database, $value->field)
+                    . ' >= ? '
+                    . $separator
+                    . ' ';
+
+                $arguments[] = $value->value;
+            }
+            elseif ($value instanceof IsNull) {
+                $query .= $driverHandler->quote($database, $value->field) . ' is null ';
+            }
+            elseif ($value instanceof IsNotNull) {
+                $query .= $driverHandler->quote($database, $value->field) . ' is not null ';
             }
             elseif ($value instanceof Between) {
                 $query .= $driverHandler->quote($database, $value->field)
