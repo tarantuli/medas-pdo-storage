@@ -40,7 +40,7 @@ readonly class UpdateBuilder implements UpdateBuilderInterface
 
         $this->conditionAppender->append($store->storage(), $query, $arguments, $conditions);
         $this->sortAppender->append($store->storage(), $query, $sorts);
-        $this->sliceAppender->append($query, $slice);
+        $this->sliceAppender->append($query, $slice, false);
 
         return QuerySet::fromQuery(new Query($query, $arguments, $store->storage(), Priority::UpdateRecord));
     }
