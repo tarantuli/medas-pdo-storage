@@ -6,7 +6,7 @@ namespace Medas\PdoStorage\Queries\Builders;
 
 use Medas\Core\Attributes\Service;
 use Medas\EntityManager\Selector\Slice;
-use Medas\PdoStorage\{Events\QuoteIdentifierRequest, Queries\Query, Queries\QuerySet};
+use Medas\PdoStorage\{Events\QuoteIdentifierRequest, Queries\Query, Queries\QuerySet, Table};
 use Medas\StorageManager\Interfaces\{Builders\DeleteBuilder as DeleteBuilderInterface, Store};
 use Medas\StorageManager\UnitOfWork\{ActionSet, Priority};
 
@@ -29,6 +29,7 @@ readonly class DeleteBuilder implements DeleteBuilderInterface
         Slice|null $slice = null
     ): ActionSet
     {
+        /** @var Table $store->storage() */
         $arguments = [];
         $request = dispatch(new QuoteIdentifierRequest($store->storage(), $store->name()));
         $query = 'delete from ' . $request->quotedIdentifier . ' where ';

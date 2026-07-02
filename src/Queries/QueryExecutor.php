@@ -10,7 +10,12 @@ use Medas\Core\{
     ConfigOptions\DispatchDebugInformation,
     Events\DebugInformation
 };
-use Medas\PdoStorage\{Events\DatabaseControllerRequest, Exceptions\PdoDatabase, Statement};
+use Medas\PdoStorage\{
+    Database,
+    Events\DatabaseControllerRequest,
+    Exceptions\PdoDatabase,
+    Statement
+};
 use Medas\StorageManager\{
     Entities\LastInsertIdPlaceholder,
     Interfaces\ActionExecutor,
@@ -31,8 +36,11 @@ readonly class QueryExecutor implements ActionExecutor
 
     public function execute(Action $action, ActionSet|null $actionSet = null): void
     {
+        /** @var Database $storage */
+        $storage = $action->storage();
+
         /** @var Query $action */
-        $request = dispatch(new DatabaseControllerRequest($action->storage()));
+        $request = dispatch(new DatabaseControllerRequest($storage));
         $databaseController = $request->databaseController;
         $pdo = $databaseController->pdo;
 

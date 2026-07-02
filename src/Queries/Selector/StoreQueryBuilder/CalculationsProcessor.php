@@ -141,8 +141,17 @@ readonly class CalculationsProcessor
 
         if ($operant instanceof Argument) {
             $job->foundArguments[$operant->name] = true;
+            $occurrence = $job->argumentOccurrences[$operant->name] ?? 0;
+            $job->argumentOccurrences[$operant->name] = $occurrence + 1;
 
-            return ':' . $operant->name;
+            // The first occurrence keeps the plain name; repeats get a suffix so the same
+            // logical argument can be bound to multiple distinct placeholders under native
+            // (non-emulated) prepares, which don't allow a placeholder name to repeat.
+            $placeholderName = $occurrence === 0
+                ? $operant->name
+                : $operant->name . '__' . $occurrence;
+
+            return ':' . $placeholderName;
         }
 
         if ($operant instanceof ArgumentArray) {

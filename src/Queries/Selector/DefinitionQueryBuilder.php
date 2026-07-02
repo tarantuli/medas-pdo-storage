@@ -6,7 +6,7 @@ namespace Medas\PdoStorage\Queries\Selector;
 
 use Medas\Core\Attributes\Service;
 use Medas\EntityManager\Selector\Definition;
-use Medas\PdoStorage\Queries\QuerySet;
+use Medas\PdoStorage\{Queries\QuerySet, Table};
 use Medas\StorageManager\Interfaces\Store;
 
 #[Service]
@@ -21,6 +21,7 @@ readonly class DefinitionQueryBuilder
 
     public function build(Store $store, array $elements, array $arguments): QuerySet
     {
+        /** @var Table $store->storage() */
         $definition = new Definition('')
             ->add(...$elements);
 

@@ -40,6 +40,15 @@ readonly class ParameterizedQueryToQuery
             }
             else {
                 $queryArguments[$parameter->name] = $value;
+
+                // A single caller-supplied value may need to be bound to more than one
+                // physical placeholder, when the same named argument was referenced more
+                // than once in the query (see CalculationsProcessor::operantToQuery()).
+                $occurrences = $paraQuery->argumentOccurrences[$parameter->name] ?? 1;
+
+                for ($occurrence = 1; $occurrence < $occurrences; $occurrence++) {
+                    $queryArguments[$parameter->name . '__' . $occurrence] = $value;
+                }
             }
         }
 

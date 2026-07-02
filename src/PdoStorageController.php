@@ -41,6 +41,7 @@ class PdoStorageController implements StorageController
 
     public function initialize(Storage $storage): void
     {
+        /** @var Database $storage */
         $this->controllers[$storage->name] = $this->controllerInitializer->initialize($storage);
 
         if (count($this->controllers) === 1) {
@@ -50,7 +51,6 @@ class PdoStorageController implements StorageController
 
     public function handles(Storage $storage): bool
     {
-        /** @noinspection PhpConditionAlreadyCheckedInspection */
         return $storage instanceof Database;
     }
 
@@ -69,6 +69,7 @@ class PdoStorageController implements StorageController
 
     public function deleteStore(Store $store): void
     {
+        /** @var Table $store->storage() */
         $querySet = $this->getDatabaseController($store->storage())->driverHandler
             ->queryBuilders()->deleteStore()->build($store);
 
@@ -165,13 +166,17 @@ class PdoStorageController implements StorageController
     #[EventListener]
     public function quoteRequestHandler(Events\QuoteIdentifierRequest $request): void
     {
-        $request->quotedIdentifier = $this->quote($request->storage, $request->identifier);
+        /** @var Database $storage */
+        $storage = $request->storage;
+        $request->quotedIdentifier = $this->quote($storage, $request->identifier);
     }
 
     #[EventListener]
     public function escapeRequestHandler(Events\EscapeValueRequest $request): void
     {
-        $request->escapedValue = $this->escape($request->storage, $request->value);
+        /** @var Database $storage */
+        $storage = $request->storage;
+        $request->escapedValue = $this->escape($storage, $request->value);
     }
 
     #[EventListener]

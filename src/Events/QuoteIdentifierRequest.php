@@ -10,7 +10,10 @@ class QuoteIdentifierRequest
 {
     public string $quotedIdentifier;
 
-    public function __construct(public readonly Storage $storage, public readonly string $identifier)
+    public function __construct(
+        public readonly Storage $storage,
+        public readonly string  $identifier,
+    )
     {
     }
 }

@@ -45,7 +45,6 @@ readonly class SelectorQueryBuilder implements SelectorActionBuilder
         $metaData = $this->metaDataManager->get($selector->entity());
         $database = $this->storageManager->byName($metaData->entity->storage);
 
-        /** @noinspection PhpConditionAlreadyCheckedInspection */
         if (!$database instanceof Database) {
             throw new StorageIsNotDatabase($metaData->entity->storage);
         }

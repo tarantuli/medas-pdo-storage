@@ -16,6 +16,7 @@ class ParameterizedQuery
         public array    $parameters,
         public array    $constants,
         public array    $variableSizedParameters,
+        public array    $argumentOccurrences,
         public Database $database,
     )
     {

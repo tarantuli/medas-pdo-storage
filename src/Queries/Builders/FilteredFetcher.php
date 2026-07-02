@@ -5,7 +5,12 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\Queries\Builders;
 
 use Medas\Core\Attributes\Service;
-use Medas\PdoStorage\{Events\DatabaseControllerRequest, Queries\Query, Queries\QueryExecutor};
+use Medas\PdoStorage\{
+    Database,
+    Events\DatabaseControllerRequest,
+    Queries\Query,
+    Queries\QueryExecutor
+};
 use Medas\StorageManager\Interfaces\{
     Fetchers\FilteredFetcher as FilteredFetcherInterface,
     Record,
@@ -24,7 +29,9 @@ readonly class FilteredFetcher implements FilteredFetcherInterface
 
     public function fetch(Store $store, array $filters = []): RecordSet
     {
-        $request = dispatch(new DatabaseControllerRequest($store->storage()));
+        /** @var Database $storage */
+        $storage = $store->storage();
+        $request = dispatch(new DatabaseControllerRequest($storage));
 
         /** @var Query $query */
         $query = $request->databaseController->driverHandler

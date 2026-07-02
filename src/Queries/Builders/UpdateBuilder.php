@@ -6,7 +6,7 @@ namespace Medas\PdoStorage\Queries\Builders;
 
 use Medas\Core\Attributes\Service;
 use Medas\EntityManager\Selector\Slice;
-use Medas\PdoStorage\{Events\QuoteIdentifierRequest, Queries\Query, Queries\QuerySet};
+use Medas\PdoStorage\{Events\QuoteIdentifierRequest, Queries\Query, Queries\QuerySet, Table};
 use Medas\StorageManager\Interfaces\{Builders\UpdateBuilder as UpdateBuilderInterface, Store};
 use Medas\StorageManager\UnitOfWork\{ActionSet, Priority};
 
@@ -30,6 +30,7 @@ readonly class UpdateBuilder implements UpdateBuilderInterface
         Slice|null $slice = null
     ): ActionSet
     {
+        /** @var Table $store->storage() */
         $arguments = [];
         $request = dispatch(new QuoteIdentifierRequest($store->storage(), $store->name()));
         $query = 'update ' . $request->quotedIdentifier . ' set ';

@@ -8,6 +8,7 @@ use Medas\EntityManager\Selector\{
     Conditions\OrIs,
     Conditions\WhereIs,
     Conditions\WhereIsAtLeast,
+    Conditions\WhereIsAtMost,
     Conditions\WhereIsNull,
     Operants\Argument,
     Operants\Property,
@@ -111,6 +112,26 @@ class CalculationsProcessorTest extends TestCase
 
         self::assertEquals(['name' => true], $job->foundArguments);
         self::assertEquals(['c0' => 'The Netherlands'], $job->foundConstants);
+    }
+
+    public function testMultipleArgumentCalls(): void
+    {
+        $job = $this->createJob();
+        $processor = service(CalculationsProcessor::class);
+
+        $processor->process($job, [
+            WhereIsAtLeast::c(Property::c('startDate'), Argument::c('now')),
+            OrIs::null(WhereIsAtMost::c(Property::c('endDate'), Argument::c('now'))),
+        ]);
+
+        // The query must contain a deduplicated entry for :now,
+        // but the foundArguments should only reveal the user-supplied argument name
+        self::assertEquals(
+            'entities.`startDate`>=:now and (entities.`endDate`<=:now__1 or entities.`endDate` is null)',
+            $job->currentCalculation
+        );
+
+        self::assertEquals(['now' => true], $job->foundArguments);
     }
 
     private function createJob(): Job

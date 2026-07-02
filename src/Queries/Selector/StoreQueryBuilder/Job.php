@@ -12,6 +12,7 @@ class Job
     public array $stores = [];
     public array $outputValues = [];
     public array $foundArguments = [];
+    public array $argumentOccurrences = [];
     public array $foundConstants = [];
     public array $variableSizedParameters = [];
     public string|null $currentCalculation = null;

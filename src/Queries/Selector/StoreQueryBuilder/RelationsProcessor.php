@@ -11,6 +11,7 @@ use Medas\EntityManager\Selector\{
     Relations\Join,
     Relations\Relation
 };
+use Medas\PdoStorage\Database;
 use Medas\StorageManager\StorageManager;
 
 #[Service]
@@ -30,8 +31,11 @@ readonly class RelationsProcessor
             if ($relation instanceof Join) {
                 $targetEntity = $this->metaDataManager->get($relation->targetEntity)->entity;
 
+                /** @var Database $database */
+                $database = $this->storageManager->byName($targetEntity->storage);
+
                 $targetStore = $job->driverHandler->quote(
-                    $this->storageManager->byName($targetEntity->storage),
+                    $database,
                     $targetEntity->store,
                 );
 
