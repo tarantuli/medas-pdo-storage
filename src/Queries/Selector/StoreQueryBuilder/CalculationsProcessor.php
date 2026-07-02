@@ -176,12 +176,12 @@ readonly class CalculationsProcessor
 
     private function processRowCount(Job $job): void
     {
-        $job->currentCalculation = '*';
+        $job->currentCalculation .= '*';
     }
 
     private function processLiteral(Job $job, Literal $calculation): void
     {
-        $job->currentCalculation = $this->addValue($calculation->literal, $job);
+        $job->currentCalculation .= $this->addValue($calculation->literal, $job);
     }
 
     private function addValue(mixed &$value, Job $job): string
