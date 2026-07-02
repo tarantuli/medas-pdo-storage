@@ -21,6 +21,7 @@ class DatabaseControllerTest extends TestCase
     public function testBooleans(): void
     {
         $controller = service(StorageManager::class)->controller();
+
         self::assertEquals('\'1\'', $controller->escapeValue(true));
         self::assertEquals('\'0\'', $controller->escapeValue(false));
     }

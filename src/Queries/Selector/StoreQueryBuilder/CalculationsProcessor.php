@@ -9,6 +9,7 @@ use Medas\EntityManager\Selector\{
     Calculations\Calculation,
     Calculations\Literal,
     Calculations\RowCount,
+    Conditions\OrIs,
     Conditions\WhereContains,
     Conditions\WhereEndsWith,
     Conditions\WhereIn,
@@ -59,55 +60,38 @@ readonly class CalculationsProcessor
                 $job->currentCalculation .= ' and ';
             }
 
-            if ($calculation instanceof OutputValue) {
-                throw new UnhandledCalculationType($calculation);
-            }
-            else {
-                match ($calculation::class) {
-                    WhereIsTruthy::class => $this->processTruthy($job, $calculation),
-                    WhereIs::class => $this->processComparison($job, $calculation, '='),
-                    WhereIsNot::class => $this->processComparison($job, $calculation, '!='),
-                    WhereIn::class => $this->processComparison($job, $calculation, ' in '),
-                    WhereNotIn::class => $this->processComparison($job, $calculation, ' not in '),
-                    WhereIsMoreThan::class => $this->processComparison($job, $calculation, '>'),
-                    WhereIsLessThan::class => $this->processComparison($job, $calculation, '<'),
-                    WhereIsAtLeast::class => $this->processComparison($job, $calculation, '>='),
-                    WhereIsAtMost::class => $this->processComparison($job, $calculation, '<='),
-                    WhereIsNull::class => $this->processNullComparison($job, $calculation, true),
-                    WhereIsNotNull::class => $this->processNullComparison(
-                        $job,
-                        $calculation,
-                        false
-                    ),
-
-                    WhereContains::class => $this->processLikeComparison(
-                        $job,
-                        $calculation,
-                        '%',
-                        '%'
-                    ),
-
-                    WhereStartsWith::class => $this->processLikeComparison(
-                        $job,
-                        $calculation,
-                        '',
-                        '%'
-                    ),
-
-                    WhereEndsWith::class => $this->processLikeComparison(
-                        $job,
-                        $calculation,
-                        '%',
-                        ''
-                    ),
-
-                    RowCount::class => $this->processRowCount($job),
-                    Literal::class => $this->processLiteral($job, $calculation),
-                    default => throw new UnhandledCalculationType($calculation),
-                };
-            }
+            $this->processCalculation($job, $calculation);
 
             $isFirstCalculation = false;
+        }
+    }
+
+    private function processCalculation(Job $job, Calculation $calculation): void
+    {
+        if ($calculation instanceof OutputValue) {
+            throw new UnhandledCalculationType($calculation);
+        }
+        else {
+            match ($calculation::class) {
+                WhereIsTruthy::class => $this->processTruthy($job, $calculation),
+                WhereIs::class => $this->processComparison($job, $calculation, '='),
+                WhereIsNot::class => $this->processComparison($job, $calculation, '!='),
+                WhereIn::class => $this->processComparison($job, $calculation, ' in '),
+                WhereNotIn::class => $this->processComparison($job, $calculation, ' not in '),
+                WhereIsMoreThan::class => $this->processComparison($job, $calculation, '>'),
+                WhereIsLessThan::class => $this->processComparison($job, $calculation, '<'),
+                WhereIsAtLeast::class => $this->processComparison($job, $calculation, '>='),
+                WhereIsAtMost::class => $this->processComparison($job, $calculation, '<='),
+                WhereIsNull::class => $this->processNullComparison($job, $calculation, true),
+                WhereIsNotNull::class => $this->processNullComparison($job, $calculation, false),
+                WhereContains::class => $this->processLikeComparison($job, $calculation, '%', '%'),
+                WhereStartsWith::class => $this->processLikeComparison($job, $calculation, '', '%'),
+                WhereEndsWith::class => $this->processLikeComparison($job, $calculation, '%', ''),
+                RowCount::class => $this->processRowCount($job),
+                Literal::class => $this->processLiteral($job, $calculation),
+                OrIs::class => $this->processOrIs($job, $calculation),
+                default => throw new UnhandledCalculationType($calculation),
+            };
         }
     }
 
@@ -207,5 +191,23 @@ readonly class CalculationsProcessor
         $job->foundConstants[$name] = $value;
 
         return ':' . $name;
+    }
+
+    private function processOrIs(Job $job, OrIs $calculation): void
+    {
+        $job->currentCalculation .= '(';
+        $isFirstCalculation = true;
+
+        foreach ($calculation->conditions as $condition) {
+            if (!$isFirstCalculation) {
+                $job->currentCalculation .= ' or ';
+            }
+
+            $this->processCalculation($job, $condition);
+
+            $isFirstCalculation = false;
+        }
+
+        $job->currentCalculation .= ')';
     }
 }
