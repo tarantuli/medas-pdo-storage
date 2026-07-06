@@ -6,15 +6,15 @@ namespace Medas\PdoStorage\Exceptions;
 
 use Medas\Core\Exceptions\BaseException;
 
-class InvalidPaginationPage extends BaseException
+class InvalidSliceOffset extends BaseException
 {
-    public function __construct(int $page)
+    public function __construct(int $offset)
     {
-        parent::__construct($page);
+        parent::__construct($offset);
     }
 
     public function pattern(): string
     {
-        return 'Invalid pagination page: %s';
+        return 'invalid slice offset %s';
     }
 }

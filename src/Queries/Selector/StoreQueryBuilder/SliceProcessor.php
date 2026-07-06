@@ -6,7 +6,7 @@ namespace Medas\PdoStorage\Queries\Selector\StoreQueryBuilder;
 
 use Medas\Core\Attributes\Service;
 use Medas\EntityManager\Selector\Slice;
-use Medas\PdoStorage\Exceptions\InvalidPaginationPage;
+use Medas\PdoStorage\Exceptions\InvalidSliceOffset;
 
 #[Service]
 readonly class SliceProcessor
@@ -17,8 +17,8 @@ readonly class SliceProcessor
             return;
         }
 
-        if ($slice->from <= 0) {
-            throw new InvalidPaginationPage($slice->from);
+        if ($slice->from < 0) {
+            throw new InvalidSliceOffset($slice->from);
         }
 
         // Standard SQL syntax supported by SQLite, MySQL, PostgreSQL, etc.
