@@ -65,6 +65,7 @@ readonly class StoreQueryBuilder
             $job->foundConstants,
             $job->variableSizedParameters,
             $job->argumentOccurrences,
+            $job->argumentLikeWrappers,
             $database,
         );
     }
@@ -104,6 +105,7 @@ readonly class StoreQueryBuilder
             $job->foundConstants,
             $job->variableSizedParameters,
             $job->argumentOccurrences,
+            $job->argumentLikeWrappers,
             $database,
         );
     }

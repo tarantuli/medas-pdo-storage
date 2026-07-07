@@ -13,6 +13,7 @@ class Job
     public array $outputValues = [];
     public array $foundArguments = [];
     public array $argumentOccurrences = [];
+    public array $argumentLikeWrappers = [];
     public array $foundConstants = [];
     public array $variableSizedParameters = [];
     public string|null $currentCalculation = null;

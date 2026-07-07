@@ -112,6 +112,12 @@ readonly class CalculationsProcessor
             $likeValue = new Value($prefix . $calculation->value->value . $suffix);
             $calculation = new WhereIs($calculation->property, $likeValue);
         }
+        elseif ($calculation->value instanceof Argument && ($prefix !== '' || $suffix !== '')) {
+            $job->argumentLikeWrappers[$calculation->value->name] = [
+                'prefix' => $prefix,
+                'suffix' => $suffix,
+            ];
+        }
 
         $this->processComparison($job, $calculation, ' like ');
     }

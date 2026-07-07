@@ -39,6 +39,11 @@ readonly class ParameterizedQueryToQuery
                 $query = str_replace(':' . $parameter->name, implode(',', $replacements), $query);
             }
             else {
+                if (array_key_exists($parameter->name, $paraQuery->likeWrappers)) {
+                    $wrapper = $paraQuery->likeWrappers[$parameter->name];
+                    $value = $wrapper['prefix'] . $value . $wrapper['suffix'];
+                }
+
                 $queryArguments[$parameter->name] = $value;
 
                 // A single caller-supplied value may need to be bound to more than one
