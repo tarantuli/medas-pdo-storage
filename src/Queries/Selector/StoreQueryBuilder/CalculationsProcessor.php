@@ -17,7 +17,9 @@ use Medas\EntityManager\Selector\{
     Conditions\WhereIsAtLeast,
     Conditions\WhereIsAtMost,
     Conditions\WhereIsLessThan,
+    Conditions\WhereIsLessThanOrEqual,
     Conditions\WhereIsMoreThan,
+    Conditions\WhereIsMoreThanOrEqual,
     Conditions\WhereIsNot,
     Conditions\WhereIsNotNull,
     Conditions\WhereIsNull,
@@ -80,8 +82,13 @@ readonly class CalculationsProcessor
                 WhereNotIn::class => $this->processComparison($job, $calculation, ' not in '),
                 WhereIsMoreThan::class => $this->processComparison($job, $calculation, '>'),
                 WhereIsLessThan::class => $this->processComparison($job, $calculation, '<'),
-                WhereIsAtLeast::class => $this->processComparison($job, $calculation, '>='),
-                WhereIsAtMost::class => $this->processComparison($job, $calculation, '<='),
+
+                WhereIsMoreThanOrEqual::class, WhereIsAtLeast::class
+                    => $this->processComparison($job, $calculation, '>='),
+
+                WhereIsLessThanOrEqual::class, WhereIsAtMost::class
+                    => $this->processComparison($job, $calculation, '<='),
+
                 WhereIsNull::class => $this->processNullComparison($job, $calculation, true),
                 WhereIsNotNull::class => $this->processNullComparison($job, $calculation, false),
                 WhereContains::class => $this->processLikeComparison($job, $calculation, '%', '%'),
