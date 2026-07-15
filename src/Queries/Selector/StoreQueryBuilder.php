@@ -28,13 +28,15 @@ readonly class StoreQueryBuilder
         Definition $definition,
         string     $storeName,
         string     $entityName = '',
+        bool       $isCount = false,
+        bool       $ignoreSlice = false,
     ): ParameterizedQuery
     {
-        $request = dispatch(new DatabaseControllerRequest($database));
+        $controllerRequest = dispatch(new DatabaseControllerRequest($database));
 
         $job = new StoreQueryBuilder\Job(
             $database,
-            $request->databaseController->driverHandler,
+            $controllerRequest->databaseController->driverHandler,
             $entityName,
         );
 
@@ -43,7 +45,13 @@ readonly class StoreQueryBuilder
 
         $this->outputValuesProcessor->process($job, $definition->outputValues);
 
-        $outputValues = $job->outputValues ? implode(', ', $job->outputValues) : '*';
+        if ($isCount) {
+            $outputValues = 'count(*) as ' . $job->driverHandler->quote($database, 'count');
+        }
+        else {
+            $outputValues = $job->outputValues ? implode(', ', $job->outputValues) : '*';
+        }
+
         $job->query = sprintf('select %s from %s', $outputValues, $quotedMainStore);
 
         $this->relationsProcessor->process($job, $definition->relations);
@@ -57,7 +65,10 @@ readonly class StoreQueryBuilder
         $this->groupingProcessor->process($job, $definition->groupings);
         $this->sortingProcessor->process($job, $definition->sorts);
         $this->parametersProcessor->process($job, $definition->parameters);
-        $this->sliceProcessor->process($job, $definition->slice);
+
+        if (!$ignoreSlice) {
+            $this->sliceProcessor->process($job, $definition->slice);
+        }
 
         return new ParameterizedQuery(
             $job->query,

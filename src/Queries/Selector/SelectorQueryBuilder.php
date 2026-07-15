@@ -23,23 +23,28 @@ readonly class SelectorQueryBuilder implements SelectorActionBuilder
     {
     }
 
-    public function build(Selector $selector, array $arguments): ActionSet
+    public function build(
+        Selector $selector,
+        array    $arguments,
+        bool     $doCount = false,
+        bool     $ignoreSlice = false
+    ): ActionSet
     {
         if ($selector instanceof NotCacheable) {
-            $paraQuery = $this->buildParameterizedQuery($selector);
+            $paraQuery = $this->buildParameterizedQuery($selector, $doCount, $ignoreSlice);
         }
         else {
             /** @var ParameterizedQuery $paraQuery */
             $paraQuery = cache(
                 [static::class, $selector::class],
-                fn() => $this->buildParameterizedQuery($selector),
+                fn() => $this->buildParameterizedQuery($selector, $doCount, $ignoreSlice),
             );
         }
 
         return new QuerySet([$this->parameterizedQueryToQuery->compile($paraQuery, $arguments)]);
     }
 
-    private function buildParameterizedQuery(Selector $selector): ParameterizedQuery
+    private function buildParameterizedQuery(Selector $selector, bool $doCount, bool $ignoreSlice): ParameterizedQuery
     {
         $definition = $selector->definition();
         $metaData = $this->metaDataManager->get($selector->entity());
@@ -54,6 +59,8 @@ readonly class SelectorQueryBuilder implements SelectorActionBuilder
             $definition,
             $metaData->entity->store,
             $metaData->className,
+            $doCount,
+            $ignoreSlice
         );
     }
 }
