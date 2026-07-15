@@ -28,8 +28,7 @@ readonly class StoreQueryBuilder
         Definition $definition,
         string     $storeName,
         string     $entityName = '',
-        bool       $isCount = false,
-        bool       $ignoreSlice = false,
+        bool       $isCount = false
     ): ParameterizedQuery
     {
         $controllerRequest = dispatch(new DatabaseControllerRequest($database));
@@ -66,7 +65,7 @@ readonly class StoreQueryBuilder
         $this->sortingProcessor->process($job, $definition->sorts);
         $this->parametersProcessor->process($job, $definition->parameters);
 
-        if (!$ignoreSlice) {
+        if (!$isCount) {
             $this->sliceProcessor->process($job, $definition->slice);
         }
 

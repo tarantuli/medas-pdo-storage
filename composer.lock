@@ -157,16 +157,16 @@
         },
         {
             "name": "morphp/medas-entity-manager",
-            "version": "v3.5.6",
+            "version": "v3.5.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tarantuli/medas-entity-manager.git",
-                "reference": "d015405b3e11d07ba2394f7c95d5332bb6d63b94"
+                "reference": "688acbc67bb1d809453dd849d7933ca2e4d6c340"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tarantuli/medas-entity-manager/zipball/d015405b3e11d07ba2394f7c95d5332bb6d63b94",
-                "reference": "d015405b3e11d07ba2394f7c95d5332bb6d63b94",
+                "url": "https://api.github.com/repos/tarantuli/medas-entity-manager/zipball/688acbc67bb1d809453dd849d7933ca2e4d6c340",
+                "reference": "688acbc67bb1d809453dd849d7933ca2e4d6c340",
                 "shasum": ""
             },
             "require": {
@@ -205,10 +205,10 @@
                 "entities"
             ],
             "support": {
-                "source": "https://github.com/tarantuli/medas-entity-manager/tree/v3.5.6",
+                "source": "https://github.com/tarantuli/medas-entity-manager/tree/v3.5.7",
                 "issues": "https://github.com/tarantuli/medas-entity-manager/issues"
             },
-            "time": "2026-07-15T12:46:48+00:00"
+            "time": "2026-07-15T13:05:27+00:00"
         },
         {
             "name": "morphp/medas-file-system",
@@ -419,16 +419,16 @@
         },
         {
             "name": "morphp/medas-storage-manager",
-            "version": "v4.4.12",
+            "version": "v4.4.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tarantuli/medas-storage-manager.git",
-                "reference": "2466612839f7f179b6f226c0b7be5a4296ab0efd"
+                "reference": "e652091c8e8e466d5313d1ce14bea5600ff75c2f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tarantuli/medas-storage-manager/zipball/2466612839f7f179b6f226c0b7be5a4296ab0efd",
-                "reference": "2466612839f7f179b6f226c0b7be5a4296ab0efd",
+                "url": "https://api.github.com/repos/tarantuli/medas-storage-manager/zipball/e652091c8e8e466d5313d1ce14bea5600ff75c2f",
+                "reference": "e652091c8e8e466d5313d1ce14bea5600ff75c2f",
                 "shasum": ""
             },
             "require": {
@@ -463,10 +463,10 @@
                 "storage"
             ],
             "support": {
-                "source": "https://github.com/tarantuli/medas-storage-manager/tree/v4.4.12",
+                "source": "https://github.com/tarantuli/medas-storage-manager/tree/v4.4.14",
                 "issues": "https://github.com/tarantuli/medas-storage-manager/issues"
             },
-            "time": "2026-07-15T12:52:13+00:00"
+            "time": "2026-07-15T13:06:57+00:00"
         },
         {
             "name": "psr/event-dispatcher",
