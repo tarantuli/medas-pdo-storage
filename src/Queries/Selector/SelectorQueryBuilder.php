@@ -31,7 +31,7 @@ readonly class SelectorQueryBuilder implements SelectorActionBuilder
         else {
             /** @var ParameterizedQuery $paraQuery */
             $paraQuery = cache(
-                [static::class, $selector::class],
+                [static::class, $selector::class . $doCount],
                 fn() => $this->buildParameterizedQuery($selector, $doCount),
             );
         }
