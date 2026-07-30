@@ -10,6 +10,7 @@ use Medas\EntityManager\Selector\{
     Calculations\Literal,
     Calculations\RowCount,
     Conditions\OrIs,
+    Conditions\WhereCollectionContains,
     Conditions\WhereContains,
     Conditions\WhereEndsWith,
     Conditions\WhereIn,
@@ -36,13 +37,15 @@ use Medas\EntityManager\Selector\{
     Operants\Values,
     OutputValues\OutputValue
 };
+use Medas\PdoStorage\Exceptions\CollectionContainsOperantIsNotAProperty;
 use Medas\StorageManager\Shared\ValueSerializer;
 
 #[Service]
 readonly class CalculationsProcessor
 {
     public function __construct(
-        private ValueSerializer $valueSerializer,
+        private CollectionContainsCompiler $collectionContainsCompiler,
+        private ValueSerializer            $valueSerializer,
     )
     {
     }
@@ -79,6 +82,10 @@ readonly class CalculationsProcessor
                 WhereIs::class => $this->processComparison($job, $calculation, '='),
                 WhereIsNot::class => $this->processComparison($job, $calculation, '!='),
                 WhereIn::class => $this->processComparison($job, $calculation, ' in '),
+
+                WhereCollectionContains::class
+                    => $this->processCollectionContains($job, $calculation),
+
                 WhereNotIn::class => $this->processComparison($job, $calculation, ' not in '),
                 WhereIsMoreThan::class => $this->processComparison($job, $calculation, '>'),
                 WhereIsLessThan::class => $this->processComparison($job, $calculation, '<'),
@@ -105,6 +112,21 @@ readonly class CalculationsProcessor
     private function processTruthy(Job $job, WhereIsTruthy $calculation): void
     {
         $job->currentCalculation .= $this->operantToQuery($job, $calculation->property);
+    }
+
+    private function processCollectionContains(Job $job, WhereCollectionContains $calculation): void
+    {
+        if (!$calculation->property instanceof Property) {
+            throw new CollectionContainsOperantIsNotAProperty($calculation->property);
+        }
+
+        $valueQuery = $this->operantToQuery($job, $calculation->value);
+
+        $job->currentCalculation .= $this->collectionContainsCompiler->compile(
+            $job,
+            $calculation->property,
+            $valueQuery,
+        );
     }
 
     private function processNullComparison(Job $job, WhereIsNull $calculation, bool $isNull): void
