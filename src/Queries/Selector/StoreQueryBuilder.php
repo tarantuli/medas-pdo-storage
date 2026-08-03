@@ -63,7 +63,8 @@ readonly class StoreQueryBuilder
 
         $this->groupingProcessor->process($job, $definition->groupings);
         $this->sortingProcessor->process($job, $definition->sorts);
-        $this->parametersProcessor->process($job, $definition->parameters);
+
+        $usedParameters = $this->parametersProcessor->process($job, $definition->parameters);
 
         if (!$isCount) {
             $this->sliceProcessor->process($job, $definition->slice);
@@ -71,7 +72,7 @@ readonly class StoreQueryBuilder
 
         return new ParameterizedQuery(
             $job->query,
-            $definition->parameters,
+            $usedParameters,
             $job->foundConstants,
             $job->variableSizedParameters,
             $job->argumentOccurrences,
@@ -107,11 +108,11 @@ readonly class StoreQueryBuilder
             $job->query .= ' where ' . $job->currentCalculation;
         }
 
-        $this->parametersProcessor->process($job, $definition->parameters);
+        $usedParameters = $this->parametersProcessor->process($job, $definition->parameters);
 
         return new ParameterizedQuery(
             $job->query,
-            $definition->parameters,
+            $usedParameters,
             $job->foundConstants,
             $job->variableSizedParameters,
             $job->argumentOccurrences,
