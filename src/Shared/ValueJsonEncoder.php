@@ -33,7 +33,7 @@ readonly class ValueJsonEncoder
     {
     }
 
-    #[EventListener]
+    #[EventListener(priority: -100)]
     public function handleSerializeRequest(SerializeValueRequest $request): void
     {
         if (is_array($request->serializedValue ?? null)) {
