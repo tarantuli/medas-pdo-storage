@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Medas\PdoStorage;
 
 use Medas\Core\{AsSingleton, BasePackage, Interfaces\ServiceConfigBuilder};
+use Medas\Json\JsonPackage;
 use Medas\StorageManager\StorageManagerPackage;
 
 class PdoStoragePackage extends BasePackage
@@ -14,6 +15,7 @@ class PdoStoragePackage extends BasePackage
     public function dependencies(): array
     {
         return [
+            JsonPackage::instance(),
             StorageManagerPackage::instance(),
         ];
     }
