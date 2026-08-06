@@ -5,20 +5,24 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\Shared;
 
 use Medas\Core\Attributes\{EventListener, Service};
+use Medas\EntityManager\Events\NormalizeStorageValueRequest;
 use Medas\Json\JsonEncoder;
 use Medas\StorageManager\Shared\SerializeValueRequest;
 
 /**
- * PDO parameters can't be arrays, so any value the storage-manager already
- * serialized to an array (a #[DataHolder] value object) is JSON-encoded here,
- * at the pdo-storage boundary - keeping the "an array is stored as a JSON
- * varchar" detail out of the backend-agnostic layers.
+ * Bridges #[DataHolder] value objects to pdo-storage's string-only columns, on
+ * both legs of the round-trip - so the "an array is stored as a JSON varchar"
+ * detail lives entirely within pdo-storage and never leaks into the
+ * backend-agnostic layers:
  *
- * The reverse (JSON string -> array -> object) happens in the Hydrator's
- * ValueCaster, since the storage layer defers unserialization to it entirely.
+ * - On write, a value the storage-manager already serialized to an array is
+ *   JSON-encoded here (PDO parameters can't be arrays).
+ * - On read, the Hydrator's ValueCaster dispatches a NormalizeStorageValueRequest;
+ *   this decodes the JSON varchar back to an array for it to cast to the object.
  *
- * This runs after ValueSerializer (which produced the array) and only touches
- * values that are already arrays, so it never interferes with scalar arguments.
+ * The write leg runs after ValueSerializer (which produced the array). The read
+ * leg only fires for DataHolder values (ValueCaster dispatches it nowhere else),
+ * so decoding any string it sees is safe.
  */
 #[Service]
 readonly class ValueJsonEncoder
@@ -34,6 +38,14 @@ readonly class ValueJsonEncoder
     {
         if (is_array($request->serializedValue ?? null)) {
             $request->serializedValue = $this->jsonEncoder->encode($request->serializedValue);
+        }
+    }
+
+    #[EventListener]
+    public function handleNormalizeRequest(NormalizeStorageValueRequest $request): void
+    {
+        if (is_string($request->value)) {
+            $request->normalizedValue = $this->jsonEncoder->decode($request->value);
         }
     }
 }

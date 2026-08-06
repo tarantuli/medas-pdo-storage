@@ -157,22 +157,21 @@
         },
         {
             "name": "morphp/medas-entity-manager",
-            "version": "v3.7.2",
+            "version": "v3.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tarantuli/medas-entity-manager.git",
-                "reference": "197d144df8b727dd562e6d47f9301b16371720c2"
+                "reference": "3e4ee2684b60e02cbfbfdbf9641e4a31218be3ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tarantuli/medas-entity-manager/zipball/197d144df8b727dd562e6d47f9301b16371720c2",
-                "reference": "197d144df8b727dd562e6d47f9301b16371720c2",
+                "url": "https://api.github.com/repos/tarantuli/medas-entity-manager/zipball/3e4ee2684b60e02cbfbfdbf9641e4a31218be3ec",
+                "reference": "3e4ee2684b60e02cbfbfdbf9641e4a31218be3ec",
                 "shasum": ""
             },
             "require": {
                 "ext-pdo": "*",
                 "morphp/medas-core": "^4.3",
-                "morphp/medas-json": "^3",
                 "morphp/medas-object-to-array-serializer": "^3",
                 "php": "^8.4"
             },
@@ -206,10 +205,10 @@
                 "entities"
             ],
             "support": {
-                "source": "https://github.com/tarantuli/medas-entity-manager/tree/v3.7.2",
+                "source": "https://github.com/tarantuli/medas-entity-manager/tree/v3.7.3",
                 "issues": "https://github.com/tarantuli/medas-entity-manager/issues"
             },
-            "time": "2026-08-06T09:37:14+00:00"
+            "time": "2026-08-06T10:40:21+00:00"
         },
         {
             "name": "morphp/medas-file-system",
