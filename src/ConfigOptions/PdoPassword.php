@@ -8,11 +8,12 @@ use Medas\Core\{
     Attributes\Service,
     Interfaces\ConfigGroup,
     Interfaces\ConfigOption,
+    Interfaces\IsSensitive,
     Interfaces\Validator
 };
 
 #[Service]
-readonly class PdoPassword implements ConfigOption, Validator
+readonly class PdoPassword implements ConfigOption, Validator, IsSensitive
 {
     public function __construct(
         private PdoGroup $group,
