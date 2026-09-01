@@ -60,6 +60,11 @@ readonly class Statement implements RecordSet
         return $records;
     }
 
+    public function fetchFirstColumn(): array
+    {
+        return $this->pdoStatement->fetchAll(\PDO::FETCH_COLUMN);
+    }
+
     public function hasRecords(): bool
     {
         return $this->pdoStatement->columnCount() > 0;
