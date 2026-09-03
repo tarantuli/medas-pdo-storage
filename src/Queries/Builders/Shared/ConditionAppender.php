@@ -6,6 +6,7 @@ namespace Medas\PdoStorage\Queries\Builders\Shared;
 
 use Medas\Core\Attributes\Service;
 use Medas\EntityManager\Filters\{
+    AnyOf,
     Between,
     IsNotNull,
     IsNull,
@@ -64,10 +65,16 @@ readonly class ConditionAppender
                 $arguments[] = $value->value;
             }
             elseif ($value instanceof IsNull) {
-                $query .= $driverHandler->quote($database, $value->field) . ' is null ';
+                $query .= $driverHandler->quote($database, $value->field)
+                    . ' is null '
+                    . $separator
+                    . ' ';
             }
             elseif ($value instanceof IsNotNull) {
-                $query .= $driverHandler->quote($database, $value->field) . ' is not null ';
+                $query .= $driverHandler->quote($database, $value->field)
+                    . ' is not null '
+                    . $separator
+                    . ' ';
             }
             elseif ($value instanceof Between) {
                 $query .= $driverHandler->quote($database, $value->field)
@@ -77,6 +84,15 @@ readonly class ConditionAppender
 
                 $arguments[] = $value->lowerValue;
                 $arguments[] = $value->upperValue;
+            }
+            elseif ($value instanceof AnyOf) {
+                // Recurse the sub-filters joined with OR, parenthesised so they
+                // don't bleed into the surrounding AND-ed conditions.
+                $subQuery = '';
+
+                $this->append($database, $subQuery, $arguments, $value->filters, 'or');
+
+                $query .= '(' . $subQuery . ') ' . $separator . ' ';
             }
             else {
                 if ($value === null) {
