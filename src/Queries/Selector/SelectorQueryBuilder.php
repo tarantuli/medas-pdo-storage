@@ -34,6 +34,17 @@ readonly class SelectorQueryBuilder implements SelectorActionBuilder
                 [static::class, $selector::class . $doCount],
                 fn() => $this->buildParameterizedQuery($selector, $doCount),
             );
+
+            // The cache is keyed by selector class alone, so a cached query is only
+            // safe to reuse when it holds no baked-in literals. A selector that
+            // embeds per-instance values (Value operants) compiles them into
+            // $constants; the cache would then hand the next instance of the same
+            // class the first instance's values - e.g. a notification-deduplication
+            // selector matching against the first dedup's title rather than its own.
+            // Such a selector can't be cached by class alone, so build it fresh.
+            if ($paraQuery->constants) {
+                $paraQuery = $this->buildParameterizedQuery($selector, $doCount);
+            }
         }
 
         return new QuerySet([$this->parameterizedQueryToQuery->compile($paraQuery, $arguments)]);
