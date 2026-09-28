@@ -18,6 +18,7 @@ class Job
     public array $variableSizedParameters = [];
     public string|null $currentCalculation = null;
     public array $aliases = [];
+    public array $propertyStores = [];
 
     public function __construct(
         public Database        $database,
@@ -25,5 +26,14 @@ class Job
         public readonly string $mainEntity,
     )
     {
+    }
+
+    public function storeForProperty(string|null $entity, string $propertyName): string
+    {
+        if ($entity !== null && $entity !== $this->mainEntity) {
+            return $this->stores[$entity];
+        }
+
+        return $this->propertyStores[$propertyName] ?? $this->stores[$this->mainEntity];
     }
 }

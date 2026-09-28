@@ -20,7 +20,7 @@ readonly class GroupingProcessor
                 $parts[] = $job->driverHandler->quote($job->database, $grouping->property->name);
             }
             else {
-                $parts[] = $job->stores[$grouping->property->entity ?? $job->mainEntity]
+                $parts[] = $job->storeForProperty($grouping->property->entity, $grouping->property->name)
                     . '.'
                     . $job->driverHandler->quote($job->database, $grouping->property->name);
             }

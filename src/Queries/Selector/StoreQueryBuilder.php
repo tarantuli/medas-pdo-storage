@@ -28,7 +28,10 @@ readonly class StoreQueryBuilder
         Definition $definition,
         string     $storeName,
         string     $entityName = '',
-        bool       $isCount = false
+        bool       $isCount = false,
+        array      $parentStores = [],
+        array      $propertyStores = [],
+        string     $idProperty = 'id'
     ): ParameterizedQuery
     {
         $controllerRequest = dispatch(new DatabaseControllerRequest($database));
@@ -42,6 +45,15 @@ readonly class StoreQueryBuilder
         $quotedMainStore = $job->driverHandler->quote($database, $storeName);
         $job->stores = [$job->mainEntity => $quotedMainStore];
 
+        $inheritanceJoins = $this->applyInheritanceStores(
+            $database,
+            $job,
+            $quotedMainStore,
+            $parentStores,
+            $propertyStores,
+            $idProperty
+        );
+
         $this->outputValuesProcessor->process($job, $definition->outputValues);
 
         if ($isCount) {
@@ -52,6 +64,7 @@ readonly class StoreQueryBuilder
         }
 
         $job->query = sprintf('select %s from %s', $outputValues, $quotedMainStore);
+        $job->query .= $inheritanceJoins;
 
         $this->relationsProcessor->process($job, $definition->relations);
 
@@ -79,6 +92,45 @@ readonly class StoreQueryBuilder
             $job->argumentLikeWrappers,
             $database,
         );
+    }
+
+    private function applyInheritanceStores(
+        Database              $database,
+        StoreQueryBuilder\Job $job,
+        string                $quotedMainStore,
+        array                 $parentStores,
+        array                 $propertyStores,
+        string                $idProperty
+    ): string
+    {
+        foreach ($propertyStores as $propertyName => $storeName) {
+            $job->propertyStores[$propertyName] = $job->driverHandler->quote($database, $storeName);
+        }
+
+        if (!$parentStores) {
+            return '';
+        }
+
+        $quotedId = $job->driverHandler->quote($database, $idProperty);
+        $joins = '';
+
+        foreach ($parentStores as $parentStore) {
+            $quotedParent = $job->driverHandler->quote($database, $parentStore);
+
+            $joins .= ' join '
+                . $quotedParent
+                . ' on ('
+                . $quotedParent
+                . '.'
+                . $quotedId
+                . ' = '
+                . $quotedMainStore
+                . '.'
+                . $quotedId
+                . ')';
+        }
+
+        return $joins;
     }
 
     public function buildCountQuery(

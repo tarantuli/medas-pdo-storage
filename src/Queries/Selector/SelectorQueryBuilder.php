@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\Queries\Selector;
 
 use Medas\Core\{Attributes\Service, Interfaces\NotCacheable};
-use Medas\EntityManager\{MetaDataManager, Selector\Selector};
+use Medas\EntityManager\{MetaData, MetaDataManager, Selector\Selector};
 use Medas\PdoStorage\{Database, Exceptions\StorageIsNotDatabase, Queries\QuerySet};
 use Medas\StorageManager\Interfaces\Builders\SelectorActionBuilder;
 use Medas\StorageManager\StorageManager;
@@ -60,12 +60,78 @@ readonly class SelectorQueryBuilder implements SelectorActionBuilder
             throw new StorageIsNotDatabase($metaData->entity->storage);
         }
 
+        [$parentStores, $propertyStores] = $this->resolveInheritance($metaData);
+
         return $this->storeQueryBuilder->buildQuery(
             $database,
             $definition,
             $metaData->entity->store,
             $metaData->className,
-            $doCount
+            $doCount,
+            $parentStores,
+            $propertyStores,
+            $metaData->idProperty->name
         );
+    }
+
+    /**
+     * Class-table inheritance: resolve the parent stores that must be joined and a
+     * per-property store map so base-declared columns qualify to the store that holds them.
+     *
+     * @return array{0: string[], 1: array<string, string>}
+     */
+    private function resolveInheritance(MetaData $metaData): array
+    {
+        if ($metaData->inheritance->parent === null) {
+            return [[], []];
+        }
+
+        $classStores = [];
+        $current = $metaData;
+
+        while ($current !== null) {
+            $classStores[$current->className] = $current->entity->store;
+            $parent = $current->inheritance->parent;
+            $current = $parent !== null ? $this->metaDataManager->get($parent) : null;
+        }
+
+        $mainStore = $metaData->entity->store;
+        $parentStores = [];
+
+        foreach ($classStores as $store) {
+            if ($store !== null && $store !== $mainStore && !in_array($store, $parentStores, true)) {
+                $parentStores[] = $store;
+            }
+        }
+
+        $propertyStores = [];
+
+        foreach ($metaData->properties as $property) {
+            $propertyStores[$property->name] = $this->storeForClass(
+                $classStores,
+                $property->reflection->getDeclaringClass()->name,
+                $mainStore
+            );
+        }
+
+        return [$parentStores, $propertyStores];
+    }
+
+    private function storeForClass(array $classStores, string $className, string $fallback): string
+    {
+        $classNames = array_keys($classStores);
+        $index = array_search($className, $classNames, true);
+
+        if ($index === false) {
+            return $fallback;
+        }
+
+        for ($i = $index, $count = count($classNames); $i < $count; $i++) {
+            if ($classStores[$classNames[$i]] !== null) {
+                return $classStores[$classNames[$i]];
+            }
+        }
+
+        return $fallback;
     }
 }
