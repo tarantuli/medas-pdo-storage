@@ -8,10 +8,12 @@ use Medas\Core\{
     Attributes\ConfigValue,
     Attributes\Service,
     ConfigOptions\DispatchDebugInformation,
-    Events\DebugInformation
+    Events\DebugInformation,
+    Interfaces\Serializer
 };
 use Medas\PdoStorage\{
     Database,
+    DatabaseController,
     Events\DatabaseControllerRequest,
     Exceptions\PdoDatabase,
     Statement
@@ -19,17 +21,19 @@ use Medas\PdoStorage\{
 use Medas\StorageManager\{
     Entities\LastInsertIdPlaceholder,
     Interfaces\ActionExecutor,
-    Shared\SerializeValueRequest,
     UnitOfWork\Action,
     UnitOfWork\ActionSet
 };
 
 #[Service]
-readonly class QueryExecutor implements ActionExecutor
+class QueryExecutor implements ActionExecutor
 {
+    /** @var DatabaseController[] The controller per database, keyed by the database's name. */
+    private array $databaseControllers = [];
+
     public function __construct(
         #[ConfigValue(DispatchDebugInformation::class)]
-        private bool $dispatchDebugInformation = false,
+        private readonly bool $dispatchDebugInformation = false,
     )
     {
     }
@@ -40,11 +44,14 @@ readonly class QueryExecutor implements ActionExecutor
         $storage = $action->storage();
 
         /** @var Query $action */
-        $request = dispatch(new DatabaseControllerRequest($storage));
-        $databaseController = $request->databaseController;
+        $databaseController = $this->databaseController($storage);
         $pdo = $databaseController->pdo;
 
-        $this->serializeArguments($action, $actionSet);
+        $this->serializeArguments(
+            $action,
+            $databaseController->driverHandler->serializer(),
+            $actionSet
+        );
 
         try {
             $statement = $pdo->prepare($action->query);
@@ -81,15 +88,29 @@ readonly class QueryExecutor implements ActionExecutor
         }
     }
 
-    private function serializeArguments(Query $query, ActionSet|null $querySet = null): void
+    /**
+     * The controller cannot be injected: PdoStorageController depends on this class, so it
+     * is asked for by event. It is asked for once per database and then kept, because this
+     * runs for every statement. PdoStorageController keeps its controllers by the same key.
+     */
+    private function databaseController(Database $database): DatabaseController
+    {
+        return $this->databaseControllers[$database->name] ??= dispatch(new DatabaseControllerRequest($database))->databaseController;
+    }
+
+    /**
+     * Serializes with the driver's own serializer, taken from the controller that is already
+     * in hand, and not by dispatching an event per argument: a statement has many arguments
+     * and a request has many statements.
+     */
+    private function serializeArguments(Query $query, Serializer $serializer, ActionSet|null $querySet = null): void
     {
         foreach ($query->arguments as $key => $argument) {
             if ($querySet && $argument instanceof LastInsertIdPlaceholder) {
                 $argument = $querySet->lastInsertId;
             }
 
-            $request = dispatch(new SerializeValueRequest($argument));
-            $query->serializedArguments[$key] = $request->serializedValue;
+            $query->serializedArguments[$key] = $serializer->serialize($argument);
         }
     }
 
