@@ -11,50 +11,61 @@ use Medas\StorageManager\{
     Type
 };
 
-readonly class Statement implements RecordSet
+// The result of one execution of a PreparedStatement. Rows are read from the driver
+// until the statement runs again for another query: then the rows not read yet are
+// taken over first (see PreparedStatement) and read from here.
+class Statement implements RecordSet
 {
-    private array $columnNames;
+    /** @var array<int, array<int, mixed>>|null */
+    private array|null $takenOverRows = null;
+
+    private int|null $takenOverRowCount = null;
 
     public function __construct(
-        private \PDOStatement $pdoStatement,
+        private readonly PreparedStatement $preparedStatement,
     )
     {
-        $this->determineColumnNames();
     }
 
-    private function determineColumnNames(): void
+    public function takeOverUnreadRows(): void
     {
-        $names = [];
+        $pdoStatement = $this->preparedStatement->pdoStatement;
+        $this->takenOverRowCount = $pdoStatement->rowCount();
 
-        for ($column = 0; $column < $this->pdoStatement->columnCount(); ++$column) {
-            $columnMeta = $this->pdoStatement->getColumnMeta($column);
-            $name = $columnMeta['name'];
-
-            if (in_array($name, $names, true)) {
-                /** @noinspection PhpArrayKeyDoesNotMatchArrayShapeInspection */
-                $name = $columnMeta['table'] . '.' . $name;
-            }
-
-            $names[] = $name;
-        }
-
-        $this->columnNames = $names;
+        // A statement without a result set, such as an insert, has no rows to take over
+        $this->takenOverRows = $pdoStatement->columnCount() > 0
+            ? $pdoStatement->fetchAll(\PDO::FETCH_NUM)
+            : [];
     }
 
     public function fetchRecord(): Record|null
     {
-        $data = $this->pdoStatement->fetch();
+        if ($this->takenOverRows === null) {
+            $data = $this->preparedStatement->pdoStatement->fetch(\PDO::FETCH_ASSOC);
 
-        return is_array($data) ? new Record($data) : null;
+            return is_array($data) ? new Record($data) : null;
+        }
+
+        $row = array_shift($this->takenOverRows);
+
+        // Keyed like PDO::FETCH_ASSOC: of a repeated column name, the last value stays
+        return $row === null
+            ? null
+            : new Record(array_combine($this->preparedStatement->columnNames(), $row));
     }
 
     public function fetchRecords(): array
     {
-        $data = $this->pdoStatement->fetchAll(\PDO::FETCH_NUM);
+        $rows = $this->takenOverRows ?? $this->preparedStatement->pdoStatement->fetchAll(\PDO::FETCH_NUM);
+        $columnNames = $this->preparedStatement->uniqueColumnNames();
         $records = [];
 
-        foreach ($data as $set) {
-            $records[] = new Record(array_combine($this->columnNames, $set));
+        if ($this->takenOverRows !== null) {
+            $this->takenOverRows = [];
+        }
+
+        foreach ($rows as $row) {
+            $records[] = new Record(array_combine($columnNames, $row));
         }
 
         return $records;
@@ -62,20 +73,28 @@ readonly class Statement implements RecordSet
 
     public function fetchFirstColumn(): array
     {
-        return $this->pdoStatement->fetchAll(\PDO::FETCH_COLUMN);
+        if ($this->takenOverRows === null) {
+            return $this->preparedStatement->pdoStatement->fetchAll(\PDO::FETCH_COLUMN);
+        }
+
+        $values = array_column($this->takenOverRows, 0);
+        $this->takenOverRows = [];
+
+        return $values;
     }
 
     public function hasRecords(): bool
     {
-        return $this->pdoStatement->columnCount() > 0;
+        return $this->preparedStatement->pdoStatement->columnCount() > 0;
     }
 
     public function fetchMetaData(): RecordSetMetaData
     {
+        $pdoStatement = $this->preparedStatement->pdoStatement;
         $metaData = new MetaData\MetaData();
 
-        for ($column = 0; $column < $this->pdoStatement->columnCount(); ++$column) {
-            $data = $this->pdoStatement->getColumnMeta($column);
+        for ($column = 0; $column < $pdoStatement->columnCount(); ++$column) {
+            $data = $pdoStatement->getColumnMeta($column);
             $type = match ($data['native_type']) {
                 'BOOLEAN' => Type::Boolean,
                 'DOUBLE', 'LONG', 'TINY', 'FLOAT', 'NEWDECIMAL', 'INT24' => Type::Integer,
@@ -96,7 +115,7 @@ readonly class Statement implements RecordSet
             $metaData->fieldNames[] = $data['name'];
         }
 
-        $metaData->rowCount = $this->pdoStatement->rowCount();
+        $metaData->rowCount = $this->takenOverRowCount ?? $pdoStatement->rowCount();
 
         return $metaData;
     }

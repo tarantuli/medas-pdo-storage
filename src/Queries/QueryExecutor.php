@@ -16,7 +16,7 @@ use Medas\PdoStorage\{
     DatabaseController,
     Events\DatabaseControllerRequest,
     Exceptions\PdoDatabase,
-    Statement
+    PreparedStatement
 };
 use Medas\StorageManager\{
     Entities\LastInsertIdPlaceholder,
@@ -28,14 +28,22 @@ use Medas\StorageManager\{
 #[Service]
 class QueryExecutor implements ActionExecutor
 {
+    // Each one keeps a statement open on the database server, so a long-running process
+    // keeps the ones it used most recently rather than every query it ever ran.
+    private const int MAX_PREPARED_STATEMENTS_PER_CONNECTION = 100;
+
     /** @var DatabaseController[] The controller per database, keyed by the database's name. */
     private array $databaseControllers = [];
+
+    /** @var \WeakMap<\PDO, array<string, PreparedStatement>> Per connection, keyed by the SQL. */
+    private \WeakMap $preparedStatements;
 
     public function __construct(
         #[ConfigValue(DispatchDebugInformation::class)]
         private readonly bool $dispatchDebugInformation = false,
     )
     {
+        $this->preparedStatements = new \WeakMap();
     }
 
     public function execute(Action $action, ActionSet|null $actionSet = null): void
@@ -54,7 +62,7 @@ class QueryExecutor implements ActionExecutor
         );
 
         try {
-            $statement = $pdo->prepare($action->query);
+            $preparedStatement = $this->preparedStatement($pdo, $action->query);
 
             if ($this->dispatchDebugInformation) {
                 dispatch(new DebugInformation(
@@ -64,15 +72,12 @@ class QueryExecutor implements ActionExecutor
                 ));
             }
 
-            $statement->execute($action->serializedArguments);
-
+            $action->statement = $preparedStatement->execute($action->serializedArguments);
             $lastInsertId = $pdo->lastInsertId();
 
             if ($lastInsertId && $actionSet) {
                 $actionSet->lastInsertId = $lastInsertId;
             }
-
-            $action->statement = new Statement($statement);
         }
         catch (\Exception|\Error $e) {
             throw new PdoDatabase(
@@ -112,6 +117,34 @@ class QueryExecutor implements ActionExecutor
 
             $query->serializedArguments[$key] = $serializer->serialize($argument);
         }
+    }
+
+    /**
+     * Prepares a query's SQL on its first use on a connection and reuses it after that, which
+     * saves a round trip to the database server per query (prepares are not emulated).
+     */
+    private function preparedStatement(\PDO $pdo, string $sql): PreparedStatement
+    {
+        $statements = $this->preparedStatements[$pdo] ?? [];
+
+        if (array_key_exists($sql, $statements)) {
+            $preparedStatement = $statements[$sql];
+
+            // Moved to the end, so the limit drops the one used longest ago
+            unset($statements[$sql]);
+        }
+        else {
+            $preparedStatement = new PreparedStatement($pdo->prepare($sql));
+
+            if (count($statements) >= self::MAX_PREPARED_STATEMENTS_PER_CONNECTION) {
+                unset($statements[array_key_first($statements)]);
+            }
+        }
+
+        $statements[$sql] = $preparedStatement;
+        $this->preparedStatements[$pdo] = $statements;
+
+        return $preparedStatement;
     }
 
     public function executeSet(ActionSet $actionSet): void
