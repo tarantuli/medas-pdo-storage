@@ -55,11 +55,7 @@ class QueryExecutor implements ActionExecutor
         $databaseController = $this->databaseController($storage);
         $pdo = $databaseController->pdo;
 
-        $this->serializeArguments(
-            $action,
-            $databaseController->driverHandler->serializer(),
-            $actionSet
-        );
+        $this->serializeArguments($action, $databaseController->driverHandler->serializer());
 
         try {
             $preparedStatement = $this->preparedStatement($pdo, $action->query);
@@ -95,7 +91,7 @@ class QueryExecutor implements ActionExecutor
 
     /**
      * The controller cannot be injected: PdoStorageController depends on this class, so it
-     * is asked for by event. It is asked for once per database and then kept, because this
+     * is asked for by the event. It is asked for once per database and then kept, because this
      * runs for every statement. PdoStorageController keeps its controllers by the same key.
      */
     private function databaseController(Database $database): DatabaseController
@@ -108,11 +104,11 @@ class QueryExecutor implements ActionExecutor
      * in hand, and not by dispatching an event per argument: a statement has many arguments
      * and a request has many statements.
      */
-    private function serializeArguments(Query $query, Serializer $serializer, ActionSet|null $querySet = null): void
+    private function serializeArguments(Query $query, Serializer $serializer): void
     {
         foreach ($query->arguments as $key => $argument) {
-            if ($querySet && $argument instanceof LastInsertIdPlaceholder) {
-                $argument = $querySet->lastInsertId;
+            if ($argument instanceof LastInsertIdPlaceholder) {
+                $argument = $argument->value();
             }
 
             $query->serializedArguments[$key] = $serializer->serialize($argument);

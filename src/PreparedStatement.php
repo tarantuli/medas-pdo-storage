@@ -6,7 +6,7 @@ namespace Medas\PdoStorage;
 
 // A statement prepared once and executed for every query with the same SQL, so the
 // database parses and plans it once. Each execution is read through its own Statement.
-// Rows are often read after other queries have run, so before the statement runs again
+// Rows are often read after other queries have run, so before the statement runs again,
 // the reader of the previous execution takes over its unread rows and keeps its result.
 class PreparedStatement
 {
