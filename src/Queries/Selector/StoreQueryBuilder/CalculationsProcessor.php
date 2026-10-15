@@ -104,6 +104,7 @@ readonly class CalculationsProcessor
                 RowCount::class => $this->processRowCount($job),
                 Literal::class => $this->processLiteral($job, $calculation),
                 OrIs::class => $this->processOrIs($job, $calculation),
+                Property::class => $this->processProperty($job, $calculation),
                 default => throw new UnhandledCalculationType($calculation),
             };
         }
@@ -166,6 +167,42 @@ readonly class CalculationsProcessor
         }
     }
 
+    private function processRowCount(Job $job): void
+    {
+        $job->currentCalculation .= '*';
+    }
+
+    private function processLiteral(Job $job, Literal $calculation): void
+    {
+        $job->currentCalculation .= $this->addValue($calculation->literal, $job);
+    }
+
+    private function processOrIs(Job $job, OrIs $calculation): void
+    {
+        $job->currentCalculation .= '(';
+        $isFirstCalculation = true;
+
+        foreach ($calculation->conditions as $condition) {
+            if (!$isFirstCalculation) {
+                $job->currentCalculation .= ' or ';
+            }
+
+            $this->processCalculation($job, $condition);
+
+            $isFirstCalculation = false;
+        }
+
+        $job->currentCalculation .= ')';
+    }
+
+    /**
+     * A bare property, e.g. the argument of an aggregate such as Max
+     */
+    private function processProperty(Job $job, Property $calculation): void
+    {
+        $job->currentCalculation .= $this->operantToQuery($job, $calculation);
+    }
+
     private function operantToQuery(Job $job, Operant $operant, bool|null &$addOrIsNull = null): string
     {
         if ($operant instanceof Property) {
@@ -218,16 +255,6 @@ readonly class CalculationsProcessor
         throw new UnhandledOperantType($operant);
     }
 
-    private function processRowCount(Job $job): void
-    {
-        $job->currentCalculation .= '*';
-    }
-
-    private function processLiteral(Job $job, Literal $calculation): void
-    {
-        $job->currentCalculation .= $this->addValue($calculation->literal, $job);
-    }
-
     private function addValue(mixed &$value, Job $job): string
     {
         $value = $this->valueSerializer->serialize($value);
@@ -235,23 +262,5 @@ readonly class CalculationsProcessor
         $job->foundConstants[$name] = $value;
 
         return ':' . $name;
-    }
-
-    private function processOrIs(Job $job, OrIs $calculation): void
-    {
-        $job->currentCalculation .= '(';
-        $isFirstCalculation = true;
-
-        foreach ($calculation->conditions as $condition) {
-            if (!$isFirstCalculation) {
-                $job->currentCalculation .= ' or ';
-            }
-
-            $this->processCalculation($job, $condition);
-
-            $isFirstCalculation = false;
-        }
-
-        $job->currentCalculation .= ')';
     }
 }

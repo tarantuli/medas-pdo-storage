@@ -44,7 +44,7 @@ readonly class OutputValuesProcessor
                 $outputValue,
             ),
 
-            $outputValue instanceof PropertyValue => $outputValue->name,
+            $outputValue instanceof PropertyValue => $this->qualifiedProperty($job, $outputValue),
             default => throw new UnsupportedOutputValueType($outputValue),
         };
 
@@ -55,5 +55,15 @@ readonly class OutputValuesProcessor
         else {
             $job->outputValues[] = $result;
         }
+    }
+
+    /**
+     * With the store in front: a joined entity can have a column of the same name. The result keeps the bare name.
+     */
+    private function qualifiedProperty(Job $job, PropertyValue $outputValue): string
+    {
+        return $job->storeForProperty($outputValue->entity, $outputValue->name)
+            . '.'
+            . $job->driverHandler->quote($job->database, $outputValue->name);
     }
 }

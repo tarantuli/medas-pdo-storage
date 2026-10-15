@@ -54,13 +54,24 @@ readonly class StoreQueryBuilder
             $idProperty
         );
 
+        // The output values may name properties of joined entities, but the joins are only written after them
+        $this->relationsProcessor->registerStores($job, $definition->relations);
         $this->outputValuesProcessor->process($job, $definition->outputValues);
 
         if ($isCount) {
             $outputValues = 'count(*) as ' . $job->driverHandler->quote($database, 'count');
         }
+        elseif ($job->outputValues) {
+            $outputValues = implode(', ', $job->outputValues);
+        }
+
+        // A joined entity's columns would mix with the entity's own, and where names
+        // are the same (the id, the timestamps) the joined one's value would win.
+        elseif ($definition->relations) {
+            $outputValues = $this->ownColumns($database, $job, $quotedMainStore, $parentStores);
+        }
         else {
-            $outputValues = $job->outputValues ? implode(', ', $job->outputValues) : '*';
+            $outputValues = '*';
         }
 
         $job->query = sprintf('select %s from %s', $outputValues, $quotedMainStore);
@@ -131,6 +142,23 @@ readonly class StoreQueryBuilder
         }
 
         return $joins;
+    }
+
+    /** @param string[] $parentStores */
+    private function ownColumns(
+        Database              $database,
+        StoreQueryBuilder\Job $job,
+        string                $quotedMainStore,
+        array                 $parentStores
+    ): string
+    {
+        $columns = [$quotedMainStore . '.*'];
+
+        foreach ($parentStores as $parentStore) {
+            $columns[] = $job->driverHandler->quote($database, $parentStore) . '.*';
+        }
+
+        return implode(', ', $columns);
     }
 
     public function buildCountQuery(

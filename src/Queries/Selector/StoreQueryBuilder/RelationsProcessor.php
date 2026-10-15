@@ -24,21 +24,26 @@ readonly class RelationsProcessor
     {
     }
 
+    /**
+     * Makes the joined stores known before the joins are written, for the output values: they come first in the query
+     *
+     * @param Relation[] $relations
+     */
+    public function registerStores(Job $job, array $relations): void
+    {
+        foreach ($relations as $relation) {
+            if ($relation instanceof Join) {
+                $job->stores[$relation->targetEntity] = $this->targetStore($job, $relation);
+            }
+        }
+    }
+
     /** @param Relation[] $relations */
     public function process(Job $job, array $relations): void
     {
         foreach ($relations as $relation) {
             if ($relation instanceof Join) {
-                $targetEntity = $this->metaDataManager->get($relation->targetEntity)->entity;
-
-                /** @var Database $database */
-                $database = $this->storageManager->byName($targetEntity->storage);
-
-                $targetStore = $job->driverHandler->quote(
-                    $database,
-                    $targetEntity->store,
-                );
-
+                $targetStore = $this->targetStore($job, $relation);
                 $job->stores[$relation->targetEntity] = $targetStore;
 
                 $job->query .= ' join '
@@ -57,5 +62,15 @@ readonly class RelationsProcessor
                 throw new UnhandledRelationType($relation);
             }
         }
+    }
+
+    private function targetStore(Job $job, Join $relation): string
+    {
+        $targetEntity = $this->metaDataManager->get($relation->targetEntity)->entity;
+
+        /** @var Database $database */
+        $database = $this->storageManager->byName($targetEntity->storage);
+
+        return $job->driverHandler->quote($database, $targetEntity->store);
     }
 }
