@@ -105,24 +105,6 @@ class QueryExecutor implements ActionExecutor
         return $this->databaseControllers[$database->name] ??= dispatch(new DatabaseControllerRequest($database))->databaseController;
     }
 
-    // The database was replaced under the same name: its next statement asks for the new
-    // controller.
-    #[EventListener]
-    public function forgetController(DatabaseInitialized $event): void
-    {
-        $previous = $this->databaseControllers[$event->database->name] ?? null;
-
-        // Its prepared statements are dropped explicitly. Each one holds its connection,
-        // so the weak map's key would never be let go, and every replaced connection
-        // would stay open until the process ends ("Too many connections").
-        if ($previous !== null) {
-            $this->releasePreparedStatements($previous->pdo);
-            unset($this->preparedStatements[$previous->pdo]);
-        }
-
-        unset($this->databaseControllers[$event->database->name]);
-    }
-
     /**
      * Serializes with the driver's own serializer, taken from the controller that is already
      * in hand, and not by dispatching an event per argument: a statement has many arguments
@@ -142,18 +124,6 @@ class QueryExecutor implements ActionExecutor
     private function changesSchema(string $sql): bool
     {
         return (bool) preg_match('/^\s*(?:create|alter|drop)\b/i', $sql);
-    }
-
-    /**
-     * Finishes every cached statement of the connection that still has unread rows. Their
-     * readers keep the rows. SQLite refuses to drop or alter a table while a statement on
-     * the same connection is unfinished ("database table is locked").
-     */
-    private function releasePreparedStatements(\PDO $pdo): void
-    {
-        foreach ($this->preparedStatements[$pdo] ?? [] as $preparedStatement) {
-            $preparedStatement->release();
-        }
     }
 
     /**
@@ -182,6 +152,37 @@ class QueryExecutor implements ActionExecutor
         $this->preparedStatements[$pdo] = $statements;
 
         return $preparedStatement;
+    }
+
+    // The database was replaced under the same name: its next statement asks for the new
+    // controller.
+    #[EventListener]
+    public function forgetController(DatabaseInitialized $event): void
+    {
+        $previous = $this->databaseControllers[$event->database->name] ?? null;
+
+        // Its prepared statements are dropped explicitly. Each one holds its connection,
+        // so the weak map's key would never be let go, and every replaced connection
+        // would stay open until the process ends ("Too many connections").
+        if ($previous !== null) {
+            $this->releasePreparedStatements($previous->pdo);
+
+            unset($this->preparedStatements[$previous->pdo]);
+        }
+
+        unset($this->databaseControllers[$event->database->name]);
+    }
+
+    /**
+     * Finishes every cached statement of the connection that still has unread rows. Their
+     * readers keep the rows. SQLite refuses to drop or alter a table while a statement on
+     * the same connection is unfinished ("database table is locked").
+     */
+    private function releasePreparedStatements(\PDO $pdo): void
+    {
+        foreach ($this->preparedStatements[$pdo] ?? [] as $preparedStatement) {
+            $preparedStatement->release();
+        }
     }
 
     public function executeSet(ActionSet $actionSet): void

@@ -157,8 +157,7 @@ readonly class CalculationsProcessor
                 $this->processCalculation($job, $condition);
             }
         }
-
-        finally{
+        finally {
             if ($hadOuterStore) {
                 $job->stores[$calculation->referringEntity] = $outerStore;
             }

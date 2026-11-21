@@ -27,9 +27,10 @@ use Medas\StorageManager\Interfaces\{
 readonly class CollectionRecordFetcher implements CollectionRecordFetcherInterface
 {
     public function __construct(
+        private DefinitionQueryBuilder $definitionQueryBuilder,
+
         #[ConfigValue(TableNamingStrategy::class)]
         private NamingStrategy         $namingStrategy,
-        private DefinitionQueryBuilder $definitionQueryBuilder,
     )
     {
     }
