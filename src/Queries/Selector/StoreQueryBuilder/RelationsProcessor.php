@@ -9,7 +9,9 @@ use Medas\EntityManager\MetaDataManager;
 use Medas\EntityManager\Selector\{
     Exceptions\UnhandledRelationType,
     Relations\Join,
-    Relations\Relation
+    Relations\LeftJoin,
+    Relations\Relation,
+    Relations\RightJoin
 };
 use Medas\PdoStorage\Database;
 use Medas\StorageManager\StorageManager;
@@ -46,7 +48,7 @@ readonly class RelationsProcessor
                 $targetStore = $this->targetStore($job, $relation);
                 $job->stores[$relation->targetEntity] = $targetStore;
 
-                $job->query .= ' join '
+                $job->query .= $this->joinKeyword($relation)
                     . $targetStore
                     . ' on ('
                     . $job->stores[$job->mainEntity]
@@ -72,5 +74,16 @@ readonly class RelationsProcessor
         $database = $this->storageManager->byName($targetEntity->storage);
 
         return $job->driverHandler->quote($database, $targetEntity->store);
+    }
+
+    // A subclass of Join must not fall back to the inner join: it would silently drop rows the caller asked to keep
+    private function joinKeyword(Join $relation): string
+    {
+        return match ($relation::class) {
+            Join::class => ' join ',
+            LeftJoin::class => ' left join ',
+            RightJoin::class => ' right join ',
+            default => throw new UnhandledRelationType($relation),
+        };
     }
 }

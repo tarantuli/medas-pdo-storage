@@ -7,6 +7,8 @@ namespace Medas\PdoStorage\Queries\Selector\StoreQueryBuilder;
 use Medas\Core\Attributes\Service;
 use Medas\EntityManager\Selector\{
     Calculations\Calculation,
+    Calculations\Coalesce,
+    Calculations\Difference,
     Calculations\Literal,
     Calculations\RowCount,
     Conditions\OrIs,
@@ -28,17 +30,28 @@ use Medas\EntityManager\Selector\{
     Conditions\WhereNotIn,
     Conditions\WhereReferencedBy,
     Conditions\WhereStartsWith,
+    DerivedValues\CountOf,
+    DerivedValues\DerivedValue,
+    DerivedValues\RelatedRows,
+    DerivedValues\SumOf,
+    DerivedValues\ValueOf,
     Exceptions\UnhandledCalculationType,
     Exceptions\UnhandledOperantType,
+    Exceptions\UnhandledSortType,
     Operants\Argument,
     Operants\ArgumentArray,
     Operants\Operant,
     Operants\Property,
     Operants\Value,
     Operants\Values,
-    OutputValues\OutputValue
+    OutputValues\OutputValue,
+    OutputValues\SwitchCase,
+    Sorting\SortBy
 };
-use Medas\PdoStorage\Exceptions\CollectionContainsOperantIsNotAProperty;
+use Medas\PdoStorage\Exceptions\{
+    CollectionContainsOperantIsNotAProperty,
+    UntrustedValueUsedInSorting
+};
 use Medas\StorageManager\Shared\ValueSerializer;
 
 #[Service]
@@ -47,9 +60,53 @@ readonly class CalculationsProcessor
     public function __construct(
         private CollectionContainsCompiler $collectionContainsCompiler,
         private ReferencedByCompiler       $referencedByCompiler,
+        private RelatedRowsCompiler        $relatedRowsCompiler,
         private ValueSerializer            $valueSerializer,
     )
     {
+    }
+
+    /**
+     * The SQL of a calculation on its own, leaving the job's current calculation as it
+     * was: for a part written into another one, such as a derived value compared in a
+     * condition, or one selected or sorted on.
+     *
+     * @param Calculation[]|Calculation $calculations
+     */
+    public function expression(Job $job, array|Calculation $calculations): string
+    {
+        $outer = $job->currentCalculation;
+
+        $this->process($job, $calculations);
+
+        $expression = $job->currentCalculation;
+        $job->currentCalculation = $outer;
+
+        return $expression;
+    }
+
+    // One part of an "order by": a property, a trusted value, or a derived value's expression
+    public function sortPart(Job $job, SortBy $sort): string
+    {
+        $direction = ' ' . SortingProcessor::SORTING_DIRECTIONS[$sort->direction->name];
+
+        if ($sort->operant instanceof Property) {
+            return $this->operantToQuery($job, $sort->operant) . $direction;
+        }
+
+        if ($sort->operant instanceof Value) {
+            if (!$sort->operant->isTrusted) {
+                throw new UntrustedValueUsedInSorting($sort->operant);
+            }
+
+            return $sort->operant->value . $direction;
+        }
+
+        if ($sort->operant instanceof DerivedValue) {
+            return $this->operantToQuery($job, $sort->operant) . $direction;
+        }
+
+        throw new UnhandledSortType($sort);
     }
 
     /** @param Calculation[]|Calculation $calculations */
@@ -75,7 +132,12 @@ readonly class CalculationsProcessor
 
     private function processCalculation(Job $job, Calculation $calculation): void
     {
-        if ($calculation instanceof OutputValue) {
+        // Unlike the aggregates, a case expression is a value of the row itself, so it
+        // can be part of a condition or a derived value
+        if ($calculation instanceof SwitchCase) {
+            $this->processSwitchCase($job, $calculation);
+        }
+        elseif ($calculation instanceof OutputValue) {
             throw new UnhandledCalculationType($calculation);
         }
         else {
@@ -108,9 +170,40 @@ readonly class CalculationsProcessor
                 Literal::class => $this->processLiteral($job, $calculation),
                 OrIs::class => $this->processOrIs($job, $calculation),
                 Property::class => $this->processProperty($job, $calculation),
+
+                DerivedValue::class
+                    => $job->currentCalculation .= $this->operantToQuery($job, $calculation),
+
+                CountOf::class, SumOf::class, ValueOf::class
+                    => $this->processRelatedRows($job, $calculation),
+
+                Difference::class => $this->processDifference($job, $calculation),
+                Coalesce::class => $this->processCoalesce($job, $calculation),
                 default => throw new UnhandledCalculationType($calculation),
             };
         }
+    }
+
+    private function processSwitchCase(Job $job, SwitchCase $switchCase): void
+    {
+        $count = count($switchCase->cases);
+        $output = 'case';
+
+        for ($i = 0; $i < $count; $i += 2) {
+            if (array_key_exists($i + 1, $switchCase->cases)) {
+                // when X then Y
+                $output .= ' when '
+                    . $this->expression($job, $switchCase->cases[$i])
+                    . ' then '
+                    . $this->expression($job, $switchCase->cases[$i + 1]);
+            }
+            else {
+                // else Z
+                $output .= ' else ' . $this->expression($job, $switchCase->cases[$i]);
+            }
+        }
+
+        $job->currentCalculation .= $output . ' end';
     }
 
     private function processTruthy(Job $job, WhereIsTruthy $calculation): void
@@ -265,6 +358,11 @@ readonly class CalculationsProcessor
             return ':' . $placeholderName;
         }
 
+        // In parentheses, as it can be a case expression or a difference
+        if ($operant instanceof DerivedValue) {
+            return '(' . $this->expression($job, $operant->calculation) . ')';
+        }
+
         if ($operant instanceof ArgumentArray) {
             $job->foundArguments[$operant->name] = true;
             $job->variableSizedParameters[$operant->name] = true;
@@ -301,5 +399,59 @@ readonly class CalculationsProcessor
         $job->foundConstants[$name] = $value;
 
         return ':' . $name;
+    }
+
+    private function processRelatedRows(Job $job, RelatedRows $rows): void
+    {
+        $subJob = $this->relatedRowsCompiler->open($job, $rows);
+        $selected = match (true) {
+            $rows instanceof CountOf => 'count(*)',
+            $rows instanceof SumOf => 'sum(' . $this->expression($subJob, $rows->value) . ')',
+            $rows instanceof ValueOf => $this->expression($subJob, $rows->value),
+            default => throw new UnhandledCalculationType($rows),
+        };
+
+        $query = '(select ' . $selected . $subJob->query;
+
+        if ($rows->definition->conditions) {
+            $query .= ' and ' . $this->expression($subJob, $rows->definition->conditions);
+        }
+
+        // The order only decides which row is the first; a count or sum is the same in any order
+        if ($rows instanceof ValueOf) {
+            $parts = array_map(
+                fn(SortBy $sort) => $this->sortPart($subJob, $sort),
+                $rows->definition->sorts
+            );
+
+            if ($parts) {
+                $query .= ' order by ' . implode(', ', $parts);
+            }
+
+            $query .= ' limit 1';
+        }
+
+        $this->relatedRowsCompiler->close($job, $subJob);
+
+        $job->currentCalculation .= $query . ')';
+    }
+
+    private function processDifference(Job $job, Difference $calculation): void
+    {
+        $job->currentCalculation .= '('
+            . $this->expression($job, $calculation->minuend)
+            . ' - '
+            . $this->expression($job, $calculation->subtrahend)
+            . ')';
+    }
+
+    private function processCoalesce(Job $job, Coalesce $calculation): void
+    {
+        $parts = array_map(
+            fn(Calculation $part) => $this->expression($job, $part),
+            $calculation->calculations
+        );
+
+        $job->currentCalculation .= 'coalesce(' . implode(', ', $parts) . ')';
     }
 }

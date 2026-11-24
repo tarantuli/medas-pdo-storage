@@ -5,14 +5,7 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\Queries\Selector\StoreQueryBuilder;
 
 use Medas\Core\Attributes\Service;
-use Medas\EntityManager\Selector\{
-    Exceptions\UnhandledSortType,
-    Operants\Property,
-    Operants\Value,
-    Sorting\SortBy,
-    Sorting\SortDirection
-};
-use Medas\PdoStorage\Exceptions\UntrustedValueUsedInSorting;
+use Medas\EntityManager\Selector\Sorting\{SortBy, SortDirection};
 
 #[Service]
 readonly class SortingProcessor
@@ -22,36 +15,19 @@ readonly class SortingProcessor
         SortDirection::DESC->name => 'desc',
     ];
 
+    public function __construct(
+        private CalculationsProcessor $calculationsProcessor,
+    )
+    {
+    }
+
     /** @param SortBy[] $sorts */
     public function process(Job $job, array $sorts): void
     {
-        $parts = [];
-
-        foreach ($sorts as $sort) {
-            if ($sort instanceof SortBy && $sort->operant instanceof Property) {
-                $parts[] = $job->storeForProperty($sort->operant->entity, $sort->operant->name)
-                    . '.'
-                    . $job->driverHandler->quote($job->database, $sort->operant->name)
-                    . ' '
-                    . self::SORTING_DIRECTIONS[$sort->direction->name];
-
-                continue;
-            }
-
-            if ($sort instanceof SortBy && $sort->operant instanceof Value) {
-                if (!$sort->operant->isTrusted) {
-                    throw new UntrustedValueUsedInSorting($sort->operant);
-                }
-
-                $parts[] = $sort->operant->value
-                    . ' '
-                    . self::SORTING_DIRECTIONS[$sort->direction->name];
-
-                continue;
-            }
-
-            throw new UnhandledSortType($sort);
-        }
+        $parts = array_map(
+            fn(SortBy $sort) => $this->calculationsProcessor->sortPart($job, $sort),
+            $sorts
+        );
 
         if ($parts) {
             $job->query .= ' order by ' . implode(', ', $parts);

@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "91263a4f2e4074b613660a0d2e53817d",
+    "content-hash": "9ec614d8f10611074a663c9c32df9388",
     "packages": [
         {
             "name": "morphp/medas-cache",
-            "version": "v3.2.8",
+            "version": "v3.2.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tarantuli/medas-cache.git",
-                "reference": "f8c8583de17158df34f349d50bc5e050ab61fc4a"
+                "reference": "d12c6e77b64504f7940da882f634134fe8ed1e60"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tarantuli/medas-cache/zipball/f8c8583de17158df34f349d50bc5e050ab61fc4a",
-                "reference": "f8c8583de17158df34f349d50bc5e050ab61fc4a",
+                "url": "https://api.github.com/repos/tarantuli/medas-cache/zipball/d12c6e77b64504f7940da882f634134fe8ed1e60",
+                "reference": "d12c6e77b64504f7940da882f634134fe8ed1e60",
                 "shasum": ""
             },
             "require": {
@@ -47,16 +47,16 @@
                     "email": "patrick@morphp.nl"
                 }
             ],
-            "description": "Contains a base cache and a file system cache implementation",
+            "description": "Caches behind one interface: in memory, on the file system, in APCu and in Redis, plus decorators that index keys or refuse services",
             "keywords": [
                 "backend",
                 "storage"
             ],
             "support": {
-                "source": "https://github.com/tarantuli/medas-cache/tree/v3.2.8",
+                "source": "https://github.com/tarantuli/medas-cache/tree/v3.2.11",
                 "issues": "https://github.com/tarantuli/medas-cache/issues"
             },
-            "time": "2026-10-11T12:52:03+00:00"
+            "time": "2026-11-13T12:08:43+00:00"
         },
         {
             "name": "morphp/medas-console",
@@ -109,16 +109,16 @@
         },
         {
             "name": "morphp/medas-core",
-            "version": "v4.8.2",
+            "version": "v4.8.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tarantuli/medas-core.git",
-                "reference": "d16853cc669c2720b3528f0c0ef47fa5d1ea9f9a"
+                "reference": "59cc30d8de19b99a4d1be60c8a5ffc3d7ccb916c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tarantuli/medas-core/zipball/d16853cc669c2720b3528f0c0ef47fa5d1ea9f9a",
-                "reference": "d16853cc669c2720b3528f0c0ef47fa5d1ea9f9a",
+                "url": "https://api.github.com/repos/tarantuli/medas-core/zipball/59cc30d8de19b99a4d1be60c8a5ffc3d7ccb916c",
+                "reference": "59cc30d8de19b99a4d1be60c8a5ffc3d7ccb916c",
                 "shasum": ""
             },
             "require": {
@@ -151,23 +151,23 @@
                 "medas"
             ],
             "support": {
-                "source": "https://github.com/tarantuli/medas-core/tree/v4.8.2",
+                "source": "https://github.com/tarantuli/medas-core/tree/v4.8.5",
                 "issues": "https://github.com/tarantuli/medas-core/issues"
             },
-            "time": "2026-10-26T09:56:52+00:00"
+            "time": "2026-11-23T09:09:21+00:00"
         },
         {
             "name": "morphp/medas-entity-manager",
-            "version": "v3.14.1",
+            "version": "v3.17.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tarantuli/medas-entity-manager.git",
-                "reference": "92769088370ca2a4260b1ff6875874c48ef954f9"
+                "reference": "5d50087ce0a480cc718b41b72a7b06c4e28367ce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tarantuli/medas-entity-manager/zipball/92769088370ca2a4260b1ff6875874c48ef954f9",
-                "reference": "92769088370ca2a4260b1ff6875874c48ef954f9",
+                "url": "https://api.github.com/repos/tarantuli/medas-entity-manager/zipball/5d50087ce0a480cc718b41b72a7b06c4e28367ce",
+                "reference": "5d50087ce0a480cc718b41b72a7b06c4e28367ce",
                 "shasum": ""
             },
             "require": {
@@ -207,10 +207,10 @@
                 "entities"
             ],
             "support": {
-                "source": "https://github.com/tarantuli/medas-entity-manager/tree/v3.14.1",
+                "source": "https://github.com/tarantuli/medas-entity-manager/tree/v3.17.0",
                 "issues": "https://github.com/tarantuli/medas-entity-manager/issues"
             },
-            "time": "2026-10-26T10:02:30+00:00"
+            "time": "2026-11-24T13:27:50+00:00"
         },
         {
             "name": "morphp/medas-file-system",
@@ -316,16 +316,16 @@
         },
         {
             "name": "morphp/medas-object-to-array-serializer",
-            "version": "v3.2.5",
+            "version": "v3.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tarantuli/medas-object-to-array-serializer.git",
-                "reference": "384ffb61882536d87fef327e6fb32484b266d9d0"
+                "reference": "a3428c40315e1146b02d79b2311f8fb999b8aadd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tarantuli/medas-object-to-array-serializer/zipball/384ffb61882536d87fef327e6fb32484b266d9d0",
-                "reference": "384ffb61882536d87fef327e6fb32484b266d9d0",
+                "url": "https://api.github.com/repos/tarantuli/medas-object-to-array-serializer/zipball/a3428c40315e1146b02d79b2311f8fb999b8aadd",
+                "reference": "a3428c40315e1146b02d79b2311f8fb999b8aadd",
                 "shasum": ""
             },
             "require": {
@@ -361,29 +361,29 @@
                 "data manipulation"
             ],
             "support": {
-                "source": "https://github.com/tarantuli/medas-object-to-array-serializer/tree/v3.2.5",
+                "source": "https://github.com/tarantuli/medas-object-to-array-serializer/tree/v3.3.0",
                 "issues": "https://github.com/tarantuli/medas-object-to-array-serializer/issues"
             },
-            "time": "2026-09-24T13:46:27+00:00"
+            "time": "2026-11-02T09:32:40+00:00"
         },
         {
             "name": "morphp/medas-php-class-analysis",
-            "version": "v3.1.5",
+            "version": "v3.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tarantuli/medas-php-class-analysis.git",
-                "reference": "a8751126d9f17a381b67e75a7928b673adb9dcbe"
+                "reference": "756b711391afa3b007e245c352c01059d5a73f2f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tarantuli/medas-php-class-analysis/zipball/a8751126d9f17a381b67e75a7928b673adb9dcbe",
-                "reference": "a8751126d9f17a381b67e75a7928b673adb9dcbe",
+                "url": "https://api.github.com/repos/tarantuli/medas-php-class-analysis/zipball/756b711391afa3b007e245c352c01059d5a73f2f",
+                "reference": "756b711391afa3b007e245c352c01059d5a73f2f",
                 "shasum": ""
             },
             "require": {
                 "ext-mbstring": "*",
                 "morphp/medas-core": "^4",
-                "morphp/medas-php-tokenizer": "^3",
+                "morphp/medas-php-tokenizer": "^4.1",
                 "php": "^8.4"
             },
             "require-dev": {
@@ -413,23 +413,23 @@
                 "backend"
             ],
             "support": {
-                "source": "https://github.com/tarantuli/medas-php-class-analysis/tree/v3.1.5",
+                "source": "https://github.com/tarantuli/medas-php-class-analysis/tree/v3.2.2",
                 "issues": "https://github.com/tarantuli/medas-php-class-analysis/issues"
             },
-            "time": "2026-10-22T07:39:07+00:00"
+            "time": "2026-11-21T13:35:15+00:00"
         },
         {
             "name": "morphp/medas-php-tokenizer",
-            "version": "v3.1.7",
+            "version": "v4.1.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tarantuli/medas-php-tokenizer.git",
-                "reference": "e284cbc96b0ec13633ddb28210963644731341ad"
+                "reference": "8fc9755b1fb62fe95449067e1e4903079b637b50"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tarantuli/medas-php-tokenizer/zipball/e284cbc96b0ec13633ddb28210963644731341ad",
-                "reference": "e284cbc96b0ec13633ddb28210963644731341ad",
+                "url": "https://api.github.com/repos/tarantuli/medas-php-tokenizer/zipball/8fc9755b1fb62fe95449067e1e4903079b637b50",
+                "reference": "8fc9755b1fb62fe95449067e1e4903079b637b50",
                 "shasum": ""
             },
             "require": {
@@ -465,30 +465,30 @@
                 "backend"
             ],
             "support": {
-                "source": "https://github.com/tarantuli/medas-php-tokenizer/tree/v3.1.7",
+                "source": "https://github.com/tarantuli/medas-php-tokenizer/tree/v4.1.11",
                 "issues": "https://github.com/tarantuli/medas-php-tokenizer/issues"
             },
-            "time": "2026-10-22T07:34:55+00:00"
+            "time": "2026-11-21T13:34:01+00:00"
         },
         {
             "name": "morphp/medas-storage-manager",
-            "version": "v4.5.9",
+            "version": "v4.5.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tarantuli/medas-storage-manager.git",
-                "reference": "544c702bb862f26097c4e419d98964991ce6afaf"
+                "reference": "ddd7a76f0649565118dcd02fe101541738693b2b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tarantuli/medas-storage-manager/zipball/544c702bb862f26097c4e419d98964991ce6afaf",
-                "reference": "544c702bb862f26097c4e419d98964991ce6afaf",
+                "url": "https://api.github.com/repos/tarantuli/medas-storage-manager/zipball/ddd7a76f0649565118dcd02fe101541738693b2b",
+                "reference": "ddd7a76f0649565118dcd02fe101541738693b2b",
                 "shasum": ""
             },
             "require": {
                 "morphp/medas-cache": "^3",
                 "morphp/medas-console": "^4",
                 "morphp/medas-core": "^4",
-                "morphp/medas-entity-manager": "^3",
+                "morphp/medas-entity-manager": "^3.17",
                 "morphp/medas-object-to-array-serializer": "^3",
                 "php": "^8.4"
             },
@@ -522,10 +522,10 @@
                 "storage"
             ],
             "support": {
-                "source": "https://github.com/tarantuli/medas-storage-manager/tree/v4.5.9",
+                "source": "https://github.com/tarantuli/medas-storage-manager/tree/v4.5.12",
                 "issues": "https://github.com/tarantuli/medas-storage-manager/issues"
             },
-            "time": "2026-10-26T10:03:18+00:00"
+            "time": "2026-11-24T13:34:07+00:00"
         },
         {
             "name": "psr/event-dispatcher",
@@ -703,16 +703,16 @@
         },
         {
             "name": "morphp/medas-config-manager",
-            "version": "v3.2.6",
+            "version": "v3.2.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tarantuli/medas-config-manager.git",
-                "reference": "73a7209610e459c1f7cbd4ad7dbf202ea4d487dd"
+                "reference": "de087eeda9a68a70b3b6379ccf7a79263d85f22e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tarantuli/medas-config-manager/zipball/73a7209610e459c1f7cbd4ad7dbf202ea4d487dd",
-                "reference": "73a7209610e459c1f7cbd4ad7dbf202ea4d487dd",
+                "url": "https://api.github.com/repos/tarantuli/medas-config-manager/zipball/de087eeda9a68a70b3b6379ccf7a79263d85f22e",
+                "reference": "de087eeda9a68a70b3b6379ccf7a79263d85f22e",
                 "shasum": ""
             },
             "require": {
@@ -749,10 +749,10 @@
                 "configuration"
             ],
             "support": {
-                "source": "https://github.com/tarantuli/medas-config-manager/tree/v3.2.6",
+                "source": "https://github.com/tarantuli/medas-config-manager/tree/v3.2.7",
                 "issues": "https://github.com/tarantuli/medas-config-manager/issues"
             },
-            "time": "2026-08-13T08:29:16+00:00"
+            "time": "2026-11-02T16:23:08+00:00"
         },
         {
             "name": "morphp/medas-config-options",
@@ -811,16 +811,16 @@
         },
         {
             "name": "morphp/medas-object-instantiator",
-            "version": "v4.0.12",
+            "version": "v4.0.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tarantuli/medas-object-instantiator.git",
-                "reference": "a77d90845f6d11d16ea11297dceb616e650ae018"
+                "reference": "75ff840e5d5ade580767c3c61e103fd1565ac0ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tarantuli/medas-object-instantiator/zipball/a77d90845f6d11d16ea11297dceb616e650ae018",
-                "reference": "a77d90845f6d11d16ea11297dceb616e650ae018",
+                "url": "https://api.github.com/repos/tarantuli/medas-object-instantiator/zipball/75ff840e5d5ade580767c3c61e103fd1565ac0ab",
+                "reference": "75ff840e5d5ade580767c3c61e103fd1565ac0ab",
                 "shasum": ""
             },
             "require": {
@@ -853,10 +853,10 @@
                 "services"
             ],
             "support": {
-                "source": "https://github.com/tarantuli/medas-object-instantiator/tree/v4.0.12",
+                "source": "https://github.com/tarantuli/medas-object-instantiator/tree/v4.0.14",
                 "issues": "https://github.com/tarantuli/medas-object-instantiator/issues"
             },
-            "time": "2026-10-12T12:20:05+00:00"
+            "time": "2026-11-12T15:53:17+00:00"
         },
         {
             "name": "morphp/medas-ramsey-uuid-bridge",
@@ -912,16 +912,16 @@
         },
         {
             "name": "morphp/medas-service-manager",
-            "version": "v4.0.23",
+            "version": "v4.0.27",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tarantuli/medas-service-manager.git",
-                "reference": "b67cfd30bd23a5d9f2cfa4529d8a5fe9664d0d7a"
+                "reference": "d66c0cf0c3d46a10fa9c9e815c7a94de72b5a113"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tarantuli/medas-service-manager/zipball/b67cfd30bd23a5d9f2cfa4529d8a5fe9664d0d7a",
-                "reference": "b67cfd30bd23a5d9f2cfa4529d8a5fe9664d0d7a",
+                "url": "https://api.github.com/repos/tarantuli/medas-service-manager/zipball/d66c0cf0c3d46a10fa9c9e815c7a94de72b5a113",
+                "reference": "d66c0cf0c3d46a10fa9c9e815c7a94de72b5a113",
                 "shasum": ""
             },
             "require": {
@@ -931,6 +931,7 @@
                 "php": "^8.4"
             },
             "require-dev": {
+                "morphp/medas-object-instantiator": "^4",
                 "phpunit/phpunit": "^10"
             },
             "type": "library",
@@ -955,10 +956,10 @@
                 "services"
             ],
             "support": {
-                "source": "https://github.com/tarantuli/medas-service-manager/tree/v4.0.23",
+                "source": "https://github.com/tarantuli/medas-service-manager/tree/v4.0.27",
                 "issues": "https://github.com/tarantuli/medas-service-manager/issues"
             },
-            "time": "2026-10-16T09:00:51+00:00"
+            "time": "2026-11-23T09:11:48+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -1593,16 +1594,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "10.5.66",
+            "version": "10.5.67",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "747c9889613d0b3ffa08b74272e50ed3b8fa6d72"
+                "reference": "1f3e67dd433817bddfc64afab63977cc4b011374"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/747c9889613d0b3ffa08b74272e50ed3b8fa6d72",
-                "reference": "747c9889613d0b3ffa08b74272e50ed3b8fa6d72",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/1f3e67dd433817bddfc64afab63977cc4b011374",
+                "reference": "1f3e67dd433817bddfc64afab63977cc4b011374",
                 "shasum": ""
             },
             "require": {
@@ -1674,7 +1675,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.5.66"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.5.67"
             },
             "funding": [
                 {
@@ -1682,7 +1683,7 @@
                     "type": "other"
                 }
             ],
-            "time": "2026-10-05T05:46:26+00:00"
+            "time": "2026-11-13T11:07:03+00:00"
         },
         {
             "name": "ramsey/collection",
@@ -1762,16 +1763,16 @@
         },
         {
             "name": "ramsey/uuid",
-            "version": "4.9.4",
+            "version": "4.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ramsey/uuid.git",
-                "reference": "75d73f48d02797c2c285a7e9f348fadc0102ffe2"
+                "reference": "f9aa3efc8015fcbc013d84d699583b268ccb593a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ramsey/uuid/zipball/75d73f48d02797c2c285a7e9f348fadc0102ffe2",
-                "reference": "75d73f48d02797c2c285a7e9f348fadc0102ffe2",
+                "url": "https://api.github.com/repos/ramsey/uuid/zipball/f9aa3efc8015fcbc013d84d699583b268ccb593a",
+                "reference": "f9aa3efc8015fcbc013d84d699583b268ccb593a",
                 "shasum": ""
             },
             "require": {
@@ -1783,23 +1784,22 @@
                 "rhumsaa/uuid": "self.version"
             },
             "require-dev": {
-                "captainhook/captainhook": "^5.25",
-                "captainhook/plugin-composer": "^5.3",
-                "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
-                "ergebnis/composer-normalize": "^2.47",
-                "mockery/mockery": "^1.6",
-                "paragonie/random-lib": "^2",
-                "php-mock/php-mock": "^2.6",
-                "php-mock/php-mock-mockery": "^1.5",
+                "captainhook/captainhook": "^5.29.3",
+                "captainhook/plugin-composer": "^5.3.3",
+                "dealerdirect/phpcodesniffer-composer-installer": "^1.2.1",
+                "mockery/mockery": "^1.6.15",
+                "paragonie/random-lib": "^2.0.3",
+                "php-mock/php-mock": "^2.7.0",
+                "php-mock/php-mock-mockery": "^1.5.0",
                 "php-parallel-lint/php-parallel-lint": "^1.4.0",
                 "phpbench/phpbench": "^1.2.14",
-                "phpstan/extension-installer": "^1.4",
-                "phpstan/phpstan": "^2.1",
-                "phpstan/phpstan-mockery": "^2.0",
-                "phpstan/phpstan-phpunit": "^2.0",
-                "phpunit/phpunit": "^9.6",
-                "slevomat/coding-standard": "^8.18",
-                "squizlabs/php_codesniffer": "^3.13"
+                "phpstan/extension-installer": "^1.4.3",
+                "phpstan/phpstan": "^2.3.5",
+                "phpstan/phpstan-mockery": "^2.0.0",
+                "phpstan/phpstan-phpunit": "^2.1.2",
+                "phpunit/phpunit": "^9.6.39",
+                "slevomat/coding-standard": "^8.31.3",
+                "squizlabs/php_codesniffer": "^4.0.4"
             },
             "suggest": {
                 "ext-bcmath": "Enables faster math with arbitrary-precision integers using BCMath.",
@@ -1834,9 +1834,9 @@
             ],
             "support": {
                 "issues": "https://github.com/ramsey/uuid/issues",
-                "source": "https://github.com/ramsey/uuid/tree/4.9.4"
+                "source": "https://github.com/ramsey/uuid/tree/4.10.0"
             },
-            "time": "2026-09-16T11:39:30+00:00"
+            "time": "2026-11-14T23:23:20+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -2793,16 +2793,16 @@
         },
         {
             "name": "symfony/deprecation-contracts",
-            "version": "v3.7.1",
+            "version": "v3.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/deprecation-contracts.git",
-                "reference": "f3202fa1b5097b0af062dc978b32ecf63404e31d"
+                "reference": "feb1edf4e546af3b85c5caebe8359a20db230ca3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/f3202fa1b5097b0af062dc978b32ecf63404e31d",
-                "reference": "f3202fa1b5097b0af062dc978b32ecf63404e31d",
+                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/feb1edf4e546af3b85c5caebe8359a20db230ca3",
+                "reference": "feb1edf4e546af3b85c5caebe8359a20db230ca3",
                 "shasum": ""
             },
             "require": {
@@ -2815,7 +2815,7 @@
                     "name": "symfony/contracts"
                 },
                 "branch-alias": {
-                    "dev-main": "3.7-dev"
+                    "dev-main": "3.8-dev"
                 }
             },
             "autoload": {
@@ -2840,7 +2840,7 @@
             "description": "A generic function and convention to trigger deprecation notices",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.7.1"
+                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.8.1"
             },
             "funding": [
                 {
@@ -2860,7 +2860,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-06-05T06:23:12+00:00"
+            "time": "2026-09-16T14:15:10+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -2947,16 +2947,16 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.43.0",
+            "version": "v1.43.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "4d5d331bf731e0aedbc6b2f5e61135b7b7996a72"
+                "reference": "122889ed24dc000165bcbfd77ec412f15cbdfc6a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/4d5d331bf731e0aedbc6b2f5e61135b7b7996a72",
-                "reference": "4d5d331bf731e0aedbc6b2f5e61135b7b7996a72",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/122889ed24dc000165bcbfd77ec412f15cbdfc6a",
+                "reference": "122889ed24dc000165bcbfd77ec412f15cbdfc6a",
                 "shasum": ""
             },
             "require": {
@@ -3008,7 +3008,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.43.0"
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.43.3"
             },
             "funding": [
                 {
@@ -3028,7 +3028,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-09-24T15:19:04+00:00"
+            "time": "2026-10-28T09:35:49+00:00"
         },
         {
             "name": "symfony/polyfill-php80",
@@ -3116,16 +3116,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v7.4.21",
+            "version": "v7.4.23",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "044907929c7999814378be22da34722c7a86bad4"
+                "reference": "1e601207ffe627a2e621faa9d661f1d32dcf1cec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/044907929c7999814378be22da34722c7a86bad4",
-                "reference": "044907929c7999814378be22da34722c7a86bad4",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/1e601207ffe627a2e621faa9d661f1d32dcf1cec",
+                "reference": "1e601207ffe627a2e621faa9d661f1d32dcf1cec",
                 "shasum": ""
             },
             "require": {
@@ -3168,7 +3168,7 @@
             "description": "Loads and dumps YAML files",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/yaml/tree/v7.4.21"
+                "source": "https://github.com/symfony/yaml/tree/v7.4.23"
             },
             "funding": [
                 {
@@ -3188,7 +3188,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-10-12T12:34:30+00:00"
+            "time": "2026-11-04T08:27:22+00:00"
         },
         {
             "name": "theseer/tokenizer",
@@ -3242,16 +3242,16 @@
         },
         {
             "name": "vlucas/phpdotenv",
-            "version": "v5.8.0",
+            "version": "v5.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpdotenv/phpdotenv.git",
-                "reference": "96149103e62ac67e915f6d2ef59b72dee2e011e0"
+                "reference": "ba37876e98122ca15151247ce1187d20ee8bf4e0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpdotenv/phpdotenv/zipball/96149103e62ac67e915f6d2ef59b72dee2e011e0",
-                "reference": "96149103e62ac67e915f6d2ef59b72dee2e011e0",
+                "url": "https://api.github.com/repos/phpdotenv/phpdotenv/zipball/ba37876e98122ca15151247ce1187d20ee8bf4e0",
+                "reference": "ba37876e98122ca15151247ce1187d20ee8bf4e0",
                 "shasum": ""
             },
             "require": {
@@ -3310,7 +3310,7 @@
             ],
             "support": {
                 "issues": "https://github.com/phpdotenv/phpdotenv/issues",
-                "source": "https://github.com/phpdotenv/phpdotenv/tree/v5.8.0"
+                "source": "https://github.com/phpdotenv/phpdotenv/tree/v5.8.1"
             },
             "funding": [
                 {
@@ -3322,7 +3322,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-10-25T16:26:19+00:00"
+            "time": "2026-11-23T00:53:11+00:00"
         }
     ],
     "aliases": [],

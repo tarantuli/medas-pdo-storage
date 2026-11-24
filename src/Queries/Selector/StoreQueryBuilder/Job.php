@@ -20,6 +20,9 @@ class Job
     public array $aliases = [];
     public array $propertyStores = [];
 
+    // How many related-rows subqueries the query has so far, so that each gets an alias of its own
+    public int $subqueryCount = 0;
+
     public function __construct(
         public Database        $database,
         public DriverHandler   $driverHandler,

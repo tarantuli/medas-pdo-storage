@@ -6,7 +6,11 @@ namespace Medas\PdoStorage\Queries\Selector;
 
 use Medas\Core\Attributes\Service;
 use Medas\EntityManager\Selector\Definition;
-use Medas\PdoStorage\{Database, Events\DatabaseControllerRequest};
+use Medas\PdoStorage\{
+    Database,
+    Events\DatabaseControllerRequest,
+    Exceptions\DerivedValuesWithOutputValues
+};
 
 #[Service]
 readonly class StoreQueryBuilder
@@ -58,6 +62,10 @@ readonly class StoreQueryBuilder
         $this->relationsProcessor->registerStores($job, $definition->relations);
         $this->outputValuesProcessor->process($job, $definition->outputValues);
 
+        if ($job->outputValues && $definition->derivedValues) {
+            throw new DerivedValuesWithOutputValues($entityName);
+        }
+
         if ($isCount) {
             $outputValues = 'count(*) as ' . $job->driverHandler->quote($database, 'count');
         }
@@ -67,8 +75,10 @@ readonly class StoreQueryBuilder
 
         // A joined entity's columns would mix with the entity's own, and where names
         // are the same (the id, the timestamps), the joined one's value would win.
-        elseif ($definition->relations) {
-            $outputValues = $this->ownColumns($database, $job, $quotedMainStore, $parentStores);
+        // Derived values go beside the entity's own columns, under their own names.
+        elseif ($definition->relations || $definition->derivedValues) {
+            $outputValues = $this->ownColumns($database, $job, $quotedMainStore, $parentStores)
+                . $this->derivedColumns($database, $job, $definition);
         }
         else {
             $outputValues = '*';
@@ -86,7 +96,12 @@ readonly class StoreQueryBuilder
         }
 
         $this->groupingProcessor->process($job, $definition->groupings);
-        $this->sortingProcessor->process($job, $definition->sorts);
+
+        // The order does not change a count, and a sort on a derived value would have it
+        // worked out for every row for nothing
+        if (!$isCount) {
+            $this->sortingProcessor->process($job, $definition->sorts);
+        }
 
         $usedParameters = $this->parametersProcessor->process($job, $definition->parameters);
 
@@ -159,6 +174,22 @@ readonly class StoreQueryBuilder
         }
 
         return implode(', ', $columns);
+    }
+
+    // ", <expression> as <name>" per derived value. In a condition or a sort the expression is
+    // written again, not the name: neither the "where" nor the count query can use it.
+    private function derivedColumns(Database $database, StoreQueryBuilder\Job $job, Definition $definition): string
+    {
+        $columns = '';
+
+        foreach ($definition->derivedValues as $derivedValue) {
+            $columns .= ', '
+                . $this->calculationsProcessor->expression($job, $derivedValue->calculation)
+                . ' as '
+                . $job->driverHandler->quote($database, $derivedValue->name);
+        }
+
+        return $columns;
     }
 
     public function buildCountQuery(
