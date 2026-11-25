@@ -6,6 +6,7 @@ namespace Medas\PdoStorage\Queries\Selector\StoreQueryBuilder;
 
 use Medas\Core\Attributes\Service;
 use Medas\EntityManager\Selector\{
+    Calculations\Addition,
     Calculations\Calculation,
     Calculations\Coalesce,
     Calculations\Difference,
@@ -177,6 +178,7 @@ readonly class CalculationsProcessor
                 CountOf::class, SumOf::class, ValueOf::class
                     => $this->processRelatedRows($job, $calculation),
 
+                Addition::class => $this->processAddition($job, $calculation),
                 Difference::class => $this->processDifference($job, $calculation),
                 Coalesce::class => $this->processCoalesce($job, $calculation),
                 default => throw new UnhandledCalculationType($calculation),
@@ -434,6 +436,16 @@ readonly class CalculationsProcessor
         $this->relatedRowsCompiler->close($job, $subJob);
 
         $job->currentCalculation .= $query . ')';
+    }
+
+    private function processAddition(Job $job, Addition $calculation): void
+    {
+        $terms = array_map(
+            fn(Calculation $term) => $this->expression($job, $term),
+            $calculation->terms
+        );
+
+        $job->currentCalculation .= '(' . implode(' + ', $terms) . ')';
     }
 
     private function processDifference(Job $job, Difference $calculation): void

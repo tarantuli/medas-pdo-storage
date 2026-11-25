@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Medas\PdoStorage\Queries\Selector\StoreQueryBuilder;
 
-use Medas\Core\Attributes\Service;
+use Medas\Core\{Attributes\Service, Types\Collection};
+use Medas\EntityManager\MetaData;
 use Medas\EntityManager\MetaDataManager;
-use Medas\EntityManager\Selector\{Definition, DerivedValues\RelatedRows};
+use Medas\EntityManager\Selector\{Definition, DerivedValues\RelatedRows, Operants\Property};
 use Medas\PdoStorage\Exceptions\{RelatedRowsInOtherStorage, UnsupportedInRelatedRows};
 use Medas\StorageManager\StorageManager;
 
@@ -26,8 +27,9 @@ readonly class RelatedRowsCompiler
     private const string ALIAS_SUFFIX = '__related';
 
     public function __construct(
-        private MetaDataManager $metaDataManager,
-        private StorageManager  $storageManager,
+        private CollectionContainsCompiler $collectionContainsCompiler,
+        private MetaDataManager            $metaDataManager,
+        private StorageManager             $storageManager,
     )
     {
     }
@@ -62,11 +64,7 @@ readonly class RelatedRowsCompiler
             . ' as '
             . $alias
             . ' where '
-            . $alias
-            . '.'
-            . $quote($rows->referringProperty)
-            . ' = '
-            . $this->outerColumn($job, $rows);
+            . $this->correlation($subJob, $metaData, $rows, $this->outerColumn($job, $rows));
 
         return $subJob;
     }
@@ -89,6 +87,25 @@ readonly class RelatedRowsCompiler
                 throw new UnsupportedInRelatedRows($definition->entity, $what);
             }
         }
+    }
+
+    // A related row refers to the selected row through its own column, or, through a
+    // collection property, by holding it in that property's join table
+    private function correlation(Job $subJob, MetaData $metaData, RelatedRows $rows, string $outerColumn): string
+    {
+        if ($metaData->property($rows->referringProperty)->type instanceof Collection) {
+            return $this->collectionContainsCompiler->compile(
+                $subJob,
+                Property::c($rows->referringProperty),
+                $outerColumn
+            );
+        }
+
+        return $subJob->stores[$subJob->mainEntity]
+            . '.'
+            . $subJob->driverHandler->quote($subJob->database, $rows->referringProperty)
+            . ' = '
+            . $outerColumn;
     }
 
     private function outerColumn(Job $job, RelatedRows $rows): string

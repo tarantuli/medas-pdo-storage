@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Medas\PdoStorageTest\Functional;
 
 use Medas\EntityManager\Selector\{
+    Calculations\Addition,
     Conditions\OrIs,
     Conditions\WhereIs,
     Conditions\WhereIsAtLeast,
@@ -132,6 +133,23 @@ class CalculationsProcessorTest extends TestCase
         );
 
         self::assertEquals(['now' => true], $job->foundArguments);
+    }
+
+    // A value of the row, in parentheses, so a derived value can be compared or sorted on
+    public function testAddition(): void
+    {
+        $job = $this->createJob();
+        $processor = service(CalculationsProcessor::class);
+
+        $processor->process(
+            $job,
+            Addition::c(Property::c('adults'), Property::c('children'), Property::c('pets'))
+        );
+
+        self::assertEquals(
+            '(entities.`adults` + entities.`children` + entities.`pets`)',
+            $job->currentCalculation
+        );
     }
 
     private function createJob(): Job
