@@ -5,7 +5,14 @@ declare(strict_types=1);
 namespace Medas\PdoStorage\Queries\Selector;
 
 use Medas\Core\{Attributes\Service, Interfaces\NotCacheable};
-use Medas\EntityManager\{MetaData, MetaDataManager, Selector\Selector};
+use Medas\EntityManager\{
+    Exceptions\GroupingsThroughRepository,
+    Exceptions\OutputValuesThroughRepository,
+    MetaData,
+    MetaDataManager,
+    Selector\Definition,
+    Selector\Selector
+};
 use Medas\PdoStorage\{Database, Exceptions\StorageIsNotDatabase, Queries\QuerySet};
 use Medas\StorageManager\Interfaces\Builders\SelectorActionBuilder;
 use Medas\StorageManager\StorageManager;
@@ -53,6 +60,9 @@ readonly class SelectorQueryBuilder implements SelectorActionBuilder
     private function buildParameterizedQuery(Selector $selector, bool $doCount): ParameterizedQuery
     {
         $definition = $selector->definition();
+
+        $this->refuseRowsThatAreNotEntities($selector, $definition);
+
         $metaData = $this->metaDataManager->get($selector->entity());
         $database = $this->storageManager->byName($metaData->entity->storage);
 
@@ -72,6 +82,23 @@ readonly class SelectorQueryBuilder implements SelectorActionBuilder
             $propertyStores,
             $metaData->idProperty->name
         );
+    }
+
+    // This builds the queries of Repository::fetch() and fetchCount(), where every row becomes an
+    // entity and is cached as its record, and a count is read from the first row. Output values
+    // and groupings are for a store-level query (DefinitionQueryBuilder), which hands back its
+    // rows as they are. Checked here rather than in the Repository, as the definition is built
+    // here anyway and the query is cached per selector class. Derived values pass: they are
+    // selected beside the entity's own columns.
+    private function refuseRowsThatAreNotEntities(Selector $selector, Definition $definition): void
+    {
+        if ($definition->outputValues) {
+            throw new OutputValuesThroughRepository($selector->entity());
+        }
+
+        if ($definition->groupings) {
+            throw new GroupingsThroughRepository($selector->entity());
+        }
     }
 
     /**

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9ec614d8f10611074a663c9c32df9388",
+    "content-hash": "17155189f77d6ead914282abb318dfc8",
     "packages": [
         {
             "name": "morphp/medas-cache",
@@ -158,16 +158,16 @@
         },
         {
             "name": "morphp/medas-entity-manager",
-            "version": "v3.17.0",
+            "version": "v3.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tarantuli/medas-entity-manager.git",
-                "reference": "5d50087ce0a480cc718b41b72a7b06c4e28367ce"
+                "reference": "81c1f315b187042e794f1c66574966731ab94c80"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tarantuli/medas-entity-manager/zipball/5d50087ce0a480cc718b41b72a7b06c4e28367ce",
-                "reference": "5d50087ce0a480cc718b41b72a7b06c4e28367ce",
+                "url": "https://api.github.com/repos/tarantuli/medas-entity-manager/zipball/81c1f315b187042e794f1c66574966731ab94c80",
+                "reference": "81c1f315b187042e794f1c66574966731ab94c80",
                 "shasum": ""
             },
             "require": {
@@ -207,10 +207,10 @@
                 "entities"
             ],
             "support": {
-                "source": "https://github.com/tarantuli/medas-entity-manager/tree/v3.17.0",
+                "source": "https://github.com/tarantuli/medas-entity-manager/tree/v3.18.0",
                 "issues": "https://github.com/tarantuli/medas-entity-manager/issues"
             },
-            "time": "2026-11-24T13:27:50+00:00"
+            "time": "2026-11-25T13:20:19+00:00"
         },
         {
             "name": "morphp/medas-file-system",
@@ -3116,16 +3116,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v7.4.23",
+            "version": "v7.4.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "1e601207ffe627a2e621faa9d661f1d32dcf1cec"
+                "reference": "f97f59f67644c715788d1bde4d81186e48ee1dbf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/1e601207ffe627a2e621faa9d661f1d32dcf1cec",
-                "reference": "1e601207ffe627a2e621faa9d661f1d32dcf1cec",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/f97f59f67644c715788d1bde4d81186e48ee1dbf",
+                "reference": "f97f59f67644c715788d1bde4d81186e48ee1dbf",
                 "shasum": ""
             },
             "require": {
@@ -3168,7 +3168,7 @@
             "description": "Loads and dumps YAML files",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/yaml/tree/v7.4.23"
+                "source": "https://github.com/symfony/yaml/tree/v7.4.24"
             },
             "funding": [
                 {
@@ -3188,7 +3188,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-11-04T08:27:22+00:00"
+            "time": "2026-11-16T12:32:16+00:00"
         },
         {
             "name": "theseer/tokenizer",

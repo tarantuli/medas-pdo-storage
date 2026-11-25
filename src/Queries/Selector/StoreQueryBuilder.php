@@ -62,8 +62,9 @@ readonly class StoreQueryBuilder
         $this->relationsProcessor->registerStores($job, $definition->relations);
         $this->outputValuesProcessor->process($job, $definition->outputValues);
 
+        // A store-level query has no entity, so its store names it
         if ($job->outputValues && $definition->derivedValues) {
-            throw new DerivedValuesWithOutputValues($entityName);
+            throw new DerivedValuesWithOutputValues($entityName ?: $storeName);
         }
 
         if ($isCount) {
