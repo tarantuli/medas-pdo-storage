@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "17155189f77d6ead914282abb318dfc8",
+    "content-hash": "730cce84a189c4a76e5be9a46b354d0d",
     "packages": [
         {
             "name": "morphp/medas-cache",
@@ -158,16 +158,16 @@
         },
         {
             "name": "morphp/medas-entity-manager",
-            "version": "v3.18.1",
+            "version": "v3.19.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tarantuli/medas-entity-manager.git",
-                "reference": "2c2de40ff07f4fd43eb82d89c7077480ce55a721"
+                "reference": "6b943945bb9b22114a272e4d19138c6c18f11551"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tarantuli/medas-entity-manager/zipball/2c2de40ff07f4fd43eb82d89c7077480ce55a721",
-                "reference": "2c2de40ff07f4fd43eb82d89c7077480ce55a721",
+                "url": "https://api.github.com/repos/tarantuli/medas-entity-manager/zipball/6b943945bb9b22114a272e4d19138c6c18f11551",
+                "reference": "6b943945bb9b22114a272e4d19138c6c18f11551",
                 "shasum": ""
             },
             "require": {
@@ -207,10 +207,10 @@
                 "entities"
             ],
             "support": {
-                "source": "https://github.com/tarantuli/medas-entity-manager/tree/v3.18.1",
+                "source": "https://github.com/tarantuli/medas-entity-manager/tree/v3.19.0",
                 "issues": "https://github.com/tarantuli/medas-entity-manager/issues"
             },
-            "time": "2026-11-25T15:40:20+00:00"
+            "time": "2026-11-26T09:29:16+00:00"
         },
         {
             "name": "morphp/medas-file-system",

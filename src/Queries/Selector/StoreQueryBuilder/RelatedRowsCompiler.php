@@ -13,8 +13,8 @@ use Medas\StorageManager\StorageManager;
 
 /**
  * Opens and closes the correlated subquery of an aggregate over related rows (CountOf,
- * SumOf, ValueOf). CalculationsProcessor writes what it selects, its conditions and
- * sorts in the job this returns.
+ * SumOf, ValueOf, GroupConcatOf). CalculationsProcessor writes what it selects, its
+ * conditions and sorts in the job this returns.
  *
  * The subquery has a job of its own: the related entity is its main entity, under an
  * alias numbered per query, so a bare property in its definition names the related

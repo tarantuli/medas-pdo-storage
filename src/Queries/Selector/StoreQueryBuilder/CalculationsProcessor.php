@@ -11,6 +11,7 @@ use Medas\EntityManager\Selector\{
     Calculations\Coalesce,
     Calculations\Difference,
     Calculations\Literal,
+    Calculations\Multiplication,
     Calculations\RowCount,
     Conditions\OrIs,
     Conditions\WhereCollectionContains,
@@ -33,6 +34,7 @@ use Medas\EntityManager\Selector\{
     Conditions\WhereStartsWith,
     DerivedValues\CountOf,
     DerivedValues\DerivedValue,
+    DerivedValues\GroupConcatOf,
     DerivedValues\RelatedRows,
     DerivedValues\SumOf,
     DerivedValues\ValueOf,
@@ -175,10 +177,11 @@ readonly class CalculationsProcessor
                 DerivedValue::class
                     => $job->currentCalculation .= $this->operantToQuery($job, $calculation),
 
-                CountOf::class, SumOf::class, ValueOf::class
+                CountOf::class, SumOf::class, ValueOf::class, GroupConcatOf::class
                     => $this->processRelatedRows($job, $calculation),
 
                 Addition::class => $this->processAddition($job, $calculation),
+                Multiplication::class => $this->processMultiplication($job, $calculation),
                 Difference::class => $this->processDifference($job, $calculation),
                 Coalesce::class => $this->processCoalesce($job, $calculation),
                 default => throw new UnhandledCalculationType($calculation),
@@ -306,8 +309,19 @@ readonly class CalculationsProcessor
         $job->currentCalculation .= '*';
     }
 
+    // A whole number is written into the query as it is. Bound, it would reach MySQL as
+    // text (the statement binds every argument as a string), and coalesce(sum(...), '0')
+    // is then text as well, so it sorts and compares as text: "9000" >= "100000". A
+    // literal comes from code, never from a request, and an int cannot carry anything
+    // but digits.
     private function processLiteral(Job $job, Literal $calculation): void
     {
+        if (is_int($calculation->literal)) {
+            $job->currentCalculation .= (string) $calculation->literal;
+
+            return;
+        }
+
         $job->currentCalculation .= $this->addValue($calculation->literal, $job);
     }
 
@@ -410,6 +424,7 @@ readonly class CalculationsProcessor
             $rows instanceof CountOf => 'count(*)',
             $rows instanceof SumOf => 'sum(' . $this->expression($subJob, $rows->value) . ')',
             $rows instanceof ValueOf => $this->expression($subJob, $rows->value),
+            $rows instanceof GroupConcatOf => $this->groupConcat($subJob, $rows),
             default => throw new UnhandledCalculationType($rows),
         };
 
@@ -438,6 +453,24 @@ readonly class CalculationsProcessor
         $job->currentCalculation .= $query . ')';
     }
 
+    // MySQL's syntax. The order goes inside the aggregate, as it decides the order of the
+    // joined values; the separator is a literal, as it cannot be a placeholder there.
+    private function groupConcat(Job $subJob, GroupConcatOf $rows): string
+    {
+        $parts = array_map(
+            fn(SortBy $sort) => $this->sortPart($subJob, $sort),
+            $rows->definition->sorts
+        );
+
+        return 'group_concat('
+            . ($rows->isDistinct ? 'distinct ' : '')
+            . $this->expression($subJob, $rows->value)
+            . ($parts ? ' order by ' . implode(', ', $parts) : '')
+            . ' separator '
+            . $subJob->driverHandler->escape($subJob->database, $rows->separator)
+            . ')';
+    }
+
     private function processAddition(Job $job, Addition $calculation): void
     {
         $terms = array_map(
@@ -446,6 +479,16 @@ readonly class CalculationsProcessor
         );
 
         $job->currentCalculation .= '(' . implode(' + ', $terms) . ')';
+    }
+
+    private function processMultiplication(Job $job, Multiplication $calculation): void
+    {
+        $factors = array_map(
+            fn(Calculation $factor) => $this->expression($job, $factor),
+            $calculation->factors
+        );
+
+        $job->currentCalculation .= '(' . implode(' * ', $factors) . ')';
     }
 
     private function processDifference(Job $job, Difference $calculation): void

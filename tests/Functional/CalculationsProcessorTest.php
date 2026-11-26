@@ -6,6 +6,9 @@ namespace Medas\PdoStorageTest\Functional;
 
 use Medas\EntityManager\Selector\{
     Calculations\Addition,
+    Calculations\Coalesce,
+    Calculations\Literal,
+    Calculations\Multiplication,
     Conditions\OrIs,
     Conditions\WhereIs,
     Conditions\WhereIsAtLeast,
@@ -150,6 +153,44 @@ class CalculationsProcessorTest extends TestCase
             '(entities.`adults` + entities.`children` + entities.`pets`)',
             $job->currentCalculation
         );
+    }
+
+    // A value of the row, like an addition: a price per unit times the quantity
+    public function testMultiplication(): void
+    {
+        $job = $this->createJob();
+        $processor = service(CalculationsProcessor::class);
+
+        $processor->process(
+            $job,
+            Coalesce::c(
+                Property::c('listAmount'),
+                Multiplication::c(Property::c('price'), Property::c('quantity'))
+            )
+        );
+
+        self::assertEquals(
+            'coalesce(entities.`listAmount`, (entities.`price` * entities.`quantity`))',
+            $job->currentCalculation
+        );
+    }
+
+    // Bound, a whole number would reach MySQL as text and make the coalesce text too, so
+    // it would sort and compare as text. Any other literal is still bound.
+    public function testAWholeNumberLiteralIsWrittenIntoTheQuery(): void
+    {
+        $job = $this->createJob();
+        $processor = service(CalculationsProcessor::class);
+
+        $processor->process($job, Coalesce::c(Property::c('paid'), Literal::c(0)));
+
+        self::assertEquals('coalesce(entities.`paid`, 0)', $job->currentCalculation);
+        self::assertEquals([], $job->foundConstants);
+
+        $processor->process($job, Literal::c('none'));
+
+        self::assertEquals(':c0', $job->currentCalculation);
+        self::assertEquals(['c0' => 'none'], $job->foundConstants);
     }
 
     private function createJob(): Job
